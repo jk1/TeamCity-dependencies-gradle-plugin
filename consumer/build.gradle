@@ -1,0 +1,29 @@
+apply plugin: 'com.github.jk1.tcdeps'
+
+version = '1.0'
+
+configurations {
+    conf
+}
+
+teamcity{
+    url = 'http://teamcity.jetbrains.com'
+}
+
+dependencies {
+    conf('org:NetCommunityProjects_Femah_Commit:0.1.70.160').ext.path = 'Femah.Core.0.1.70-beta.nupkg'
+    conf('org:bt351:89').ext.path = 'plugin-verifier.jar!LICENSE.TXT'
+}
+
+buildscript{
+    dependencies {
+        classpath fileTree(dir: '../build/libs', include: '*.jar')
+    }
+}
+
+task test << {
+    configurations.conf.each {
+        conf -> println(conf)
+    }
+}
+

@@ -1,0 +1,21 @@
+apply plugin: 'groovy'
+
+
+group = 'com.github.jk1'
+description = 'TeamCity dependencies plugin resolves project dependencies via local TeamCity server'
+version = '0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+}
+
+buildscript{
+    dependencies {
+        classpath files("$projectDir/build/lib/tcdeps-0.1.jar")
+    }
+}
