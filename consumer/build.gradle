@@ -1,4 +1,5 @@
 apply plugin: 'com.github.jk1.tcdeps'
+apply plugin: 'java'
 
 version = '1.0'
 
@@ -11,8 +12,8 @@ teamcity{
 }
 
 dependencies {
-    conf('org:NetCommunityProjects_Femah_Commit:0.1.70.160').ext.path = 'Femah.Core.0.1.70-beta.nupkg'
-    conf('org:bt351:89').ext.path = 'plugin-verifier.jar!LICENSE.TXT'
+    conf tc('bt345',"0.8.1429",'kotlin-compiler-0.8.1429.zip!/kotlinc/build.txt')
+    conf tc('bt345',"0.8.1429",'kotlin-compiler-0.8.1429.zip')
 }
 
 buildscript{
@@ -21,7 +22,7 @@ buildscript{
     }
 }
 
-task test << {
+task test1 << {
     configurations.conf.each {
         conf -> println(conf)
     }
