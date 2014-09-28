@@ -1,7 +1,6 @@
 package com.github.jk1.tcdeps
 
 import org.gradle.api.Project
-import org.gradle.api.artifacts.Dependency
 
 
 class RepositoryBuilder {

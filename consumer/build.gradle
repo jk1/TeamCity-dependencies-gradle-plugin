@@ -3,18 +3,26 @@ apply plugin: 'java'
 
 version = '1.0'
 
-configurations {
-    conf
-}
-
-teamcity{
-    url = 'http://teamcity.jetbrains.com'
+repositories{
+    teamcity{
+        url = 'http://teamcity.jetbrains.com'
+        pin {
+            username = "username"
+            password = "password"
+        }
+    }
 }
 
 dependencies {
-    conf tc('bt345',"0.8.1429",'kotlin-compiler-0.8.1429.zip!/kotlinc/build.txt')
-    conf tc('bt345',"0.8.1429",'kotlin-compiler-0.8.1429.zip')
+    // reference arbitrary files as artifacts
+    compile tc('bt345',"0.8.1424",'kotlin-compiler-0.8.1424.zip')
+    // subfolders are supported
+    compile tc('bt345',"0.8.1424",'KotlinJpsPlugin/kotlin-jps-plugin.jar')
+    // archive traversal is available with '!' symbol
+    compile tc('bt345',"0.8.1424",'kotlin-compiler-0.8.1424.zip!/kotlinc/build.txt')
 }
+
+defaultTasks 'listdeps'
 
 buildscript{
     dependencies {
@@ -22,9 +30,9 @@ buildscript{
     }
 }
 
-task test1 << {
-    configurations.conf.each {
-        conf -> println(conf)
+task listDeps << {
+    configurations.compile.each {
+        dep -> println(dep)
     }
 }
 
