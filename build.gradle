@@ -13,6 +13,8 @@ dependencies {
     compile localGroovy()
 }
 
+defaultTasks 'jar'
+
 buildscript{
     dependencies {
         classpath files("$projectDir/build/lib/tcdeps-0.1.jar")
