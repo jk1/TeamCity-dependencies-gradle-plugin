@@ -1,5 +1,7 @@
 package com.github.jk1.tcdeps
 
+import org.gradle.api.InvalidUserDataException
+
 class ArtifactDescriptor {
 
     private String rawPath;
@@ -8,6 +10,9 @@ class ArtifactDescriptor {
     private String extension;
 
     ArtifactDescriptor(String rawPath) {
+        if (rawPath == null || rawPath.isEmpty()){
+            throw new InvalidUserDataException("Artifact path may not be empty, please set at least a filename as artifact path")
+        }
         this.rawPath = rawPath
         def lastDotIndex = rawPath.lastIndexOf('.')
         def lastSeparatorIndex = rawPath.lastIndexOf("/")
@@ -18,17 +23,13 @@ class ArtifactDescriptor {
             name = rawPath[lastSeparatorIndex + 1..lastDotIndex - 1]
             path = rawPath[0..lastSeparatorIndex]
         }
-        println(rawPath)
-        println(path)
-        println(name)
-        println(extension)
     }
 
     String getRawPath() {
         return rawPath
     }
 
-    boolean hasAdditionalPath() {
+    boolean hasPath() {
         return path != null
     }
 
@@ -42,5 +43,10 @@ class ArtifactDescriptor {
 
     String getExtension() {
         return extension
+    }
+
+    @Override
+    String toString() {
+        "ArtifactDescriptor:[rawPath=$rawPath, name=$name, extension=$extension, path=$path]"
     }
 }

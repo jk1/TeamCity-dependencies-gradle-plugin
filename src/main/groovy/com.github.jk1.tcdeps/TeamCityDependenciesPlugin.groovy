@@ -12,7 +12,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
         project.extensions.add("teamcity", new ConfigurationExtension())
         project.ext.tc = { String buildTypeId, String version, String artifactPath ->
             def descriptor = new ArtifactDescriptor(artifactPath)
-            if (descriptor.hasAdditionalPath()){
+            if (descriptor.hasPath()){
                 builder.addArtifactPattern(descriptor.getPath())
             }
             return ["org:$buildTypeId:$version", { ->
