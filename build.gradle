@@ -12,15 +12,30 @@ repositories {
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    testCompile ("org.spockframework:spock-core:1.0-groovy-2.3-SNAPSHOT") {
+    testCompile("org.spockframework:spock-core:1.0-groovy-2.3-SNAPSHOT") {
         exclude group: 'org.codehaus.groovy'
     }
+    testCompile "org.hamcrest:hamcrest-core:1.3" // Hamcrest matchers
+    testRuntime "cglib:cglib-nodep:3.1"          // allows mocking of classes (in addition to interfaces)
+    testRuntime "org.objenesis:objenesis:2.1"    // allows mocking of classes without default constructor
 }
 
 defaultTasks 'jar'
 
-buildscript{
+buildscript {
     dependencies {
         classpath files("$projectDir/build/lib/tcdeps-0.1.jar")
+    }
+}
+
+test {
+    outputs.upToDateWhen { false }
+    testLogging {
+        afterSuite { desc, r ->
+            if (!desc.parent) { // will match the outermost suite
+                println "${r.testCount} tests, ${r.successfulTestCount} successes, " +
+                        "${r.failedTestCount} failures, ${r.skippedTestCount} skipped"
+            }
+        }
     }
 }
