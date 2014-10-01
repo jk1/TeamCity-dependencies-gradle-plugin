@@ -1,4 +1,5 @@
 apply plugin: 'groovy'
+apply plugin: 'maven'
 
 group = 'com.github.jk1'
 description = 'TeamCity dependencies plugin resolves project dependencies via local TeamCity server'
@@ -38,4 +39,24 @@ test {
             }
         }
     }
+}
+
+task release(type: Jar, dependsOn: jar) {
+    outputs.upToDateWhen { false }
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+release << {
+    pom {
+        project {
+            groupId 'com.github.jk1'
+            artifactId 'tcdeps'
+            version "$version"
+        }
+    }.writeTo("$buildDir/libs/tcdeps-${version}.pom")
+}
+
+artifacts {
+    archives release
 }
