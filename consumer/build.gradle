@@ -15,11 +15,13 @@ repositories {
 
 dependencies {
     // reference arbitrary files as artifacts
-    compile tc('bt345:0.8.1424:kotlin-compiler-0.8.1424.zip')
+    compile tc('bt345:0.8.1477:kotlin-compiler-0.8.1477.zip')
+    // with self-explanatory map dependency notation
+    compile tc(buildTypeId: 'bt345', version: '0.8.1477', artifactPath: 'kotlin-compiler-for-maven.jar')
     // subfolders are supported
-    compile tc('bt345:0.8.1424:KotlinJpsPlugin/kotlin-jps-plugin.jar')
+    compile tc('bt345:0.8.1477:KotlinJpsPlugin/kotlin-jps-plugin.jar')
     // archive traversal is available with '!' symbol
-    compile tc('bt345:0.8.1424:kotlin-compiler-0.8.1424.zip!/kotlinc/build.txt')
+    compile tc('bt345:0.8.1477:kotlin-compiler-0.8.1477.zip!/kotlinc/build.txt')
 }
 
 defaultTasks 'listdeps'
