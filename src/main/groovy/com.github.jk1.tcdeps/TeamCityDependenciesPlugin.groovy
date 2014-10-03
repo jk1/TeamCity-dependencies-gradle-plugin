@@ -11,12 +11,13 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        project.extensions.add("teamcity", new ConfigurationExtension())
+        project.repositories.ext
+        project.extensions.add("teamcityServer", new ConfigurationExtension())
         project.ext.tc = { Object notation ->
             return addDependency(new DependencyDescriptor(notation))
         }
         project.afterEvaluate {
-            builder.setTeamCityUrl(project.teamcity.url)
+            builder.setTeamCityUrl(project.teamcityServer.url)
             builder.createRepository(project)
         }
     }
