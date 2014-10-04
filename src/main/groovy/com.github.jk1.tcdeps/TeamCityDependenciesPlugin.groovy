@@ -1,13 +1,12 @@
 package com.github.jk1.tcdeps
 
-import org.apache.commons.collections.Closure
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.Dependency
 
 class TeamCityDependenciesPlugin implements Plugin<Project> {
 
-    private def builder = new RepositoryBuilder()
+    private builder = new RepositoryBuilder()
+    private pinner = new DepedencyPinner()
 
     @Override
     void apply(Project project) {
@@ -18,7 +17,9 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
         }
         project.afterEvaluate {
             builder.setTeamCityUrl(project.teamcityServer.url)
+            pinner.setConfig(project.teamcityServer)
             builder.createRepository(project)
+            pinner.pinAllBuilds()
         }
     }
 
@@ -26,6 +27,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
         if (descriptor.artifactDescriptor.hasPath()){
             builder.addArtifactPattern(descriptor.artifactDescriptor.path)
         }
+        pinner.addDependency(descriptor)
         return ["org:$descriptor.buildTypeId:$descriptor.version", { ->
             artifact {
                 name = descriptor.artifactDescriptor.name

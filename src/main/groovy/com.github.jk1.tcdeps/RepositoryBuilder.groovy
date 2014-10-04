@@ -6,7 +6,8 @@ import org.gradle.api.Project
 class RepositoryBuilder {
 
     private final TC_DOWNLOAD_PATH = 'guestAuth/repository/download'
-    private final patterns = new ArrayList<String>()
+
+    private  patterns = new ArrayList<String>()
     private String teamCityUrl
 
     public void setTeamCityUrl(String teamCityUrl) {

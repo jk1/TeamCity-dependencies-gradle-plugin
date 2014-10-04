@@ -6,10 +6,6 @@ version = '1.0'
 repositories {
     teamcityServer {
         url = 'http://teamcity.jetbrains.com'
-        pin {
-            username = "username"
-            password = "password"
-        }
     }
 }
 
