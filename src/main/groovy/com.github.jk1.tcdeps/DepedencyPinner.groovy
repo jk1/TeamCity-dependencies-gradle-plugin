@@ -1,6 +1,7 @@
 package com.github.jk1.tcdeps
 
 import groovy.text.SimpleTemplateEngine
+import org.gradle.api.GradleException
 
 /**
  * Pin: PUT http://teamcity:8111/httpAuth/app/rest/builds/buildType:%s,number:%s/pin/
@@ -8,27 +9,16 @@ import groovy.text.SimpleTemplateEngine
  *
  * http://confluence.jetbrains.com/display/TW/REST+API#RESTAPI-BuildLocator
  */
-class DepedencyPinner {
+class DepedencyPinner implements DependencyProcessor {
 
     private template = new SimpleTemplateEngine().createTemplate(
             '$server/httpAuth/app/rest/builds/buildType:$buildTypeId,number:$version/pin')
 
-    private ConfigurationExtension config;
-    private Set<DependencyDescriptor> pinCandidates = new HashSet<>()
-
-    def setConfig(ConfigurationExtension config) {
-        this.config = config
-    }
-
-    def addDependency(DependencyDescriptor dependency) {
-        pinCandidates.add(dependency)
-    }
-
-    def pinAllBuilds() {
+    def process() {
         println("Pinning all builds")
         if (config.pinEnabled) {
             println("Pin is enabled, $pinCandidates deps")
-            pinCandidates.collectAll {
+            dependecies.collectAll {
                 template.make(
                         'server': config.url,
                         'buildTypeId': it.buildTypeId,
@@ -39,16 +29,23 @@ class DepedencyPinner {
     }
 
     private def pinBuild(String url) {
-        println("Pinning $url")
-        HttpURLConnection connection = url.toURL().openConnection()
-        connection.setDoOutput(true);
-        connection.setRequestMethod("PUT");
-        println("Credentials $config.username:$config.password")
-        String encoded = "$config.username:$config.password".bytes.encodeBase64().toString();
-        println("Encoded $encoded")
-        connection.setRequestProperty("Authorization", "Basic $encoded");
-        //connection.outputStream.withWriter { Writer writer -> writer << config.message }
-        String response = connection.inputStream.withReader { Reader reader -> reader.text }
-        println(response)
+        String response = "<no response recorded>"
+        try {
+            HttpURLConnection connection = url.toURL().openConnection()
+            connection.setDoOutput(true);
+            connection.setRequestMethod("PUT");
+            String encoded = "$config.username:$config.password".bytes.encodeBase64().toString();
+            println("Encoded $encoded")
+            connection.setRequestProperty("Authorization", "Basic $encoded");
+            connection.outputStream.withWriter { Writer writer -> writer << config.message }
+            response = connection.inputStream.withReader { Reader reader -> reader.text }
+        } catch (Exception e) {
+            String message = "Unable to pin build: $url. Server response: \n $response"
+            if (config.stopBuildOnFail) {
+                throw new GradleException(message, e)
+            } else {
+                logger.warn(message, e)
+            }
+        }
     }
 }

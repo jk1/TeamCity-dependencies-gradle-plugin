@@ -11,22 +11,20 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         project.repositories.ext
-        project.extensions.add("teamcityServer", new ConfigurationExtension())
+        project.extensions.add("teamcityServer", new PluginConfiguration())
         project.ext.tc = { Object notation ->
             return addDependency(new DependencyDescriptor(notation))
         }
         project.afterEvaluate {
-            builder.setTeamCityUrl(project.teamcityServer.url)
-            pinner.setConfig(project.teamcityServer)
-            builder.createRepository(project)
-            pinner.pinAllBuilds()
+            builder.configure(project)
+            pinner.configure(project)
+            builder.process()
+            pinner.process()
         }
     }
 
     private Object addDependency(DependencyDescriptor descriptor){
-        if (descriptor.artifactDescriptor.hasPath()){
-            builder.addArtifactPattern(descriptor.artifactDescriptor.path)
-        }
+        builder.addDependency(descriptor)
         pinner.addDependency(descriptor)
         return ["org:$descriptor.buildTypeId:$descriptor.version", { ->
             artifact {

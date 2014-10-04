@@ -3,7 +3,7 @@ package com.github.jk1.tcdeps
 import org.gradle.api.InvalidUserDataException
 
 
-class ConfigurationExtension {
+class PluginConfiguration {
     def String url
     def String username
     def String password
