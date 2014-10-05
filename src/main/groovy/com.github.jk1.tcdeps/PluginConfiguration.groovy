@@ -4,13 +4,12 @@ import org.gradle.api.InvalidUserDataException
 
 
 class PluginConfiguration {
-    def String url
-    def String username
-    def String password
-    def boolean stopBuildOnFail
-    def String message
-
-    def boolean pinEnabled
+    String url
+    String username
+    String password
+    boolean stopBuildOnFail
+    boolean pinEnabled
+    String message
 
     def pin(Closure closure){
         pinEnabled = true
@@ -21,7 +20,9 @@ class PluginConfiguration {
     }
 
     def setDefaultMessage(String message){
-        this.message = message
+        if (this.message == null) {
+            this.message = message
+        }
     }
 }
 

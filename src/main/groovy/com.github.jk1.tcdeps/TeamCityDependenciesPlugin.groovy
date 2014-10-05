@@ -5,8 +5,7 @@ import org.gradle.api.Project
 
 class TeamCityDependenciesPlugin implements Plugin<Project> {
 
-    private builder = new RepositoryBuilder()
-    private pinner = new DepedencyPinner()
+    private processors = [new RepositoryBuilder(), new DepedencyPinner()]
 
     @Override
     void apply(Project project) {
@@ -16,21 +15,15 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
             return addDependency(new DependencyDescriptor(notation))
         }
         project.afterEvaluate {
-            builder.configure(project)
-            pinner.configure(project)
-            builder.process()
-            pinner.process()
+            processors.each {
+                it.configure(project)
+                it.process()
+            }
         }
     }
 
-    private Object addDependency(DependencyDescriptor descriptor){
-        builder.addDependency(descriptor)
-        pinner.addDependency(descriptor)
-        return ["org:$descriptor.buildTypeId:$descriptor.version", { ->
-            artifact {
-                name = descriptor.artifactDescriptor.name
-                type = descriptor.artifactDescriptor.extension
-            }
-        }]
+    private Object addDependency(DependencyDescriptor descriptor) {
+        processors.each { it.addDependency(descriptor) }
+        return descriptor.toDependencyNotation()
     }
 }

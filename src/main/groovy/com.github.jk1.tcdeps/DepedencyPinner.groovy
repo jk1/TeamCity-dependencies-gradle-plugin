@@ -2,6 +2,7 @@ package com.github.jk1.tcdeps
 
 import groovy.text.SimpleTemplateEngine
 import org.gradle.api.GradleException
+import org.gradle.api.Project
 
 /**
  * Pin: PUT http://teamcity:8111/httpAuth/app/rest/builds/buildType:%s,number:%s/pin/
@@ -11,19 +12,12 @@ import org.gradle.api.GradleException
  */
 class DepedencyPinner implements DependencyProcessor {
 
-    private template = new SimpleTemplateEngine().createTemplate(
-            '$server/httpAuth/app/rest/builds/buildType:$buildTypeId,number:$version/pin')
-
+    @Override
     def process() {
-        println("Pinning all builds")
+        config.setDefaultMessage("Pinned when building dependent build $project.name $project.version")
         if (config.pinEnabled) {
-            println("Pin is enabled, $pinCandidates deps")
-            dependecies.collectAll {
-                template.make(
-                        'server': config.url,
-                        'buildTypeId': it.buildTypeId,
-                        'version': it.version
-                ).toString()
+            dependencies.collectAll {
+                "$config.url/httpAuth/app/rest/builds/buildType:$it.buildTypeId,number:$it.version/pin"
             }.unique().each { pinBuild(it) }
         }
     }
@@ -44,7 +38,7 @@ class DepedencyPinner implements DependencyProcessor {
             if (config.stopBuildOnFail) {
                 throw new GradleException(message, e)
             } else {
-                logger.warn(message, e)
+                project.logger.warn(message, e)
             }
         }
     }

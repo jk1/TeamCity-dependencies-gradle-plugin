@@ -5,6 +5,7 @@ class RepositoryBuilder implements DependencyProcessor {
 
     private final TC_DOWNLOAD_PATH = 'guestAuth/repository/download'
 
+    @Override
     def process() {
         def patterns = dependencies
                 .findAll { it.artifactDescriptor.hasPath() }
