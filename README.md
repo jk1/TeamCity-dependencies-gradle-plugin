@@ -13,14 +13,14 @@ The plugin makes use of default artifact cache, downloading each dependency only
 ```groovy
 // for Gradle 2.1+
 plugins {
-  id 'com.github.jk1.tcdeps' version '0.1'
+  id 'com.github.jk1.tcdeps' version '0.2'
 }
 
 // for Gradle 2.0 and below
 apply plugin: 'com.github.jk1.tcdeps'
 
 repositories{
-  teamcity{
+  teamcityServer{
     url = 'http://teamcity.jetbrains.com'
   }
 }
@@ -37,3 +37,22 @@ dependencies {
 }
 ```
 TeamCity dependency description consist of the following components: build type id, build number aka version, and artifact path. Artifact path should be relative to build artifacts root in TC build. 
+
+###Pinning the build
+
+By default, TeamCity does not store artifacts indefinitely, deleting them after some time. To avoid dependency loss one may choose to [pin the build](https://confluence.jetbrains.com/display/TCD8/Pinned+Build) as follows:
+
+```groovy
+repositories{
+  teamcityServer{
+    url = 'http://teamcity.jetbrains.com'
+    pin {
+      // pinning usually requires authnetication
+      username = "name"
+      password = "secret"
+      stopBuildOnFail = true  // not mandatory, default to 'false'
+      message = "Pinned for MyCoolProject"  // not mandatory
+    }
+  }
+}
+```
