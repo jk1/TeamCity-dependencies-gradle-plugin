@@ -12,8 +12,11 @@ import org.gradle.api.Project
  */
 class DepedencyPinner implements DependencyProcessor {
 
+    private PluginConfiguration config
+
     @Override
     def process() {
+        config = project.teamcityServer
         config.setDefaultMessage("Pinned when building dependent build $project.name $project.version")
         if (config.pinEnabled) {
             dependencies.collectAll {

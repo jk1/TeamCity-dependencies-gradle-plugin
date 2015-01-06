@@ -1,17 +1,22 @@
 package com.github.jk1.tcdeps
 
+import org.gradle.api.artifacts.repositories.IvyArtifactRepository
+
 
 class RepositoryBuilder implements DependencyProcessor {
 
     private final TC_DOWNLOAD_PATH = 'guestAuth/repository/download'
+    private IvyArtifactRepository lastAdded
 
     @Override
-    def process() {
+    def addDependency(DependencyDescriptor dependecy) {
+        project.repositories.remove(lastAdded)
+        dependencies.add(dependecy)
         def patterns = dependencies
                 .findAll { it.artifactDescriptor.hasPath() }
                 .collectAll { "[module]/[revision]/${it.artifactDescriptor.path}[artifact](.[ext])" }
-        project.repositories.ivy {
-            url "${config.url}/$TC_DOWNLOAD_PATH"
+        lastAdded = project.repositories.ivy {
+            url "${project.teamcityServer.url}/$TC_DOWNLOAD_PATH"
             layout "pattern", {
                 ivy '[module]/[revision]/teamcity-ivy.xml'
                 artifact '[module]/[revision]/[artifact](.[ext])'
