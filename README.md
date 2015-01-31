@@ -28,15 +28,20 @@ repositories{
 dependencies {
     // reference arbitrary files as artifacts
     compile tc('bt345:0.10.195:kotlin-compiler-0.10.195.zip')
-    
+
     // with self-explanatory map dependency notation
     compile tc(buildTypeId: 'bt345', version: '0.10.195', artifactPath: 'kotlin-compiler-for-maven.jar')
-    
+
     // subfolders are supported
     compile tc('bt345:0.10.195:KotlinJpsPlugin/kotlin-jps-plugin.jar')
-    
+
     // archive traversal is available with '!' symbol
     compile tc('bt345:0.10.195:kotlin-compiler-0.10.195.zip!/kotlinc/build.txt')
+
+    // гse TeamCity version aliases to declare snapshot-like dependencies
+    compile tc('bt351:lastFinished:plugin-verifier.jar')
+    compile tc('bt345:lastPinned:internal/kotlin-test-data.zip')
+    compile tc('bt337:lastSuccessful:odata4j.zip')
 }
 ```
 TeamCity dependency description consist of the following components: build type id, build number aka version, and artifact path. Artifact path should be relative to build artifacts root in TC build. 

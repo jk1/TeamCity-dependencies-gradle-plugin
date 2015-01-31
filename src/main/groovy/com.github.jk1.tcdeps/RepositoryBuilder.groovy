@@ -2,7 +2,10 @@ package com.github.jk1.tcdeps
 
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository
 
-
+/**
+ * All of the artifacts for the module are then requested from the same repository
+ * that was chosen in the process above
+ */
 class RepositoryBuilder implements DependencyProcessor {
 
     private final TC_DOWNLOAD_PATH = 'guestAuth/repository/download'
