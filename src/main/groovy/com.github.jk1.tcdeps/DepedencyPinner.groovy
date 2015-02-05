@@ -32,7 +32,6 @@ class DepedencyPinner implements DependencyProcessor {
             connection.setDoOutput(true);
             connection.setRequestMethod("PUT");
             String encoded = "$config.username:$config.password".bytes.encodeBase64().toString();
-            println("Encoded $encoded")
             connection.setRequestProperty("Authorization", "Basic $encoded");
             connection.outputStream.withWriter { Writer writer -> writer << config.message }
             response = connection.inputStream.withReader { Reader reader -> reader.text }

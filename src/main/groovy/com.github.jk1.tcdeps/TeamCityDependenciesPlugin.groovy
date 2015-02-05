@@ -12,7 +12,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
         processors = [new RepositoryBuilder(), new DepedencyPinner()]
         project.extensions.add("teamcityServer", new PluginConfiguration())
         project.ext.tc = { Object notation ->
-            return addDependency(new DependencyDescriptor(notation))
+            return addDependency(DependencyDescriptor.create(notation))
         }
         processors.each {
             it.configure(project)

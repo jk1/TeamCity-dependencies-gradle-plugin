@@ -38,7 +38,7 @@ dependencies {
     // archive traversal is available with '!' symbol
     compile tc('bt345:0.10.195:kotlin-compiler-0.10.195.zip!/kotlinc/build.txt')
 
-    // гse TeamCity version aliases to declare snapshot-like dependencies
+    // use TeamCity version aliases to declare snapshot-like dependencies
     compile tc('bt351:lastFinished:plugin-verifier.jar')
     compile tc('bt345:lastPinned:internal/kotlin-test-data.zip')
     compile tc('bt337:lastSuccessful:odata4j.zip')

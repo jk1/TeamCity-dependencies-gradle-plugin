@@ -9,6 +9,10 @@ repositories {
     }
 }
 
+/*configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}*/
+
 dependencies {
     // reference arbitrary files as artifacts
     compile tc('bt345:0.10.195:kotlin-compiler-0.10.195.zip')
