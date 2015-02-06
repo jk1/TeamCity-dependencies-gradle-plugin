@@ -37,14 +37,28 @@ dependencies {
 
     // archive traversal is available with '!' symbol
     compile tc('bt345:0.10.195:kotlin-compiler-0.10.195.zip!/kotlinc/build.txt')
+}
+```
+TeamCity dependency description consist of the following components: build type id, build number aka version, and artifact path. Artifact path should be relative to build artifacts root in TC build. 
 
-    // use TeamCity version aliases to declare snapshot-like dependencies
+###Changing dependencies
+
+Plugin supports TeamCity's build version placeholders:
+
+```groovy
+dependencies {
     compile tc('bt351:lastFinished:plugin-verifier.jar')
     compile tc('bt345:lastPinned:internal/kotlin-test-data.zip')
     compile tc('bt337:lastSuccessful:odata4j.zip')
 }
 ```
-TeamCity dependency description consist of the following components: build type id, build number aka version, and artifact path. Artifact path should be relative to build artifacts root in TC build. 
+these dependencies are handles as Gradle's 'changing dependencies'. That means Gradle will discard cached version every 24 hours and try to download the files once again. One can control caching period as follows:
+
+```groovy
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+```
 
 ###Pinning the build
 
