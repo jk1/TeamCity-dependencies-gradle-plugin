@@ -13,7 +13,7 @@ The plugin makes use of default artifact cache, downloading each dependency only
 ```groovy
 // for Gradle 2.1+
 plugins {
-  id 'com.github.jk1.tcdeps' version '0.4'
+  id 'com.github.jk1.tcdeps' version '0.5'
 }
 
 // for Gradle 2.0 and below
@@ -48,8 +48,9 @@ Plugin supports TeamCity's build version placeholders:
 ```groovy
 dependencies {
     compile tc('bt351:lastFinished:plugin-verifier.jar')
-    compile tc('bt345:lastPinned:internal/kotlin-test-data.zip')
+    compile tc('bt131:lastPinned:javadocs/index.html')
     compile tc('bt337:lastSuccessful:odata4j.zip')
+    compile tc('bt132:sameChainOrLastFinished:index.html')
 }
 ```
 these dependencies are handles as Gradle's 'changing dependencies'. That means Gradle will discard cached version every 24 hours and try to download the files once again. One can control caching period as follows:
