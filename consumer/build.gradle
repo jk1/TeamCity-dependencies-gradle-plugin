@@ -9,9 +9,9 @@ repositories {
     }
 }
 
-/*configurations.all {
+configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}*/
+}
 
 dependencies {
     // reference arbitrary files as artifacts
@@ -24,8 +24,9 @@ dependencies {
     compile tc('bt345:0.10.195:kotlin-compiler-0.10.195.zip!/kotlinc/build.txt')
     // Use TeamCity version aliases to declare snapshot-like dependencies
     compile tc('bt351:lastFinished:plugin-verifier.jar')
-    compile tc('bt345:lastPinned:internal/kotlin-test-data.zip')
+    compile tc('bt131:lastPinned:javadocs/index.html')
     compile tc('bt337:lastSuccessful:odata4j.zip')
+    compile tc('bt132:sameChainOrLastFinished:index.html')
 }
 
 defaultTasks 'listdeps'

@@ -13,6 +13,6 @@ class ArtifactVersion {
             throw new InvalidUserDataException("version should not be empty")
         }
         this.version = version
-        this.changing = ['lastFinished','lastPinned','lastSuccessful'].contains(version)
+        this.changing = ['lastFinished','lastPinned','lastSuccessful','sameChainOrLastFinished'].contains(version)
     }
 }
