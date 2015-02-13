@@ -20,7 +20,7 @@ class DepedencyPinner implements DependencyProcessor {
         config.setDefaultMessage("Pinned when building dependent build $project.name $project.version")
         if (config.pinEnabled) {
             dependencies.collectAll {
-                "$config.url/httpAuth/app/rest/builds/buildType:$it.buildTypeId,number:$it.version/pin"
+                "$config.url/httpAuth/app/rest/builds/buildType:$it.buildTypeId,number:$it.version.version/pin"
             }.unique().each { pinBuild(it) }
         }
     }
