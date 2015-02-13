@@ -1,4 +1,4 @@
-package com.github.jk1.tcdeps
+package com.github.jk1.tcdeps.model
 
 import org.gradle.api.InvalidUserDataException
 
@@ -9,7 +9,7 @@ class DependencyDescriptor {
     final def artifactDescriptor;
     final def version;
 
-    private DependencyDescriptor(
+    protected DependencyDescriptor(
             String buildTypeId, ArtifactVersion version, ArtifactDescriptor artifactDescriptor) {
         this.buildTypeId = buildTypeId;
         this.version = version;
@@ -42,16 +42,24 @@ class DependencyDescriptor {
         if (dependency == null) {
             throw new InvalidUserDataException("Dependency cannot be empty")
         }
-        return create(
-                dependency["buildTypeId"],
-                dependency["version"],
-                dependency["artifactPath"])
+        def btid = dependency["buildTypeId"]
+        def branch = dependency["branch"]
+        def version = dependency["version"]
+        def artifactVersion = branch == null ?
+                new ArtifactVersion(version) :
+                new BranchScopedArtifactVersion(version, branch)
+        if (btid == null || btid.isEmpty()) {
+            throw new InvalidUserDataException("buildTypeId should not be empty")
+        }
+        new DependencyDescriptor(btid,
+                artifactVersion,
+                new ArtifactDescriptor(dependency["artifactPath"]))
     }
 
     def toDependencyNotation() {
-        return [[group: 'org',
-                 name: buildTypeId,
-                 version: version.version,
+        return [[group   : 'org',
+                 name    : buildTypeId,
+                 version : version.version,
                  changing: version.changing
                 ],
                 { ->
@@ -60,5 +68,10 @@ class DependencyDescriptor {
                         type = artifactDescriptor.extension
                     }
                 }]
+    }
+
+    @Override
+    String toString() {
+        "Dependency:[buildTypeId=$buildTypeId, artifact=$artifactDescriptor, version=$version]"
     }
 }

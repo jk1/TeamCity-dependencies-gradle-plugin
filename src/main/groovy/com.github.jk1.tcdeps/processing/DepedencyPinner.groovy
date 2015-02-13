@@ -1,8 +1,7 @@
-package com.github.jk1.tcdeps
+package com.github.jk1.tcdeps.processing
 
-import groovy.text.SimpleTemplateEngine
+import com.github.jk1.tcdeps.PluginConfiguration
 import org.gradle.api.GradleException
-import org.gradle.api.Project
 
 /**
  * Pin: PUT http://teamcity:8111/httpAuth/app/rest/builds/buildType:%s,number:%s/pin/

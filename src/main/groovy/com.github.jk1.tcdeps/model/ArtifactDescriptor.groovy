@@ -1,4 +1,4 @@
-package com.github.jk1.tcdeps
+package com.github.jk1.tcdeps.model
 
 import org.gradle.api.InvalidUserDataException
 
@@ -32,6 +32,6 @@ class ArtifactDescriptor {
 
     @Override
     String toString() {
-        "ArtifactDescriptor:[rawPath=$rawPath, name=$name, extension=$extension, path=$path]"
+        "Artifact:[rawPath=$rawPath, name=$name, extension=$extension, path=$path]"
     }
 }

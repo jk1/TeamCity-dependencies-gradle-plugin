@@ -1,5 +1,6 @@
 package com.github.jk1.tcdeps
 
+import com.github.jk1.tcdeps.model.DependencyDescriptor
 import org.gradle.api.InvalidUserDataException
 import spock.lang.Specification
 
