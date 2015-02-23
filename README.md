@@ -61,6 +61,16 @@ configurations.all {
 }
 ```
 
+Changing dependencies may be also resolved against particular [feature branches](https://confluence.jetbrains.com/display/TCD8/Working+with+Feature+Branches):
+
+```groovy
+dependencies {
+    compile tc(buildTypeId: 'bt345', version: 'lastSuccessful', artifactPath: 'testng-6.8.8.jar', branch: 'master')
+}
+```
+
+Default branch will be used if branch value is not specified explicitly.
+
 ###Pinning the build
 
 By default, TeamCity does not store artifacts indefinitely, deleting them after some time. To avoid dependency loss one may choose to [pin the build](https://confluence.jetbrains.com/display/TCD8/Pinned+Build) as follows:
@@ -70,7 +80,7 @@ repositories{
   teamcityServer{
     url = 'http://teamcity.jetbrains.com'
     pin {
-      // pinning usually requires authnetication
+      // pinning usually requires authentication
       username = "name"
       password = "secret"
       stopBuildOnFail = true  // not mandatory, default to 'false'

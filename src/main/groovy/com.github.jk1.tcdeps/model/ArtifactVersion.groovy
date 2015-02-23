@@ -8,7 +8,7 @@ import org.gradle.api.Project
 class ArtifactVersion {
 
     def versionPlaceholders = ['lastFinished':'',
-                               'lastPinned': 'pinned:true',
+                               'lastPinned': ',pinned:true',
                                'lastSuccessful':',status:SUCCESS',
                                'sameChainOrLastFinished':'']
 

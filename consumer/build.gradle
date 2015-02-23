@@ -5,7 +5,7 @@ version = '1.0'
 
 repositories {
     teamcityServer {
-        url = 'http://teamcity.jetbrains.com'
+        url = 'https://teamcity.jetbrains.com'
     }
 }
 
@@ -27,6 +27,8 @@ dependencies {
     compile tc('bt131:lastPinned:javadocs/index.html')
     compile tc('bt337:lastSuccessful:odata4j.zip')
     compile tc('bt132:sameChainOrLastFinished:index.html')
+    // with feature branches supported
+    compile tc(buildTypeId: 'bt345', version: 'lastSuccessful', artifactPath: 'testng-6.8.8.jar', branch: 'master')
 }
 
 defaultTasks 'listdeps'
