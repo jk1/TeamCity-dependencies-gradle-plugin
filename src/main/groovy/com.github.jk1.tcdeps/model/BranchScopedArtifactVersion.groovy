@@ -22,7 +22,7 @@ class BranchScopedArtifactVersion extends ArtifactVersion {
     @Override
     def resolve(Project project, String btid) {
         String request = url(project.teamcityServer.url, btid)
-        String response = "<no response recorded>"
+        String response = "No response recorded. Rerun with --stacktrace to see an exception."
         try {
             HttpURLConnection connection = request.toURL().openConnection()
             response = connection.inputStream.withReader { Reader reader -> reader.text }
@@ -35,13 +35,13 @@ class BranchScopedArtifactVersion extends ArtifactVersion {
                 throw new GradleException(message)
             }
         } catch (Exception e) {
-            String message = "Unable to resolve $version in $branch.\nRequest: GET $request \nServer response: \n $response"
-            throw new GradleException(message, e)
+            throw new GradleException("Unable to resolve $version in $branch. Request: GET $request", e)
         }
     }
 
     private def url(String server, String btid) {
-        def query = "buildType:$btid,branch:$branch${versionPlaceholders[version]}/number"
+        def branchEncoded = URLEncoder.encode(branch, "utf-8");
+        def query = "buildType:$btid,branch:$branchEncoded${versionPlaceholders[version]}/number"
         return "${server}/guestAuth/app/rest/builds/$query"
     }
 }

@@ -65,10 +65,11 @@ Changing dependencies may be also resolved against particular [feature branches]
 
 ```groovy
 dependencies {
-    compile tc(buildTypeId: 'bt345', version: 'lastSuccessful', artifactPath: 'testng-6.8.8.jar', branch: 'master')
+    compile tc(buildTypeId: 'bt345', version: 'lastSuccessful', artifactPath: 'KotlinJpsPlugin/kotlin-jps-plugin.jar', branch: 'master')
 }
 ```
 
+Branch name should be specified exactly as it's known to TeamCity with no encoding applied.
 Default branch will be used if branch value is not specified explicitly.
 
 ###Pinning the build

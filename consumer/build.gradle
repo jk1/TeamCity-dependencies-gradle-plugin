@@ -15,20 +15,20 @@ configurations.all {
 
 dependencies {
     // reference arbitrary files as artifacts
-    compile tc('bt345:0.10.195:kotlin-compiler-0.10.195.zip')
+    compile tc('bt345:0.10.1094:kotlin-compiler-0.10.1094.zip')
     // with self-explanatory map dependency notation
-    compile tc(buildTypeId: 'bt345', version: '0.10.195', artifactPath: 'kotlin-compiler-for-maven.jar')
+    compile tc(buildTypeId: 'bt345', version: '0.10.1094', artifactPath: 'kotlin-compiler-for-maven.jar')
     // subfolders are supported
-    compile tc('bt345:0.10.195:KotlinJpsPlugin/kotlin-jps-plugin.jar')
+    compile tc('bt345:0.10.1094:KotlinJpsPlugin/kotlin-jps-plugin.jar')
     // archive traversal is available with '!' symbol
-    compile tc('bt345:0.10.195:kotlin-compiler-0.10.195.zip!/kotlinc/build.txt')
+    compile tc('bt345:0.10.1094:kotlin-compiler-0.10.1094.zip!/kotlinc/build.txt')
     // Use TeamCity version aliases to declare snapshot-like dependencies
     compile tc('bt351:lastFinished:plugin-verifier.jar')
     compile tc('bt131:lastPinned:javadocs/index.html')
     compile tc('bt337:lastSuccessful:odata4j.zip')
     compile tc('bt132:sameChainOrLastFinished:index.html')
-    // with feature branches supported
-    compile tc(buildTypeId: 'bt345', version: 'lastSuccessful', artifactPath: 'testng-6.8.8.jar', branch: 'master')
+    // with feature branches supported*/
+    compile tc(buildTypeId: 'bt390', version: 'lastSuccessful', artifactPath: 'updatePlugins.xml', branch: 'master')
 }
 
 defaultTasks 'listdeps'
