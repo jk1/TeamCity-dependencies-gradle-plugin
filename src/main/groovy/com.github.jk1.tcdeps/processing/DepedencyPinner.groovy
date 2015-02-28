@@ -18,14 +18,15 @@ class DepedencyPinner implements DependencyProcessor {
         config = project.teamcityServer
         config.setDefaultMessage("Pinned when building dependent build $project.name $project.version")
         if (config.pinEnabled) {
-            dependencies.collectAll {
+            // do not pin changing modules
+            dependencies.findAll { !it.version.changing }.collectAll {
                 "$config.url/httpAuth/app/rest/builds/buildType:$it.buildTypeId,number:$it.version.version/pin"
             }.unique().each { pinBuild(it) }
         }
     }
 
     private def pinBuild(String url) {
-        String response = "<no response recorded>"
+        String response = "No response recorded. Rerun with --stacktrace to see an exception."
         try {
             HttpURLConnection connection = url.toURL().openConnection()
             connection.setDoOutput(true);
