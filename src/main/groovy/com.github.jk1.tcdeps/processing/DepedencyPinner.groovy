@@ -1,5 +1,6 @@
 package com.github.jk1.tcdeps.processing
 
+import com.github.jk1.tcdeps.LogFacade
 import com.github.jk1.tcdeps.PluginConfiguration
 import org.gradle.api.GradleException
 
@@ -22,12 +23,15 @@ class DepedencyPinner implements DependencyProcessor {
             dependencies.findAll { !it.version.changing }.collectAll {
                 "$config.url/httpAuth/app/rest/builds/buildType:$it.buildTypeId,number:$it.version.version/pin"
             }.unique().each { pinBuild(it) }
+        } else {
+            LogFacade.debug("Dependency pinning is disabled")
         }
     }
 
     private def pinBuild(String url) {
         String response = "No response recorded. Rerun with --stacktrace to see an exception."
         try {
+            LogFacade.debug("Pinning the build: $url")
             HttpURLConnection connection = url.toURL().openConnection()
             connection.setDoOutput(true);
             connection.setRequestMethod("PUT");
@@ -40,7 +44,7 @@ class DepedencyPinner implements DependencyProcessor {
             if (config.stopBuildOnFail) {
                 throw new GradleException(message, e)
             } else {
-                project.logger.warn(message, e)
+                LogFacade.warn(message, e)
             }
         }
     }
