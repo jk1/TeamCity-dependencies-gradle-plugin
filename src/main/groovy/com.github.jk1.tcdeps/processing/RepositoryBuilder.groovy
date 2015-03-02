@@ -40,15 +40,17 @@ class RepositoryBuilder implements DependencyProcessor {
 
     @Override
     def process() {
-        LogFacade.debug('Ivy repository descriptor:')
-        LogFacade.debug('ivy {')
-        LogFacade.debug("  url ${lastAdded.url}")
-        LogFacade.debug("  layout 'pattern', {")
-        LogFacade.debug("    ivy '[module]/[revision]/teamcity-ivy.xml'")
-        patterns.each {
-            pattern -> LogFacade.debug("    artifact $pattern")
+        if (lastAdded != null) {
+            LogFacade.debug('Ivy repository descriptor:')
+            LogFacade.debug('ivy {')
+            LogFacade.debug("  url ${lastAdded.url}")
+            LogFacade.debug("  layout 'pattern', {")
+            LogFacade.debug("    ivy '[module]/[revision]/teamcity-ivy.xml'")
+            patterns.each {
+                pattern -> LogFacade.debug("    artifact $pattern")
+            }
+            LogFacade.debug('  }')
+            LogFacade.debug('}')
         }
-        LogFacade.debug('  }')
-        LogFacade.debug('}')
     }
 }
