@@ -24,6 +24,12 @@ class PluginConfiguration {
             this.message = message
         }
     }
+
+    def assertConfigured(){
+        if (url == null){
+            throw new InvalidUserDataException("TeamCity dependencies cannot be resolved: TeamCity server URL is not set")
+        }
+    }
 }
 
 
