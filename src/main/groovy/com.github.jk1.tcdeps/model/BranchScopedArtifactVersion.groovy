@@ -39,7 +39,7 @@ class BranchScopedArtifactVersion extends ArtifactVersion {
         }
     }
 
-    private def url(String server, String btid) {
+    def url(String server, String btid) {
         def branchEncoded = URLEncoder.encode(branch, "utf-8");
         def query = "buildType:$btid,branch:$branchEncoded${versionPlaceholders[version]}/number"
         return "${server}/guestAuth/app/rest/builds/$query"
