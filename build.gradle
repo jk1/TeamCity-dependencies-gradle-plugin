@@ -26,12 +26,6 @@ defaultTasks 'jar'
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
-buildscript {
-    dependencies {
-        classpath files("$projectDir/build/lib/tcdeps-0.1.jar")
-    }
-}
-
 test {
     outputs.upToDateWhen { false }
     testLogging {
@@ -62,18 +56,4 @@ release << {
 
 artifacts {
     archives release
-}
-
-
-
-println(project.getGradle().getGradleUserHomeDir())
-
-println(project.getGradle().getGradleUserHomeDir().getAbsolutePath() + '/daemon/2.4')
-println(new File(project.getGradle().getGradleUserHomeDir().getAbsolutePath() + '/daemon/2.4').listFiles().size())
-new File(project.getGradle().getGradleUserHomeDir().getAbsolutePath() + '/daemon/2.4').listFiles().each {
-println(it.getName())
-    if(it.getName().endsWith('out.log')){
-        println('Cleaning up daemon log file ' + it)
-        it.delete()
-    }
 }
