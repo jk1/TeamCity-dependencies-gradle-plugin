@@ -47,7 +47,7 @@ class DependencyDescriptor {
         def version = dependency["version"]
         def artifactVersion = branch == null ?
                 new ArtifactVersion(version) :
-                new BranchScopedArtifactVersion(version, branch)
+                new ChangingModuleVersion(version, branch)
         if (btid == null || btid.isEmpty()) {
             throw new InvalidUserDataException("buildTypeId should not be empty")
         }

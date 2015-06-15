@@ -1,4 +1,4 @@
-package com.github.jk1.tcdeps
+package com.github.jk1.tcdeps.model
 
 import com.github.jk1.tcdeps.model.DependencyDescriptor
 import com.github.jk1.tcdeps.processing.ChangingModuleVersionResolver

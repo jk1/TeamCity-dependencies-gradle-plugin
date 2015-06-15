@@ -1,6 +1,6 @@
-package com.github.jk1.tcdeps
+package com.github.jk1.tcdeps.model
 
-import com.github.jk1.tcdeps.model.BranchScopedArtifactVersion
+import com.github.jk1.tcdeps.model.ChangingModuleVersion
 import spock.lang.Specification
 
 /**
@@ -11,7 +11,7 @@ class VersionDescriptorSpec extends Specification {
 
   def "Branch scoped versions should produce correct REST request urls"() {
     when:
-    BranchScopedArtifactVersion version = new BranchScopedArtifactVersion(versionValue, "branchName")
+    ChangingModuleVersion version = new ChangingModuleVersion(versionValue, "branchName")
 
     then:
     version.url("server", "btid").toString() == restUrl

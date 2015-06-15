@@ -4,14 +4,12 @@ import org.gradle.api.GradleException
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Project
 
-/**
- * Stands for changing module version limited to a particular TeamCity feature branch
- */
-class BranchScopedArtifactVersion extends ArtifactVersion {
+
+class ChangingModuleVersion extends ArtifactVersion {
 
     final def branch
 
-    BranchScopedArtifactVersion(String version, String branch) {
+    ChangingModuleVersion(String version, String branch) {
         super(version)
         if (branch == null || branch.isEmpty()) {
             throw new InvalidUserDataException("branch should not be empty")
@@ -41,7 +39,7 @@ class BranchScopedArtifactVersion extends ArtifactVersion {
 
     def url(String server, String btid) {
         def branchEncoded = URLEncoder.encode(branch, "utf-8");
-        def query = "buildType:$btid,branch:$branchEncoded${versionPlaceholders[version]}/number"
+        def query = "buildType:$btid,branch:$branchEncoded${new ChangingModulePlaceholers()[version]}/number"
         return "${server}/guestAuth/app/rest/builds/$query"
     }
 }
