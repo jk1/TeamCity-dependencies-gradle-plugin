@@ -13,10 +13,8 @@ class PluginConfiguration {
 
     def pin(Closure closure){
         pinEnabled = true
+        closure.setDelegate(this)
         closure.call()
-        if (username == null || password == null){
-            throw new InvalidUserDataException("'username' and 'password' should be set to pin the build on TeamCity")
-        }
     }
 
     def setDefaultMessage(String message){
@@ -26,9 +24,19 @@ class PluginConfiguration {
     }
 
     def assertConfigured(){
-        if (url == null){
-            throw new InvalidUserDataException("TeamCity dependencies cannot be resolved: TeamCity server URL is not set")
+        def prefix = 'TeamCity dependencies cannot be resolved'
+        if (!url){
+            throw new InvalidUserDataException("$prefix: TeamCity server URL is not set")
         }
+        try {
+            new URL(url)
+        } catch (MalformedURLException e) {
+            throw new InvalidUserDataException("$prefix: $url does not look like a valid TeamCity server URL")
+        }
+        if (pinEnabled && (username == null || password == null)){
+            throw new InvalidUserDataException("$prefix: 'username' and 'password' should be set to pin the build on TeamCity")
+        }
+        return true;
     }
 }
 

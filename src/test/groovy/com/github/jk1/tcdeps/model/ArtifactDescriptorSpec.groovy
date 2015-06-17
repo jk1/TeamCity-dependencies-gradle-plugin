@@ -7,8 +7,9 @@ import spock.lang.Specification
 class ArtifactDescriptorSpec extends Specification {
 
     def "bare files should be parsed as name + extension"() {
-        expect:
         ArtifactDescriptor descriptor = new ArtifactDescriptor(raw)
+
+        expect:
         descriptor.name.equals(name)
         descriptor.extension.equals(ext)
         !descriptor.hasPath()
@@ -21,8 +22,9 @@ class ArtifactDescriptorSpec extends Specification {
     }
 
     def "artifact path should be parsed correctly, if exists"() {
-        expect:
         ArtifactDescriptor descriptor = new ArtifactDescriptor(raw)
+
+        expect:
         descriptor.name.equals(name)
         descriptor.extension.equals(ext)
         descriptor.path.equals(path)
