@@ -7,10 +7,9 @@ class RequestBuilder {
     RestRequest request
 
     RequestBuilder(Closure closure) {
-        Closure runClone = closure.clone()                // Create clone of closure for threading access
-        runClone.delegate = this                          // Set delegate of closure to this builder
-        runClone.resolveStrategy = Closure.DELEGATE_ONLY  // Only use this builder as the closure delegate
-        runClone()
+        closure.delegate = this                          // Set delegate of closure to this builder
+        closure.resolveStrategy = Closure.DELEGATE_ONLY  // Only use this builder as the closure delegate
+        closure()
     }
 
     void baseUrl(String base) {

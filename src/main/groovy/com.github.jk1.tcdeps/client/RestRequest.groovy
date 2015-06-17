@@ -15,7 +15,7 @@ class RestRequest {
     def String body
 
     String toUrl(){
-        baseUrl
+        "baseUrl/${uriPath.call(locator)}"
     }
 }
 

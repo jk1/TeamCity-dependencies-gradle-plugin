@@ -4,6 +4,14 @@ import groovy.transform.Canonical
 
 class RestClient {
 
+    Response get(RestRequest resource){
+        execute("GET", resource)
+    }
+
+    Response put(RestRequest resource){
+        execute("PUT", resource)
+    }
+
     Response execute(String method, RestRequest resource) {
         HttpURLConnection connection = resource.toUrl().toURL().openConnection()
         connection.setRequestMethod(method.toUpperCase())

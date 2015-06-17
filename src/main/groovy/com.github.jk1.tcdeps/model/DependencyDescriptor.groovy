@@ -26,7 +26,7 @@ class DependencyDescriptor {
     }
 
     static def create(String dependencyNotation) {
-        if (dependencyNotation == null) {
+        if (!dependencyNotation) {
             throw new InvalidUserDataException("Dependency cannot be empty")
         }
         String[] dependency = dependencyNotation.split(":")
@@ -48,7 +48,7 @@ class DependencyDescriptor {
         def artifactVersion = branch == null ?
                 new ArtifactVersion(version) :
                 new ChangingModuleVersion(version, branch)
-        if (btid == null || btid.isEmpty()) {
+        if (!btid) {
             throw new InvalidUserDataException("buildTypeId should not be empty")
         }
         new DependencyDescriptor(btid,
@@ -59,8 +59,7 @@ class DependencyDescriptor {
     def toDependencyNotation() {
         return [[group   : 'org',
                  name    : buildTypeId,
-                 version : version.version,
-                 changing: version.changing
+                 version : version.version
                 ],
                 { ->
                     artifact {

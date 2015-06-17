@@ -31,10 +31,12 @@ class PluginConfiguration {
         try {
             new URL(url)
         } catch (MalformedURLException e) {
-            throw new InvalidUserDataException("$prefix: $url does not look like a valid TeamCity server URL")
+            throw new InvalidUserDataException(
+                    "$prefix: $url does not look like a valid TeamCity server URL", e)
         }
-        if (pinEnabled && (username == null || password == null)){
-            throw new InvalidUserDataException("$prefix: 'username' and 'password' should be set to pin the build on TeamCity")
+        if (pinEnabled && (!username || !password)){
+            throw new InvalidUserDataException(
+                    "$prefix: 'username' and 'password' should be set to pin the build on TeamCity")
         }
         return true;
     }

@@ -7,5 +7,5 @@ def pinBuildPath = {BuildLocator locator ->
 }
 
 def getBuildNumberPath = {BuildLocator locator ->
-
+    "/guestAuth/app/rest/builds/$locator/number"
 }

@@ -17,7 +17,6 @@ class ChangingModuleVersion extends ArtifactVersion {
         this.branch = branch
     }
 
-    @Override
     def resolve(Project project, String btid) {
         String request = url(project.teamcityServer.url, btid)
         String response = "No response recorded. Rerun with --stacktrace to see an exception."
@@ -27,7 +26,6 @@ class ChangingModuleVersion extends ArtifactVersion {
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 project.logger.info("$version has been resolved as $response in $branch")
                 version = response
-                changing = false
             } else {
                 String message = "Unable to resolve $version in $branch.\nRequest: GET $request \nServer response: \n $response"
                 throw new GradleException(message)

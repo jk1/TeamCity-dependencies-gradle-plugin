@@ -6,7 +6,7 @@ import spock.lang.Specification
 
 class PluginConfigurationSpec extends Specification {
 
-    def "Empty configuration should be considered invalid"() {
+    def "empty configuration should be considered invalid"() {
         def config = new PluginConfiguration()
 
         when:
@@ -16,7 +16,7 @@ class PluginConfigurationSpec extends Specification {
         thrown(InvalidUserDataException)
     }
 
-    def "Server URL is enough to form a minimum configuration"() {
+    def "server URL is enough to form a minimum configuration"() {
         def config = new PluginConfiguration()
 
         when:
@@ -26,7 +26,7 @@ class PluginConfigurationSpec extends Specification {
         config.assertConfigured()
     }
 
-    def "Server URL should be a valid URL"() {
+    def "server URL should be a valid URL"() {
         def config = new PluginConfiguration()
 
         when:
@@ -40,7 +40,7 @@ class PluginConfigurationSpec extends Specification {
         url << ['', null, '/relative/url', 'something_weird$%^&']
     }
 
-    def "Pinning the build requires login and password to be set"() {
+    def "pinning the build requires login and password to be set"() {
         def config = new PluginConfiguration()
 
         when:
@@ -72,8 +72,8 @@ class PluginConfigurationSpec extends Specification {
         loginValue | passwordValue
         null       | null
         'login'    | null
-        ''         | null
-        null       | ''
+        ''         | 'password'
+        'login'    | ''
         null       | 'password'
     }
 

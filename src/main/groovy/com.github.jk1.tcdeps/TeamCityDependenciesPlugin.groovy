@@ -1,7 +1,7 @@
 package com.github.jk1.tcdeps
 
 import com.github.jk1.tcdeps.model.DependencyDescriptor
-import com.github.jk1.tcdeps.processing.ChangingModuleVersionResolver
+import com.github.jk1.tcdeps.processing.ModuleVersionResolver
 import com.github.jk1.tcdeps.processing.DepedencyPinner
 import com.github.jk1.tcdeps.processing.RepositoryBuilder
 import org.gradle.api.Plugin
@@ -14,7 +14,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         LogFacade.logger = project.logger
-        processors = [new ChangingModuleVersionResolver(), new RepositoryBuilder(), new DepedencyPinner()]
+        processors = [new ModuleVersionResolver(), new RepositoryBuilder(), new DepedencyPinner()]
         project.extensions.add("teamcityServer", new PluginConfiguration())
         project.ext.tc = { Object notation ->
             project.teamcityServer.assertConfigured()

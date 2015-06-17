@@ -22,8 +22,8 @@ class RepositoryBuilder implements DependencyProcessor {
 
     @Override
     def addDependency(DependencyDescriptor dependency) {
-        project.repositories.remove(lastAdded)
         dependencies.add(dependency)
+        project.repositories.remove(lastAdded)
         if (dependency.artifactDescriptor.hasPath()){
            patterns.add("[module]/[revision]/${dependency.artifactDescriptor.path}[artifact](.[ext])")
         }
