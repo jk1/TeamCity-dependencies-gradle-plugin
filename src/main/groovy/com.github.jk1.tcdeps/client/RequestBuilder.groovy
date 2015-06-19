@@ -4,7 +4,7 @@ import com.github.jk1.tcdeps.model.BuildLocator
 
 class RequestBuilder {
 
-    RestRequest request
+    RestRequest request = new RestRequest()
 
     RequestBuilder(Closure closure) {
         closure.delegate = this                          // Set delegate of closure to this builder
@@ -13,7 +13,11 @@ class RequestBuilder {
     }
 
     void baseUrl(String base) {
-        request.baseUrl = base
+        request.baseUrl = base && base.endsWith("/") ? base[0..-2] : base // remove trailing slash, if any
+    }
+
+    void uriPath(Closure path) {
+        request.uriPath = path
     }
 
     void login(String login) {

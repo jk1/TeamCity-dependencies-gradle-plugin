@@ -15,7 +15,10 @@ class RestRequest {
     def String body
 
     String toUrl(){
-        "baseUrl/${uriPath.call(locator)}"
+        if (!baseUrl || !uriPath || !locator){
+            throw new IllegalArgumentException("Base url, path and locator should be specified")
+        }
+        "$baseUrl${uriPath.call(locator)}"
     }
 }
 
