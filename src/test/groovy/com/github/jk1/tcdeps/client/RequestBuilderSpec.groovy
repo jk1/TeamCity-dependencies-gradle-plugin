@@ -8,23 +8,23 @@ class RequestBuilderSpec extends Specification {
     def "request builder should produce valid pin url"() {
         def builder = new RequestBuilder({
             baseUrl 'http://server.org'
-            uriPath UriPaths.pinBuildPath
             locator new BuildLocator(buildTypeId: 'bt1', number: '1')
+            action PIN
         })
 
         expect:
-        builder.request.toUrl().equals("http://server.org/httpAuth/app/rest/builds/buildType:bt1,number:1/pin")
+        builder.request.toString().equals("http://server.org/httpAuth/app/rest/builds/buildType:bt1,number:1/pin")
     }
 
     def "request builder should produce valid artifact version resolution url"() {
         def builder = new RequestBuilder({
             baseUrl 'http://server.org'
-            uriPath UriPaths.getBuildNumberPath
+            action GET_BUILD_NUMBER
             locator new BuildLocator(buildTypeId: 'bt1')
         })
 
         expect:
-        builder.request.toUrl().equals('http://server.org/guestAuth/app/rest/builds/buildType:bt1/number')
+        builder.request.toString().equals('http://server.org/guestAuth/app/rest/builds/buildType:bt1/number')
     }
 
     def "request builder should support authentication"() {
@@ -47,12 +47,12 @@ class RequestBuilderSpec extends Specification {
     def "request builder should fail if some request components are missing"() {
         def builder = new RequestBuilder({
             baseUrl base
-            uriPath path
             locator buildLocator
+            action path
         })
 
         when:
-        builder.request.toUrl()
+        builder.request.toString()
 
         then:
         thrown(IllegalArgumentException)

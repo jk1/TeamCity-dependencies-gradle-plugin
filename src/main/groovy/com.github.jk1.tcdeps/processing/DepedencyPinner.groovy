@@ -1,6 +1,6 @@
 package com.github.jk1.tcdeps.processing
 
-import com.github.jk1.tcdeps.LogFacade
+import com.github.jk1.tcdeps.util.LogFacade
 import com.github.jk1.tcdeps.PluginConfiguration
 import org.gradle.api.GradleException
 
@@ -29,7 +29,7 @@ class DepedencyPinner implements DependencyProcessor {
     }
 
     private def pinBuild(String url) {
-        String response = "No response recorded. Rerun with --stacktrace to see an exception."
+       /* String response = "No response recorded. Rerun with --stacktrace to see an exception."
         try {
             LogFacade.debug("Pinning the build: $url")
             HttpURLConnection connection = url.toURL().openConnection()
@@ -46,6 +46,10 @@ class DepedencyPinner implements DependencyProcessor {
             } else {
                 LogFacade.warn(message, e)
             }
-        }
+        }*/
+
+        String response = "No response recorded. Rerun with --stacktrace to see an exception."
+        LogFacade.debug("Pinning the build: $url")
+        
     }
 }

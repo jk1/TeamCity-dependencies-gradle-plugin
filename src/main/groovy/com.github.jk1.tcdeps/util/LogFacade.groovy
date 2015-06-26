@@ -1,4 +1,4 @@
-package com.github.jk1.tcdeps
+package com.github.jk1.tcdeps.util
 
 
 class LogFacade {

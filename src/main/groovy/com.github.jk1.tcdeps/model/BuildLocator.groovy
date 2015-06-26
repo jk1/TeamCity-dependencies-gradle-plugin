@@ -24,7 +24,7 @@ class BuildLocator {
             builder.append(",branch:${encode(branch)}")
         }
         if (tag) {
-            builder.append(",tag:${encode(tag)}")
+            builder.append(",tags:${encode(tag)}")
         }
         if (pinned) {
             builder.append(",pinned:true")

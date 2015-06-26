@@ -1,5 +1,6 @@
-package com.github.jk1.tcdeps
+package com.github.jk1.tcdeps.util
 
+import com.github.jk1.tcdeps.PluginConfiguration
 import org.gradle.api.Project
 
 

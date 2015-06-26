@@ -16,10 +16,6 @@ class RequestBuilder {
         request.baseUrl = base && base.endsWith("/") ? base[0..-2] : base // remove trailing slash, if any
     }
 
-    void uriPath(Closure path) {
-        request.uriPath = path
-    }
-
     void login(String login) {
         request.authentication.login = login
     }
@@ -30,5 +26,21 @@ class RequestBuilder {
 
     void locator(BuildLocator locator) {
         request.locator = locator
+    }
+
+    void body(String body) {
+        request.body = body
+    }
+
+    void action(Closure closure){
+        request.uriPath = closure
+    }
+
+    static def PIN = { BuildLocator locator ->
+        "/httpAuth/app/rest/builds/$locator/pin"
+    }
+
+    static def GET_BUILD_NUMBER = { BuildLocator locator ->
+        "/guestAuth/app/rest/builds/$locator/number"
     }
 }

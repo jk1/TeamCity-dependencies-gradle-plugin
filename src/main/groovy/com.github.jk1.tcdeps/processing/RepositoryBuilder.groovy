@@ -1,6 +1,6 @@
 package com.github.jk1.tcdeps.processing
 
-import com.github.jk1.tcdeps.LogFacade
+import com.github.jk1.tcdeps.util.LogFacade
 import com.github.jk1.tcdeps.model.DependencyDescriptor
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository
 

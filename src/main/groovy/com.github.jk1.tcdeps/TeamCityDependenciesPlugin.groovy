@@ -4,6 +4,7 @@ import com.github.jk1.tcdeps.model.DependencyDescriptor
 import com.github.jk1.tcdeps.processing.ModuleVersionResolver
 import com.github.jk1.tcdeps.processing.DepedencyPinner
 import com.github.jk1.tcdeps.processing.RepositoryBuilder
+import com.github.jk1.tcdeps.util.LogFacade
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 

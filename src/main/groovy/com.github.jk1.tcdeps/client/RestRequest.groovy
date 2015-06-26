@@ -14,7 +14,7 @@ class RestRequest {
     def Authentication authentication = new Authentication()
     def String body
 
-    String toUrl(){
+    String toString(){
         if (!baseUrl || !uriPath || !locator){
             throw new IllegalArgumentException("Base url, path and locator should be specified")
         }
@@ -22,13 +22,5 @@ class RestRequest {
     }
 }
 
-@Canonical
-class Authentication{
-    def String login
-    def String password
 
-    boolean isRequired() {
-        login && password
-    }
-}
 

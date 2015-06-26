@@ -15,7 +15,7 @@ build/
 hs_err_pid*
 
 ### Intellij ###
-/*.iml
+/**/*.iml
 .idea/
 *.ipr
 *.iws
