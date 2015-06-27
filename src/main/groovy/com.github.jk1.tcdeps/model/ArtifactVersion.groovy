@@ -1,12 +1,12 @@
 package com.github.jk1.tcdeps.model
 
 import org.gradle.api.InvalidUserDataException
-import org.gradle.api.Project
 
 class ArtifactVersion {
 
     def version
     def needsResolution = false
+    def changing = false
     def buildLocator
 
     private def placeholders = ['lastFinished'           : { return new BuildLocator() },
@@ -21,12 +21,19 @@ class ArtifactVersion {
         this.version = version
         if (placeholders.containsKey(version)){
             needsResolution = true
+            changing = true
             buildLocator = placeholders[version]
 
         } else if (version.endsWith('.tcbuildtag')){
             needsResolution = true
+            changing = true
             buildLocator = new BuildLocator(tag: version - '.tcbuildtag')
         }
+    }
+
+    def resolved(version){
+        this.needsResolution = false
+        this.version = version
     }
 
 

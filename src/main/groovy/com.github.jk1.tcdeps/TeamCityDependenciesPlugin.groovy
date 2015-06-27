@@ -4,27 +4,26 @@ import com.github.jk1.tcdeps.model.DependencyDescriptor
 import com.github.jk1.tcdeps.processing.ModuleVersionResolver
 import com.github.jk1.tcdeps.processing.DepedencyPinner
 import com.github.jk1.tcdeps.processing.RepositoryBuilder
-import com.github.jk1.tcdeps.util.LogFacade
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+
+import static com.github.jk1.tcdeps.util.ResourceLocator.*
 
 class TeamCityDependenciesPlugin implements Plugin<Project> {
 
     private processors
 
     @Override
-    void apply(Project project) {
-        LogFacade.logger = project.logger
+    void apply(Project theProject) {
+        project = theProject
+        config = new PluginConfiguration()
         processors = [new ModuleVersionResolver(), new RepositoryBuilder(), new DepedencyPinner()]
-        project.extensions.add("teamcityServer", new PluginConfiguration())
-        project.ext.tc = { Object notation ->
-            project.teamcityServer.assertConfigured()
+        theProject.extensions.add("teamcityServer", config)
+        theProject.ext.tc = { Object notation ->
+            theProject.teamcityServer.assertConfigured()
             return addDependency(DependencyDescriptor.create(notation))
         }
-        processors.each {
-            it.configure(project)
-        }
-        project.afterEvaluate {
+        theProject.afterEvaluate {
             processors.each {
                 it.process()
             }
@@ -34,7 +33,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
     private Object addDependency(DependencyDescriptor descriptor) {
         processors.each { it.addDependency(descriptor) }
         def notation = descriptor.toDependencyNotation()
-        LogFacade.debug("Dependency generated: $notation")
+        logger.debug("Dependency generated: $notation")
         return notation
     }
 }

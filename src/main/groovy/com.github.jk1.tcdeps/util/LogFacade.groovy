@@ -5,18 +5,15 @@ class LogFacade {
 
     private static final PREFIX = '[TCdeps]'
 
-    // initialized from TeamCityDependenciesPlugin
-    static volatile logger;
-
-    public static debug( message) {
-        logger.debug("$PREFIX $message")
+    public debug(message) {
+        ResourceLocator.project.logger.debug("$PREFIX $message")
     }
 
-    public static info(message) {
-        logger.info("$PREFIX $message")
+    public info(message) {
+        ResourceLocator.project.logger.info("$PREFIX $message")
     }
 
-    public static warn(message, exception) {
-        logger.warn("$PREFIX $message", exception)
+    public warn(message, exception) {
+        ResourceLocator.project.logger.warn("$PREFIX $message", exception)
     }
 }

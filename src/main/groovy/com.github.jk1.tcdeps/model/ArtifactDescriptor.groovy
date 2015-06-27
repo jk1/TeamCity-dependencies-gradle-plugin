@@ -29,7 +29,6 @@ class ArtifactDescriptor {
         return path != null
     }
 
-
     @Override
     String toString() {
         "Artifact:[rawPath=$rawPath, name=$name, extension=$extension, path=$path]"

@@ -5,15 +5,17 @@ import org.gradle.api.InvalidUserDataException
 
 class DependencyDescriptor {
 
-    final def buildTypeId;
-    final def artifactDescriptor;
-    final def version;
+    final def buildTypeId
+    final def artifactDescriptor
+    final def version
+    final def branch
 
     protected DependencyDescriptor(
-            String buildTypeId, ArtifactVersion version, ArtifactDescriptor artifactDescriptor) {
-        this.buildTypeId = buildTypeId;
-        this.version = version;
+            String buildTypeId, ArtifactVersion version, ArtifactDescriptor artifactDescriptor, String branch) {
+        this.buildTypeId = buildTypeId
+        this.version = version
         this.artifactDescriptor = artifactDescriptor
+        this.branch = branch
     }
 
     static def create(String buildTypeId, String version, String artifactPath) {
@@ -22,7 +24,7 @@ class DependencyDescriptor {
         }
         return new DependencyDescriptor(buildTypeId,
                 new ArtifactVersion(version),
-                new ArtifactDescriptor(artifactPath))
+                new ArtifactDescriptor(artifactPath), null)
     }
 
     static def create(String dependencyNotation) {
@@ -43,17 +45,15 @@ class DependencyDescriptor {
             throw new InvalidUserDataException("Dependency cannot be empty")
         }
         def btid = dependency["buildTypeId"]
-        def branch = dependency["branch"]
         def version = dependency["version"]
-        def artifactVersion = branch == null ?
-                new ArtifactVersion(version) :
-                new ChangingModuleVersion(version, branch)
+        def artifactVersion = new ArtifactVersion(version)
         if (!btid) {
             throw new InvalidUserDataException("buildTypeId should not be empty")
         }
         new DependencyDescriptor(btid,
                 artifactVersion,
-                new ArtifactDescriptor(dependency["artifactPath"]))
+                new ArtifactDescriptor(dependency["artifactPath"]),
+                dependency["branch"])
     }
 
     def toDependencyNotation() {
@@ -71,6 +71,6 @@ class DependencyDescriptor {
 
     @Override
     String toString() {
-        "Dependency:[buildTypeId=$buildTypeId, artifact=$artifactDescriptor, version=$version]"
+        "Dependency:[buildTypeId=$buildTypeId, artifact=$artifactDescriptor, version=$version, branch=$branch]"
     }
 }

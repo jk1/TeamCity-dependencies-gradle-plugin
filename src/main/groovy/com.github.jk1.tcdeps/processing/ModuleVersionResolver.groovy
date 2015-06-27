@@ -1,10 +1,12 @@
 package com.github.jk1.tcdeps.processing
 
-import com.github.jk1.tcdeps.client.RequestBuilder
 import com.github.jk1.tcdeps.client.RestClient
 import com.github.jk1.tcdeps.model.BuildLocator
 import com.github.jk1.tcdeps.model.DependencyDescriptor
-import org.gradle.api.Project
+import org.gradle.api.GradleException
+
+import static com.github.jk1.tcdeps.util.ResourceLocator.*
+
 
 /**
  * Resolves changing module versions, e.g. lastPinned, against TeamCity feature branches.
@@ -13,35 +15,42 @@ import org.gradle.api.Project
  */
 class ModuleVersionResolver implements DependencyProcessor {
 
-    private def offline;
-    private def placeholders = ['lastFinished'           : { return new BuildLocator() },
-                                'sameChainOrLastFinished': { return new BuildLocator() },
-                                'lastPinned'             : { return new BuildLocator(pinned: true) },
-                                'lastSuccessful'         : { return new BuildLocator(successful: true) }]
-
-
-    @Override
-    def configure(Project project) {
-        super.configure(project)
-        offline = project.getGradle().getStartParameter().isOffline()
-    }
-
     @Override
     def addDependency(DependencyDescriptor dependency) {
         if (dependency.getVersion().needsResolution) {
-            if (offline) {
-                dependency.version.version = '+' // latest from the cache
+            if (project.gradle.startParameter.offline) {
+                // offline mode - get the latest version from the cache
+                dependency.version.resolved('+')
+                logger.info("Unable to resolve $dependency in offline mode, falling back to last cached version")
             } else {
-                def BuildLocator locator = dependency.version.buildLocator
-                locator.buildTypeId = dependency.buildTypeId
-                locator.branch = dependency.branch
-
+                dependency.version.resolved(doResolve(dependency))
             }
         }
     }
 
-    boolean getLocator(DependencyDescriptor dependency) {
-        placeholders.containsKey(dependency.getVersion()) || dependency.getVersion().endsWith(".tcbuildtag")
+    private String doResolve(DependencyDescriptor dependency) {
+        def BuildLocator buildLocator = dependency.version.buildLocator
+        buildLocator.buildTypeId = dependency.buildTypeId
+        buildLocator.branch = dependency.branch
+        def response = getBuildNumberFromServer(buildLocator)
+        if (response.isOk()) {
+            logger.info("$dependency.version ($BuildLocator) has been resolved to a build #${response.body}")
+            dependency.version.resolved(response.body)
+        } else {
+            String message = "Unable to resolve $dependency.version. \nServer response: \n $response"
+            throw new GradleException(message)
+        }
     }
 
+    private RestClient.Response getBuildNumberFromServer(BuildLocator buildLocator) {
+        try {
+            return restClient.get {
+                baseUrl config.url
+                locator buildLocator
+                action GET_BUILD_NUMBER
+            }
+        } catch (Exception e) {
+            throw new GradleException("Failed to resolve $dependency.version", e)
+        }
+    }
 }

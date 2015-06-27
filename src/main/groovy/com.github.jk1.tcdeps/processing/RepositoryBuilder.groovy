@@ -4,6 +4,8 @@ import com.github.jk1.tcdeps.util.LogFacade
 import com.github.jk1.tcdeps.model.DependencyDescriptor
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository
 
+import static com.github.jk1.tcdeps.util.ResourceLocator.*
+
 /**
  * All of the artifacts for the module are then requested from the same repository
  * that was chosen in the process above

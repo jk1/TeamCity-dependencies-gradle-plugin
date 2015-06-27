@@ -2,6 +2,7 @@ package com.github.jk1.tcdeps.client
 
 import groovy.transform.Canonical
 import org.apache.http.HttpResponse
+import org.apache.http.HttpStatus
 import org.apache.http.auth.AuthScope
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPut
@@ -11,11 +12,19 @@ import org.apache.http.util.EntityUtils
 
 class RestClient {
 
+    def Response get(Closure closure){
+        return get(new RequestBuilder(closure).request)
+    }
+
     def Response get(RestRequest resource) {
         DefaultHttpClient client = new DefaultHttpClient()
         HttpGet request = new HttpGet(resource.toString())
         authenticate(client, resource.authentication)
         return readResponse(client.execute(request))
+    }
+
+    def Response put(Closure closure){
+        return put(new RequestBuilder(closure).request)
     }
 
     def Response put(RestRequest resource) {
@@ -43,7 +52,11 @@ class RestClient {
 
     @Canonical
     static class Response {
-        int code
-        String body
+        def int code = -1  // non-http error, e.g. TLS
+        def String body = "No response recorded. Rerun with --stacktrace to see an exception."
+
+        public isOk(){
+            return HttpStatus.SC_OK == code
+        }
     }
 }
