@@ -11,5 +11,5 @@ trait DependencyProcessor {
         dependencies.add(dependecy)
     }
 
-     def process(){}
+    def process() {}
 }

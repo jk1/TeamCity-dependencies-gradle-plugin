@@ -1,62 +1,59 @@
 package com.github.jk1.tcdeps.client
 
 import groovy.transform.Canonical
-import org.apache.http.HttpResponse
-import org.apache.http.HttpStatus
-import org.apache.http.auth.AuthScope
-import org.apache.http.client.methods.HttpGet
-import org.apache.http.client.methods.HttpPut
-import org.apache.http.entity.StringEntity
-import org.apache.http.impl.client.DefaultHttpClient
-import org.apache.http.util.EntityUtils
 
 class RestClient {
 
-    def Response get(Closure closure){
+    def Response get(Closure closure) {
         return get(new RequestBuilder(closure).request)
     }
 
     def Response get(RestRequest resource) {
-        DefaultHttpClient client = new DefaultHttpClient()
-        HttpGet request = new HttpGet(resource.toString())
-        authenticate(client, resource.authentication)
-        return readResponse(client.execute(request))
+        return execute("GET", resource)
     }
 
-    def Response put(Closure closure){
+    def Response put(Closure closure) {
         return put(new RequestBuilder(closure).request)
     }
 
     def Response put(RestRequest resource) {
-        DefaultHttpClient client = new DefaultHttpClient()
-        HttpPut request = new HttpPut(resource.toString())
-        authenticate(client, resource.authentication)
-        StringEntity input = new StringEntity(resource.body);
-        input.setContentType("text/html");
-        request.setEntity(input);
-        return readResponse(client.execute(request))
+        return execute("PUT", resource)
     }
 
-   private def void authenticate(DefaultHttpClient client, Authentication auth) {
+    private Response execute(String method, RestRequest resource) {
+        HttpURLConnection connection = resource.toString().toURL().openConnection()
+        connection.setRequestMethod(method.toUpperCase())
+        authenticate(connection, resource.authentication)
+        writeRequest(connection, resource)
+        return new Response(code: connection.getResponseCode(), body: readResponse(connection))
+    }
+
+    private void authenticate(HttpURLConnection connection, Authentication auth) {
         if (auth.isRequired()) {
-            client.getCredentialsProvider().setCredentials(AuthScope.ANY, auth.credentials)
+            connection.setRequestProperty("Authorization", auth.asHttpHeader());
         }
     }
 
-    private def Response readResponse(HttpResponse response){
-        return new Response(
-                code: response.getStatusLine().getStatusCode(),
-                body: EntityUtils.toString(response.getEntity()))
+    private void writeRequest(HttpURLConnection connection, RestRequest resource) {
+        if (resource.body) {
+            connection.setDoOutput(true)
+            connection.outputStream.withWriter { it << resource.body }
+        }
     }
 
+    private String readResponse(HttpURLConnection connection) {
+        return (connection.getResponseCode() < 400 ?
+                connection.inputStream :
+                connection.getErrorStream()).withReader { Reader reader -> reader.text }
+    }
 
     @Canonical
     static class Response {
         def int code = -1  // non-http error, e.g. TLS
         def String body = "No response recorded. Rerun with --stacktrace to see an exception."
 
-        public isOk(){
-            return HttpStatus.SC_OK == code
+        public isOk() {
+            return HttpURLConnection.HTTP_OK == code
         }
     }
 }

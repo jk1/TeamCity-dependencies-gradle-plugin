@@ -17,14 +17,11 @@ class ResourceLocator {
 
     static def LogFacade logger = new LogFacade()
 
-    static setProject(Project theProject) {
-        project = theProject
-        project.gradle.buildFinished {
-            // cleanup to avoid memory leaks in daemon mode
-            project = null
-            config = null
-            restClient = null
-            logger = null
-        }
+    static void closeResourceLocator() {
+        // cleanup to avoid memory leaks in daemon mode
+        project = null
+        config = null
+        restClient = null
+        logger = null
     }
 }

@@ -1,6 +1,5 @@
 package com.github.jk1.tcdeps.processing
 
-import com.github.jk1.tcdeps.util.LogFacade
 import com.github.jk1.tcdeps.model.DependencyDescriptor
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository
 
@@ -43,16 +42,16 @@ class RepositoryBuilder implements DependencyProcessor {
     @Override
     def process() {
         if (lastAdded != null) {
-            LogFacade.debug('Ivy repository descriptor:')
-            LogFacade.debug('ivy {')
-            LogFacade.debug("  url ${lastAdded.url}")
-            LogFacade.debug("  layout 'pattern', {")
-            LogFacade.debug("    ivy '[module]/[revision]/teamcity-ivy.xml'")
+            logger.debug('Ivy repository descriptor:')
+            logger.debug('ivy {')
+            logger.debug("  url ${lastAdded.url}")
+            logger.debug("  layout 'pattern', {")
+            logger.debug("    ivy '[module]/[revision]/teamcity-ivy.xml'")
             patterns.each {
-                pattern -> LogFacade.debug("    artifact $pattern")
+                pattern -> logger.debug("    artifact $pattern")
             }
-            LogFacade.debug('  }')
-            LogFacade.debug('}')
+            logger.debug('  }')
+            logger.debug('}')
         }
     }
 }

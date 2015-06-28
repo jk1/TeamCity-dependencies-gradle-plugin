@@ -4,10 +4,10 @@ import org.gradle.api.InvalidUserDataException
 
 class ArtifactVersion {
 
-    def version
-    def needsResolution = false
-    def changing = false
-    def buildLocator
+    def String version
+    def BuildLocator buildLocator
+    def boolean needsResolution = false
+    def boolean changing = false
 
     private def placeholders = ['lastFinished'           : { return new BuildLocator() },
                                 'sameChainOrLastFinished': { return new BuildLocator() },
@@ -22,8 +22,7 @@ class ArtifactVersion {
         if (placeholders.containsKey(version)){
             needsResolution = true
             changing = true
-            buildLocator = placeholders[version]
-
+            buildLocator = placeholders[version]()
         } else if (version.endsWith('.tcbuildtag')){
             needsResolution = true
             changing = true

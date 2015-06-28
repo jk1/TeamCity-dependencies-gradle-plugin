@@ -5,10 +5,10 @@ import org.gradle.api.InvalidUserDataException
 
 class DependencyDescriptor {
 
-    final def buildTypeId
-    final def artifactDescriptor
-    final def version
-    final def branch
+    final def String buildTypeId
+    final def ArtifactDescriptor artifactDescriptor
+    final def ArtifactVersion version
+    final def String branch
 
     protected DependencyDescriptor(
             String buildTypeId, ArtifactVersion version, ArtifactDescriptor artifactDescriptor, String branch) {
@@ -57,9 +57,9 @@ class DependencyDescriptor {
     }
 
     def toDependencyNotation() {
-        return [[group   : 'org',
-                 name    : buildTypeId,
-                 version : version.version
+        return [[group  : 'org',
+                 name   : buildTypeId,
+                 version: version.version
                 ],
                 { ->
                     artifact {

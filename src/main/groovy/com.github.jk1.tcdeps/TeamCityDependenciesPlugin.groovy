@@ -23,11 +23,8 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
             theProject.teamcityServer.assertConfigured()
             return addDependency(DependencyDescriptor.create(notation))
         }
-        theProject.afterEvaluate {
-            processors.each {
-                it.process()
-            }
-        }
+        theProject.afterEvaluate { processors.each { it.process() } }
+        theProject.gradle.buildFinished { closeResourceLocator() }
     }
 
     private Object addDependency(DependencyDescriptor descriptor) {

@@ -7,7 +7,6 @@ import org.gradle.api.GradleException
 
 import static com.github.jk1.tcdeps.util.ResourceLocator.*
 
-
 /**
  * Resolves changing module versions, e.g. lastPinned, against TeamCity feature branches.
  * It doesn't look like TeamCity's capable of customizing ivy.xml based on branch locator,
@@ -50,7 +49,7 @@ class ModuleVersionResolver implements DependencyProcessor {
                 action GET_BUILD_NUMBER
             }
         } catch (Exception e) {
-            throw new GradleException("Failed to resolve $dependency.version", e)
+            throw new GradleException("Failed to resolve $buildLocator.number", e)
         }
     }
 }

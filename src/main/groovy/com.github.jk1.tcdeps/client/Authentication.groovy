@@ -1,8 +1,6 @@
 package com.github.jk1.tcdeps.client
 
 import groovy.transform.Canonical
-import org.apache.http.auth.Credentials
-import org.apache.http.auth.UsernamePasswordCredentials
 
 @Canonical
 class Authentication {
@@ -13,7 +11,8 @@ class Authentication {
         login && password
     }
 
-    def Credentials getCredentials() {
-        return new UsernamePasswordCredentials(login, password)
-    }
+   def String asHttpHeader(){
+       String encoded = "$auth.login:$auth.password".bytes.encodeBase64().toString()
+       return "Basic $encoded"
+   }
 }
