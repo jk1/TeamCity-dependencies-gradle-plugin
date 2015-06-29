@@ -1,11 +1,13 @@
 package com.github.jk1.tcdeps.model
 
 import groovy.transform.Canonical
+import groovy.transform.EqualsAndHashCode
 
 /**
  * https://confluence.jetbrains.com/display/TCD8/REST+API#RESTAPI-BuildLocator
  */
 @Canonical
+@EqualsAndHashCode(includeFields=true)
 class BuildLocator {
     def String buildTypeId
     def Boolean pinned

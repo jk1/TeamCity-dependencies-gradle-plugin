@@ -9,6 +9,7 @@ class ArtifactVersion {
     def boolean needsResolution = false
     def boolean changing = false
 
+    // todo: shouldn't it a be full featured parser instead?
     private def placeholders = ['lastFinished'           : { return new BuildLocator() },
                                 'sameChainOrLastFinished': { return new BuildLocator() },
                                 'lastPinned'             : { return new BuildLocator(pinned: true) },

@@ -12,7 +12,7 @@ class Authentication {
     }
 
    def String asHttpHeader(){
-       String encoded = "$auth.login:$auth.password".bytes.encodeBase64().toString()
+       String encoded = "$login:$password".bytes.encodeBase64().toString()
        return "Basic $encoded"
    }
 }

@@ -29,6 +29,7 @@ class DepedencyPinner implements DependencyProcessor {
         buildLocator.buildTypeId = dependency.buildTypeId
         buildLocator.branch = dependency.branch
         logger.debug("Pinning the build: $buildLocator")
+        // todo: rewrite this to avoid boilerplate
         def response
         try {
             response = restClient.put {
