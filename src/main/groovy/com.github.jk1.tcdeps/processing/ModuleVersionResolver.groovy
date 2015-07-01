@@ -17,12 +17,17 @@ class ModuleVersionResolver implements DependencyProcessor {
     @Override
     def addDependency(DependencyDescriptor dependency) {
         if (dependency.getVersion().needsResolution) {
+            def BuildLocator buildLocator = dependency.version.buildLocator
+            buildLocator.buildTypeId = dependency.buildTypeId
+            buildLocator.branch = dependency.branch
             if (project.gradle.startParameter.offline) {
                 // offline mode - get the latest version from the cache
-                dependency.version.resolved('+')
+                dependency.version.resolved(propertyCache.load(buildLocator.toString()))
                 logger.info("Unable to resolve $dependency in offline mode, falling back to last cached version")
             } else {
-                dependency.version.resolved(doResolve(dependency))
+                String resolvedVersion = doResolve(dependency)
+                propertyCache.store(buildLocator.toString(), resolvedVersion)
+                dependency.version.resolved(resolvedVersion)
             }
         }
     }
