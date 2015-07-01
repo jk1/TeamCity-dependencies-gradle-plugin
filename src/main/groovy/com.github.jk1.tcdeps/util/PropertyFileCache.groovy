@@ -35,7 +35,7 @@ class PropertyFileCache {
     def String flush() {
         try {
             new FileOutputStream(file).withStream {
-                props.store(it, "")
+                props.store(it, 'TeamCity dependencies Gradle plugin cache file. https://github.com/jk1/TeamCity-dependencies-gradle-plugin')
             }
         } catch (IOException e) {
             throw new GradleException("TCDeps plugin failed to flush cached properties", e)
