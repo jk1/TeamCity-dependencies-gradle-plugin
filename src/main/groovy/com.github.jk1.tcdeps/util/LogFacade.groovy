@@ -13,6 +13,10 @@ class LogFacade {
         ResourceLocator.project.logger.info("$PREFIX $message")
     }
 
+    public warn(message) {
+        ResourceLocator.project.logger.warn("$PREFIX $message")
+    }
+
     public warn(message, exception) {
         ResourceLocator.project.logger.warn("$PREFIX $message", exception)
     }

@@ -15,23 +15,25 @@ class ArtifactVersion {
                                 'lastPinned'             : { return new BuildLocator(pinned: true) },
                                 'lastSuccessful'         : { return new BuildLocator(successful: true) }]
 
-    public ArtifactVersion(String version){
+    public ArtifactVersion(String version) {
         if (version == null || version.isEmpty()) {
             throw new InvalidUserDataException("version should not be empty")
         }
         this.version = version
-        if (placeholders.containsKey(version)){
+        if (placeholders.containsKey(version)) {
             needsResolution = true
             changing = true
             buildLocator = placeholders[version]()
-        } else if (version.endsWith('.tcbuildtag')){
+        } else if (version.endsWith('.tcbuildtag')) {
             needsResolution = true
             changing = true
             buildLocator = new BuildLocator(tag: version - '.tcbuildtag')
+        } else {
+            buildLocator = new BuildLocator(number: version)
         }
     }
 
-    def resolved(version){
+    def resolved(version) {
         this.needsResolution = false
         this.version = version
     }

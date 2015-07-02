@@ -1,9 +1,12 @@
-apply plugin: 'groovy'
-apply plugin: 'maven'
+plugins{
+    id 'groovy'
+    id 'maven-publish'
+    id 'com.gradle.plugin-publish' version '0.9.0'
+}
 
 group = 'com.github.jk1'
 description = 'TeamCity dependencies plugin resolves project dependencies via local TeamCity server'
-version = '0.8'
+version = '0.7.5'
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
@@ -35,15 +38,16 @@ test {
     }
 }
 
-task release(type: Jar, dependsOn: jar) {
-    outputs.upToDateWhen { false }
-    classifier = 'sources'
-    from sourceSets.main.allSource
-    doLast{
-        pom{}.writeTo("$buildDir/libs/tcdeps-${version}.pom")
+// release publishing to gradle plugin repo
+pluginBundle {
+    website = 'https://github.com/jk1/TeamCity-dependencies-gradle-plugin'
+    vcsUrl = 'https://github.com/jk1/TeamCity-dependencies-gradle-plugin'
+    description = project.description
+    tags = ['dependency-management', 'teamcity']
+    plugins {
+        teamcityDependenciesPlugin {
+            id = 'com.github.jk1.tcdeps'
+            displayName = 'Gradle plugin to fetch dependencies from JetBrains TeamCity'
+        }
     }
-}
-
-artifacts {
-    archives release
 }

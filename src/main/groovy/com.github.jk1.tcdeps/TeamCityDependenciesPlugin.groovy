@@ -19,10 +19,14 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
         theProject.extensions.add("teamcityServer", new PluginConfiguration())
         initResourceLocator(theProject)
         theProject.ext.tc = { Object notation ->
+            setContext(theProject)
             theProject.teamcityServer.assertConfigured()
             return addDependency(DependencyDescriptor.create(notation))
         }
-        theProject.afterEvaluate { processors.each { it.process() } }
+        theProject.afterEvaluate {
+            setContext(theProject)
+            processors.each { it.process() }
+        }
         theProject.gradle.buildFinished { closeResourceLocator() }
     }
 

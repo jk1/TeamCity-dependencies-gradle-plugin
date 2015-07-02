@@ -15,18 +15,27 @@ class ResourceLocator {
 
     static def PropertyFileCache propertyCache
 
-    static def RestClient restClient = new RestClient()
+    static def RestClient restClient
 
-    static def LogFacade logger = new LogFacade()
+    static def LogFacade logger
 
     static void initResourceLocator(Project theProject) {
+        if (project == null) {
+            restClient = new RestClient()
+            logger = new LogFacade()
+            propertyCache = new PropertyFileCache(theProject.gradle)
+        }
+    }
+
+    static void setContext(Project theProject) {
         project = theProject
         config = theProject.teamcityServer
-        propertyCache = new PropertyFileCache(theProject.gradle)
     }
 
     static void closeResourceLocator() {
-        propertyCache.flush()
+        if (propertyCache) {
+            propertyCache.flush()
+        }
         // cleanup to avoid memory leaks in daemon mode
         propertyCache = null
         project = null

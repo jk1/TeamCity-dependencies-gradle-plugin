@@ -11,8 +11,6 @@ import static com.github.jk1.tcdeps.util.ResourceLocator.*
  */
 class RepositoryBuilder implements DependencyProcessor {
 
-    private final TC_DOWNLOAD_PATH = 'guestAuth/repository/download'
-
     private IvyArtifactRepository lastAdded
     private patterns = new ArrayList<String>()
 
@@ -25,11 +23,11 @@ class RepositoryBuilder implements DependencyProcessor {
     def addDependency(DependencyDescriptor dependency) {
         dependencies.add(dependency)
         project.repositories.remove(lastAdded)
-        if (dependency.artifactDescriptor.hasPath()){
-           patterns.add("[module]/[revision]/${dependency.artifactDescriptor.path}[artifact](.[ext])")
+        if (dependency.artifactDescriptor.hasPath()) {
+            patterns.add("[module]/[revision]/${dependency.artifactDescriptor.path}[artifact](.[ext])")
         }
         lastAdded = project.repositories.ivy {
-            url "${project.teamcityServer.url}/$TC_DOWNLOAD_PATH"
+            url "${config.url}/guestAuth/repository/download"
             layout "pattern", {
                 ivy '[module]/[revision]/teamcity-ivy.xml'
                 patterns.each {
@@ -42,16 +40,16 @@ class RepositoryBuilder implements DependencyProcessor {
     @Override
     def process() {
         if (lastAdded != null) {
-            logger.debug('Ivy repository descriptor:')
-            logger.debug('ivy {')
-            logger.debug("  url ${lastAdded.url}")
-            logger.debug("  layout 'pattern', {")
-            logger.debug("    ivy '[module]/[revision]/teamcity-ivy.xml'")
+            logger.info('Ivy repository descriptor:')
+            logger.info('ivy {')
+            logger.info("  url ${lastAdded.url}")
+            logger.info("  layout 'pattern', {")
+            logger.info("    ivy '[module]/[revision]/teamcity-ivy.xml'")
             patterns.each {
-                pattern -> logger.debug("    artifact $pattern")
+                pattern -> logger.info("    artifact $pattern")
             }
-            logger.debug('  }')
-            logger.debug('}')
+            logger.info('  }')
+            logger.info('}')
         }
     }
 }
