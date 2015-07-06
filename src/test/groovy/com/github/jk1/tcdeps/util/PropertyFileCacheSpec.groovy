@@ -7,25 +7,19 @@ import spock.lang.Specification
 class PropertyFileCacheSpec extends Specification {
 
     private File temp = new File(System.getProperty("java.io.tmpdir"), 'gradlePluginTestCache')
-    private Gradle gradle;
-
-    def setup() {
-        gradle = Mock(Gradle)
-        gradle.getGradleVersion() >> '2.5'
-    }
 
     def cleanup() { temp.deleteDir() }
 
     def "cache should be able to persist properties"() {
-        gradle.getGradleUserHomeDir() >> temp
+        //gradle.getGradleUserHomeDir() >> temp todo!
 
         when:
-        def cache = new PropertyFileCache(gradle)
+        def cache = new PropertyFileCache()
         cache.store('key', 'value')
         cache.flush()
 
         then:
-        def otherCache = new PropertyFileCache(gradle)
+        def otherCache = new PropertyFileCache()
         otherCache.load('key').equals('value')
     }
 }

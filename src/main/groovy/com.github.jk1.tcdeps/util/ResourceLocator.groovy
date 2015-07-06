@@ -9,38 +9,33 @@ import org.gradle.api.Project
  */
 class ResourceLocator {
 
-    static def Project project
+    static def ThreadLocal<Project> project = new ThreadLocal<>()
 
-    static def PluginConfiguration config
+    static def ThreadLocal<PluginConfiguration> config = new ThreadLocal<>()
 
-    static def PropertyFileCache propertyCache
+    static def PropertyFileCache propertyCache = new PropertyFileCache()
 
-    static def RestClient restClient
+    static def RestClient restClient = new RestClient()
 
-    static def LogFacade logger
-
-    static void initResourceLocator(Project theProject) {
-        if (project == null) {
-            restClient = new RestClient()
-            logger = new LogFacade()
-            propertyCache = new PropertyFileCache(theProject.gradle)
-        }
-    }
+    static def LogFacade logger = new LogFacade()
 
     static void setContext(Project theProject) {
-        project = theProject
-        config = theProject.teamcityServer
+        project.set(theProject)
+        config.set(theProject.teamcityServer)
     }
 
     static void closeResourceLocator() {
-        if (propertyCache) {
-            propertyCache.flush()
-        }
+        propertyCache.flush()
         // cleanup to avoid memory leaks in daemon mode
-        propertyCache = null
-        project = null
-        config = null
-        restClient = null
-        logger = null
+        project.remove()
+        config.remove()
+    }
+
+    static def getConfig() {
+        return config.get()
+    }
+
+    static def getProject() {
+        return project.get()
     }
 }

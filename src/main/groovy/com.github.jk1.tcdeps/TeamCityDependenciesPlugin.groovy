@@ -17,7 +17,6 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
     void apply(Project theProject) {
         processors = [new ModuleVersionResolver(), new RepositoryBuilder(), new DepedencyPinner()]
         theProject.extensions.add("teamcityServer", new PluginConfiguration())
-        initResourceLocator(theProject)
         theProject.ext.tc = { Object notation ->
             setContext(theProject)
             theProject.teamcityServer.assertConfigured()
