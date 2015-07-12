@@ -2,8 +2,6 @@ TeamCity-gradle-plugin
 ======================
 [![Build Status](https://travis-ci.org/jk1/TeamCity-dependencies-gradle-plugin.png?branch=master)](https://travis-ci.org/jk1/TeamCity-dependencies-gradle-plugin)
 
-[ ![Download](https://api.bintray.com/packages/eugenbox/maven/teamcity-dependencies-gradle-plugin/images/download.svg) ](https://bintray.com/eugenbox/maven/teamcity-dependencies-gradle-plugin/_latestVersion)
-
 Allows the use of [JetBrains TeamCity](http://www.jetbrains.com/teamcity/) server as an external dependency repository for Gradle builds. This comes in handy when existing artifact layout ignores any established conventions, so out-of-box repository types just can't handle it.
 
 The plugin makes use of default artifact cache, downloading each dependency only once.
@@ -13,7 +11,7 @@ The plugin makes use of default artifact cache, downloading each dependency only
 ```groovy
 // for Gradle 2.1+
 plugins {
-  id 'com.github.jk1.tcdeps' version '0.7.2'
+  id 'com.github.jk1.tcdeps' version '0.7.7'
 }
 
 // for Gradle 2.0 and below
@@ -53,13 +51,7 @@ dependencies {
     compile tc('bt132:sameChainOrLastFinished:index.html')
 }
 ```
-these dependencies are handles as Gradle's 'changing dependencies'. That means Gradle will discard cached version every 24 hours and try to download the files once again. One can control caching period as follows:
-
-```groovy
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-```
+these dependencies will be resolved every build.
 
 Changing dependencies may be also resolved against particular [feature branches](https://confluence.jetbrains.com/display/TCD8/Working+with+Feature+Branches):
 
@@ -90,3 +82,11 @@ repositories{
   }
 }
 ```
+###Offline mode
+
+Gradle's offline mode is fully supported for TeamCity-originated dependencies. This feature allows you to run the build when teamcity server is unreacheable or down using artifacts from local Gradle's cache:
+
+```
+gradle jar --offline
+```
+
