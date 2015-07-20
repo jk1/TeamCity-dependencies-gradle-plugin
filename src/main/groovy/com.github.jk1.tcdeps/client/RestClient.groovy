@@ -53,7 +53,7 @@ class RestClient {
         def String body = "No response recorded. Rerun with --stacktrace to see an exception."
 
         public isOk() {
-            return HttpURLConnection.HTTP_OK == code
+            return (200..<300).contains(code)
         }
     }
 }
