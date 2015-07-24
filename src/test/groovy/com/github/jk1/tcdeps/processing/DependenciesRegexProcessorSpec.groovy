@@ -16,13 +16,17 @@ class DependenciesRegexProcessorSpec extends Specification {
     project.pluginManager.apply 'com.github.jk1.tcdeps'
     DependenciesRegexProcessor processor = new DependenciesRegexProcessor(project)
 
+    project.repositories.teamcity {
+      url "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
+    }
+
     project.configurations {
       testConfig
     }
     project.dependencies {
       testConfig ("org:sampleId:1234") {
         artifact {
-          name = "artifactName"
+          name = "foobazbar"
           type = "jar"
         }
       }
@@ -34,7 +38,7 @@ class DependenciesRegexProcessorSpec extends Specification {
 
     then:
     dependency.artifacts.size() == 1
-    dependency.artifacts.iterator().next().name == "artifactName"
+    dependency.artifacts.iterator().next().name == "foobazbar"
   }
 
 
