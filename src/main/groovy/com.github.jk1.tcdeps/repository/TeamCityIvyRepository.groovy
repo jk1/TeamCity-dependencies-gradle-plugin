@@ -1,7 +1,10 @@
 package com.github.jk1.tcdeps.repository
 
+import org.gradle.api.Action
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.artifacts.repositories.IvyArtifactRepositoryMetaDataProvider
+import org.gradle.api.artifacts.repositories.PasswordCredentials
+import org.gradle.api.credentials.Credentials
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.strategy.ResolverStrategy
 import org.gradle.api.internal.artifacts.repositories.DefaultIvyArtifactRepository
 import org.gradle.api.internal.artifacts.repositories.layout.AbstractRepositoryLayout
@@ -25,7 +28,8 @@ class TeamCityIvyRepository extends DefaultIvyArtifactRepository {
     private final ResolverStrategy resolverStrategy
     private final LocallyAvailableResourceFinder<ModuleComponentArtifactMetaData> locallyAvailableResourceFinder
 
-    private def pinConfig
+    private PinConfiguration pinConfig
+    String baseTeamCityURL
 
     TeamCityIvyRepository(FileResolver fileResolver, RepositoryTransportFactory transportFactory,
                           LocallyAvailableResourceFinder<ModuleComponentArtifactMetaData> locallyAvailableResourceFinder, Instantiator instantiator,
@@ -55,12 +59,18 @@ class TeamCityIvyRepository extends DefaultIvyArtifactRepository {
 
     @Override
     void setUrl(Object url) {
-        if (url instanceof String && !url.contains("repository/download")) {
-            def substitute = url + (url.endsWith("/") ? "" : "/") + "httpAuth/repository/download"
-            super.setUrl(substitute)
+        baseTeamCityURL = url as String;
+        if (getCredentials().username) {
+            super.setUrl(url + (url.endsWith("/") ? "" : "/") + "httpAuth/repository/download")
         } else {
-            super.setUrl(url)
+            super.setUrl(url + (url.endsWith("/") ? "" : "/") + "guestAuth/repository/download")
         }
+    }
+
+    @Override
+    void credentials(Action<? super PasswordCredentials> action) {
+        super.credentials(action)
+        super.setUrl(baseTeamCityURL + (baseTeamCityURL.endsWith("/") ? "" : "/") + "httpAuth/repository/download")
     }
 
     @Override

@@ -17,7 +17,7 @@ class PinConfiguration {
     }
 
     String getUrl() {
-        repo.getUrl().toString()
+        repo.baseTeamCityURL
     }
 
     def setDefaultMessage(String message) {

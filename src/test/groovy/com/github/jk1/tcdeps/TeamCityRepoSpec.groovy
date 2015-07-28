@@ -24,22 +24,34 @@ class TeamCityRepoSpec extends Specification {
     }
 
 
-    def "teamcity repository should properly append path to configured url"() {
+    def "teamcity repository should use guest auth urls when no username is available"() {
         Project project = ProjectBuilder.builder().build()
         project.pluginManager.apply 'com.github.jk1.tcdeps'
 
         when:
         project.repositories.teamcityServer {
-            url urlValue
+            url "http://teamcity"
         }
 
         then:
-        project.repositories.findByName("TeamCity").url == patchedValue
+        project.repositories.findByName("TeamCity").url == new URI("http://teamcity/guestAuth/repository/download")
+    }
 
-        where:
-        urlValue                                        | patchedValue
-        "http://teamcity"                               | new URI("http://teamcity/httpAuth/repository/download")
-        "http://teamcity/guestAuth/repository/download" | new URI("http://teamcity/guestAuth/repository/download")
+    def "teamcity repository should use http auth when credentials are provided"() {
+        Project project = ProjectBuilder.builder().build()
+        project.pluginManager.apply 'com.github.jk1.tcdeps'
+
+        when:
+        project.repositories.teamcityServer {
+            url "http://teamcity"
+            credentials {
+                username "name"
+                password "secret"
+            }
+        }
+
+        then:
+        project.repositories.findByName("TeamCity").url == new URI("http://teamcity/httpAuth/repository/download")
     }
 
 
@@ -50,7 +62,7 @@ class TeamCityRepoSpec extends Specification {
 
         when:
         project.repositories.teamcityServer {
-            url "http://teamcity/httpAuth/repository/download"
+            url "http://teamcity"
             pin {
                 // pinning usually requires authentication
                 username = "name"
@@ -62,7 +74,7 @@ class TeamCityRepoSpec extends Specification {
         def repo = project.repositories.findByName("TeamCity")
 
         then:
-        repo.url.toString() == "http://teamcity/httpAuth/repository/download"
+        repo.url.toString() == "http://teamcity/guestAuth/repository/download"
         repo.pin.pinEnabled
         repo.pin.username == "name"
         repo.pin.password == "secret"
