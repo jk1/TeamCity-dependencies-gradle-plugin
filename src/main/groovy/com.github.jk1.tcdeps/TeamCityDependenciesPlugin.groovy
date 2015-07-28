@@ -44,7 +44,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project theProject) {
-        processors = [new ModuleVersionResolver(), new RepositoryBuilder(), new DepedencyPinner()]
+        processors = [new ModuleVersionResolver(), new DepedencyPinner()]
         addTeamCityNotationTo theProject
         theProject.ext.tc = { Object notation ->
             setContext(theProject)
