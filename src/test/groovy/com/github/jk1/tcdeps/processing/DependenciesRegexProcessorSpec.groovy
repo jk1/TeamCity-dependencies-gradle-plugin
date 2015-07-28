@@ -11,66 +11,66 @@ import spock.lang.Specification
  */
 class DependenciesRegexProcessorSpec extends Specification {
 
-  def "Regex processor should not touch exactly matching artifacts"(){
-    Project project = ProjectBuilder.builder().build()
-    project.pluginManager.apply 'com.github.jk1.tcdeps'
-    DependenciesRegexProcessor processor = new DependenciesRegexProcessor(project)
+    def "Regex processor should not touch exactly matching artifacts"(){
+        Project project = ProjectBuilder.builder().build()
+        project.pluginManager.apply 'com.github.jk1.tcdeps'
+        DependenciesRegexProcessor processor = new DependenciesRegexProcessor(project)
 
-    project.repositories.teamcityServer {
-      url "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
-    }
-
-    project.configurations {
-      testConfig
-    }
-    project.dependencies {
-      testConfig ("org:sampleId:1234") {
-        artifact {
-          name = "foobazbar"
-          type = "jar"
+        project.repositories.teamcityServer {
+            url "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
         }
-      }
-    }
 
-    when:
-    processor.process()
-    def dependency = project.configurations.testConfig.dependencies.iterator().next() as ModuleDependency
-
-    then:
-    dependency.artifacts.size() == 1
-    dependency.artifacts.iterator().next().name == "foobazbar"
-  }
-
-
-  def "Regex processor should match simple pattern"(){
-    Project project = ProjectBuilder.builder().build()
-    project.pluginManager.apply 'com.github.jk1.tcdeps'
-    DependenciesRegexProcessor processor = new DependenciesRegexProcessor(project)
-
-    project.repositories.teamcityServer {
-      url "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
-    }
-
-    project.configurations {
-      testConfig
-    }
-
-    project.dependencies {
-      testConfig ("org:sampleId:1234") {
-        artifact {
-          name = "foo.*bar"
-          type = "jar"
+        project.configurations {
+            testConfig
         }
-      }
+        project.dependencies {
+            testConfig ("org:sampleId:1234") {
+                artifact {
+                    name = "foobazbar"
+                    type = "jar"
+                }
+            }
+        }
+
+        when:
+        processor.process()
+        def dependency = project.configurations.testConfig.dependencies.iterator().next() as ModuleDependency
+
+        then:
+        dependency.artifacts.size() == 1
+        dependency.artifacts.iterator().next().name == "foobazbar"
     }
 
-    when:
-    processor.process()
-    def dependency = project.configurations.testConfig.dependencies.iterator().next() as ModuleDependency
 
-    then:
-    dependency.artifacts.size() == 2
-    dependency.artifacts.find { it.name == "foobazbar" }
-    dependency.artifacts.find { it.name == "foolimbar" }
-  }
+    def "Regex processor should match simple pattern"(){
+        Project project = ProjectBuilder.builder().build()
+        project.pluginManager.apply 'com.github.jk1.tcdeps'
+        DependenciesRegexProcessor processor = new DependenciesRegexProcessor(project)
+
+        project.repositories.teamcityServer {
+            url "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
+        }
+
+        project.configurations {
+            testConfig
+        }
+
+        project.dependencies {
+            testConfig ("org:sampleId:1234") {
+                artifact {
+                    name = "foo.*bar"
+                    type = "jar"
+                }
+            }
+        }
+
+        when:
+        processor.process()
+        def dependency = project.configurations.testConfig.dependencies.iterator().next() as ModuleDependency
+
+        then:
+        dependency.artifacts.size() == 2
+        dependency.artifacts.find { it.name == "foobazbar" }
+        dependency.artifacts.find { it.name == "foolimbar" }
+    }
 }
