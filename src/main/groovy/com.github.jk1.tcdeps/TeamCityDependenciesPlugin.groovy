@@ -48,7 +48,6 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
         addTeamCityNotationTo theProject
         theProject.ext.tc = { Object notation ->
             setContext(theProject)
-            theProject.teamcityServer.assertConfigured()
             return addDependency(DependencyDescriptor.create(notation))
         }
         theProject.afterEvaluate {

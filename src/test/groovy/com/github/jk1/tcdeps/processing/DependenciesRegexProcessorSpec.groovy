@@ -73,4 +73,31 @@ class DependenciesRegexProcessorSpec extends Specification {
         dependency.artifacts.find { it.name == "foobazbar" }
         dependency.artifacts.find { it.name == "foolimbar" }
     }
+
+    def "Regex processor should handle tc(...) notation"(){
+        Project project = ProjectBuilder.builder().build()
+        project.pluginManager.apply 'com.github.jk1.tcdeps'
+        DependenciesRegexProcessor processor = new DependenciesRegexProcessor(project)
+
+        project.repositories.teamcityServer {
+            url "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
+        }
+
+        project.configurations {
+            testConfig
+        }
+
+        project.dependencies {
+            testConfig project.tc("sampleId:1234:foo.*bar.jar")
+        }
+
+        when:
+        processor.process()
+        def dependency = project.configurations.testConfig.dependencies.iterator().next() as ModuleDependency
+
+        then:
+        dependency.artifacts.size() == 2
+        dependency.artifacts.find { it.name == "foobazbar" }
+        dependency.artifacts.find { it.name == "foolimbar" }
+    }
 }
