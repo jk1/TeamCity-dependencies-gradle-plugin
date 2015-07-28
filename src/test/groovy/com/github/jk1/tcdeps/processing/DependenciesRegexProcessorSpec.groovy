@@ -16,7 +16,7 @@ class DependenciesRegexProcessorSpec extends Specification {
     project.pluginManager.apply 'com.github.jk1.tcdeps'
     DependenciesRegexProcessor processor = new DependenciesRegexProcessor(project)
 
-    project.repositories.teamcity {
+    project.repositories.teamcityServer {
       url "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
     }
 
@@ -47,7 +47,7 @@ class DependenciesRegexProcessorSpec extends Specification {
     project.pluginManager.apply 'com.github.jk1.tcdeps'
     DependenciesRegexProcessor processor = new DependenciesRegexProcessor(project)
 
-    project.repositories.teamcity {
+    project.repositories.teamcityServer {
       url "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
     }
 

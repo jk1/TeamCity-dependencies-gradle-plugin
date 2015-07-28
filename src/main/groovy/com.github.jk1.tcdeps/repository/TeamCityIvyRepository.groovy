@@ -25,6 +25,8 @@ class TeamCityIvyRepository extends DefaultIvyArtifactRepository {
     private final ResolverStrategy resolverStrategy
     private final LocallyAvailableResourceFinder<ModuleComponentArtifactMetaData> locallyAvailableResourceFinder
 
+    private def pinConfig
+
     TeamCityIvyRepository(FileResolver fileResolver, RepositoryTransportFactory transportFactory,
                           LocallyAvailableResourceFinder<ModuleComponentArtifactMetaData> locallyAvailableResourceFinder, Instantiator instantiator,
                           ResolverStrategy resolverStrategy, FileStore<ModuleComponentArtifactMetaData> artifactFileStore) {
@@ -33,11 +35,22 @@ class TeamCityIvyRepository extends DefaultIvyArtifactRepository {
         this.resolverStrategy = resolverStrategy
         this.artifactFileStore = artifactFileStore
         this.transportFactory = transportFactory
+        this.pinConfig = new PinConfiguration(this);
 
         layout("pattern", {
             artifact '[module]/[revision]/[artifact](.[ext])'
             ivy '[module]/[revision]/teamcity-ivy.xml'
         })
+    }
+
+    PinConfiguration getPin() {
+        return pinConfig
+    }
+
+    void pin(Closure pinConfigClosure) {
+        pinConfig.pinEnabled = true;
+        pinConfigClosure.setDelegate(pinConfig)
+        pinConfigClosure.call()
     }
 
     @Override

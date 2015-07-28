@@ -13,6 +13,6 @@ class PluginSpec extends Specification {
         project.pluginManager.apply 'com.github.jk1.tcdeps'
 
         then:
-        project.teamcityServer
+        project.pinConfig
     }
 }

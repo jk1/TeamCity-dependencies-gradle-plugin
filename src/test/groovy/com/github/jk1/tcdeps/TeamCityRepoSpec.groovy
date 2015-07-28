@@ -16,10 +16,11 @@ class TeamCityRepoSpec extends Specification {
         project.pluginManager.apply 'com.github.jk1.tcdeps'
 
         when:
-        project.repositories.teamcity()
+        project.repositories.teamcityServer()
 
         then:
         project.repositories.findByName("TeamCity") instanceof TeamCityIvyRepository
+        !project.repositories.findByName("TeamCity").pin.pinEnabled
     }
 
 
@@ -28,7 +29,7 @@ class TeamCityRepoSpec extends Specification {
         project.pluginManager.apply 'com.github.jk1.tcdeps'
 
         when:
-        project.repositories.teamcity {
+        project.repositories.teamcityServer {
             url urlValue
         }
 
@@ -39,5 +40,51 @@ class TeamCityRepoSpec extends Specification {
         urlValue                                        | patchedValue
         "http://teamcity"                               | new URI("http://teamcity/httpAuth/repository/download")
         "http://teamcity/guestAuth/repository/download" | new URI("http://teamcity/guestAuth/repository/download")
+    }
+
+
+
+    def "teamcity repository should support pin configuration"() {
+        Project project = ProjectBuilder.builder().build()
+        project.pluginManager.apply 'com.github.jk1.tcdeps'
+
+        when:
+        project.repositories.teamcityServer {
+            url "http://teamcity/httpAuth/repository/download"
+            pin {
+                // pinning usually requires authentication
+                username = "name"
+                password = "secret"
+                stopBuildOnFail = true  // not mandatory, default to 'false'
+                message = "Pinned for MyCoolProject"  // not mandatory
+            }
+        }
+        def repo = project.repositories.findByName("TeamCity")
+
+        then:
+        repo.url.toString() == "http://teamcity/httpAuth/repository/download"
+        repo.pin.pinEnabled
+        repo.pin.username == "name"
+        repo.pin.password == "secret"
+        repo.pin.message == "Pinned for MyCoolProject"
+        repo.pin.stopBuildOnFail
+    }
+
+    def "Should maintain only one TeamCity server"() {
+        Project project = ProjectBuilder.builder().build()
+        project.pluginManager.apply 'com.github.jk1.tcdeps'
+
+        when:
+        project.repositories.teamcityServer {
+            url "http://teamcity1"
+        }
+        project.repositories.teamcityServer {
+            url "http://teamcity2"
+        }
+
+        then:
+        def repos = project.repositories.findAll { it instanceof TeamCityIvyRepository }
+        repos.size() == 1
+        repos.get(0).url.toString().contains("teamcity2")
     }
 }

@@ -1,16 +1,14 @@
 package com.github.jk1.tcdeps
 
 import com.github.jk1.tcdeps.model.DependencyDescriptor
+import com.github.jk1.tcdeps.processing.DepedencyPinner
 import com.github.jk1.tcdeps.processing.DependenciesRegexProcessor
 import com.github.jk1.tcdeps.processing.ModuleVersionResolver
-import com.github.jk1.tcdeps.processing.DepedencyPinner
 import com.github.jk1.tcdeps.processing.RepositoryBuilder
-
 import com.github.jk1.tcdeps.repository.TeamCityIvyRepository
 import com.github.jk1.tcdeps.repository.TeamCityRepositoryFactory
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.internal.ClosureBackedAction
 import org.gradle.api.internal.GradleInternal
 import org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler
@@ -47,7 +45,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
     @Override
     void apply(Project theProject) {
         processors = [new ModuleVersionResolver(), new RepositoryBuilder(), new DepedencyPinner()]
-        theProject.extensions.add("teamcityServer", new PluginConfiguration())
+        addTeamCityNotationTo theProject
         theProject.ext.tc = { Object notation ->
             setContext(theProject)
             theProject.teamcityServer.assertConfigured()
@@ -56,10 +54,9 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
         theProject.afterEvaluate {
             setContext(theProject)
             processors.each { it.process() }
+            new DependenciesRegexProcessor(project).process();
         }
         theProject.gradle.buildFinished { closeResourceLocator() }
-        addTeamCityNotationTo theProject.repositories
-        theProject.gradle.afterProject { Project project, failure -> new DependenciesRegexProcessor(project).process(); }
     }
 
     private Object addDependency(DependencyDescriptor descriptor) {
@@ -69,15 +66,25 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
         return notation
     }
 
-    private void addTeamCityNotationTo(RepositoryHandler repositories) {
+    private void addTeamCityNotationTo(Project project) {
+        def repositories = project.repositories
         DefaultRepositoryHandler handler = repositories as DefaultRepositoryHandler;
-        repositories.ext.teamcity = { Closure configureClosure = null ->
+        repositories.ext.teamcityServer = { Closure configureClosure ->
+            def oldRepo = handler.findByName("TeamCity")
+            if (oldRepo) {
+                handler.remove(oldRepo)
+            }
+            def tcRepository
             if (configureClosure) {
-                handler.addRepository(teamCityRepositoryFactory.createTeamCityRepo(), "TeamCity",
+                tcRepository = handler.addRepository(teamCityRepositoryFactory.createTeamCityRepo(), "TeamCity",
                     new ClosureBackedAction<TeamCityIvyRepository>(configureClosure));
             } else {
-                handler.addRepository(teamCityRepositoryFactory.createTeamCityRepo(), "TeamCity")
+                tcRepository = handler.addRepository(teamCityRepositoryFactory.createTeamCityRepo(), "TeamCity")
             }
+            if (oldRepo) {
+                project.logger.warn "Project $project already has TeamCity server configured to [$oldRepo.url], overriding with [$tcRepository.url]"
+            }
+            project.ext.pinConfig = tcRepository.pin
         }
     }
 }
