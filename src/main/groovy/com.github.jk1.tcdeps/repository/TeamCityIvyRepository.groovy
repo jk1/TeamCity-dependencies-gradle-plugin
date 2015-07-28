@@ -20,73 +20,73 @@ import org.gradle.internal.resource.local.LocallyAvailableResourceFinder
  */
 class TeamCityIvyRepository extends DefaultIvyArtifactRepository {
 
-  private final RepositoryTransportFactory transportFactory
-  private final FileStore<ModuleComponentArtifactMetaData> artifactFileStore
-  private final ResolverStrategy resolverStrategy
-  private final LocallyAvailableResourceFinder<ModuleComponentArtifactMetaData> locallyAvailableResourceFinder
+    private final RepositoryTransportFactory transportFactory
+    private final FileStore<ModuleComponentArtifactMetaData> artifactFileStore
+    private final ResolverStrategy resolverStrategy
+    private final LocallyAvailableResourceFinder<ModuleComponentArtifactMetaData> locallyAvailableResourceFinder
 
-  TeamCityIvyRepository(FileResolver fileResolver, RepositoryTransportFactory transportFactory,
-                        LocallyAvailableResourceFinder<ModuleComponentArtifactMetaData> locallyAvailableResourceFinder, Instantiator instantiator,
-                        ResolverStrategy resolverStrategy, FileStore<ModuleComponentArtifactMetaData> artifactFileStore) {
-    super(fileResolver, transportFactory, locallyAvailableResourceFinder, instantiator, resolverStrategy, artifactFileStore);
-    this.locallyAvailableResourceFinder = locallyAvailableResourceFinder
-    this.resolverStrategy = resolverStrategy
-    this.artifactFileStore = artifactFileStore
-    this.transportFactory = transportFactory
+    TeamCityIvyRepository(FileResolver fileResolver, RepositoryTransportFactory transportFactory,
+                          LocallyAvailableResourceFinder<ModuleComponentArtifactMetaData> locallyAvailableResourceFinder, Instantiator instantiator,
+                          ResolverStrategy resolverStrategy, FileStore<ModuleComponentArtifactMetaData> artifactFileStore) {
+        super(fileResolver, transportFactory, locallyAvailableResourceFinder, instantiator, resolverStrategy, artifactFileStore);
+        this.locallyAvailableResourceFinder = locallyAvailableResourceFinder
+        this.resolverStrategy = resolverStrategy
+        this.artifactFileStore = artifactFileStore
+        this.transportFactory = transportFactory
 
-    layout("pattern", {
-      artifact '[module]/[revision]/[artifact](.[ext])'
-      ivy '[module]/[revision]/teamcity-ivy.xml'
-    })
-  }
-
-  @Override
-  void setUrl(Object url) {
-    if (url instanceof String && !url.contains("repository/download")) {
-      def substitute = url + (url.endsWith("/") ? "" : "/") + "httpAuth/repository/download"
-      super.setUrl(substitute)
-    } else {
-      super.setUrl(url)
+        layout("pattern", {
+            artifact '[module]/[revision]/[artifact](.[ext])'
+            ivy '[module]/[revision]/teamcity-ivy.xml'
+        })
     }
-  }
 
-  @Override
-  protected IvyResolver createRealResolver() {
-    URI uri = getUrl();
-
-    Set<String> schemes = new LinkedHashSet<String>();
-
-    def AbstractRepositoryLayout layout = accessSuperField("layout", this)
-    def AbstractRepositoryLayout additionalPatternsLayout = accessSuperField("additionalPatternsLayout", this)
-
-    layout.addSchemes(uri, schemes);
-    additionalPatternsLayout.addSchemes(uri, schemes);
-
-    IvyResolver resolver = createResolver(schemes);
-
-    layout.apply(uri, resolver);
-    additionalPatternsLayout.apply(uri, resolver);
-
-    return resolver;
-  }
-
-  private IvyResolver createResolver(Set<String> schemes) {
-    if (schemes.isEmpty()) {
-      throw new InvalidUserDataException("You must specify a base url or at least one artifact pattern for an Ivy repository.");
+    @Override
+    void setUrl(Object url) {
+        if (url instanceof String && !url.contains("repository/download")) {
+            def substitute = url + (url.endsWith("/") ? "" : "/") + "httpAuth/repository/download"
+            super.setUrl(substitute)
+        } else {
+            super.setUrl(url)
+        }
     }
-    return createResolver(transportFactory.createTransport(schemes, getName(), getConfiguredCredentials()));
-  }
 
-  private IvyResolver createResolver(RepositoryTransport transport) {
-    return new TeamCityResolver(
-        getName(), transport,
-        locallyAvailableResourceFinder,
-        ((IvyArtifactRepositoryMetaDataProvider) accessSuperField("metaDataProvider", this)).isDynamicMode(), resolverStrategy, artifactFileStore);
-  }
+    @Override
+    protected IvyResolver createRealResolver() {
+        URI uri = getUrl();
 
-  private static <T> T accessSuperField(String fieldName, Object obj) {
-    def field = obj.getClass().getSuperclass().getSuperclass().getDeclaredField(fieldName)
-    field.setAccessible(true)
-    return (T) field.get(obj);
-  }
+        Set<String> schemes = new LinkedHashSet<String>();
+
+        def AbstractRepositoryLayout layout = accessSuperField("layout", this)
+        def AbstractRepositoryLayout additionalPatternsLayout = accessSuperField("additionalPatternsLayout", this)
+
+        layout.addSchemes(uri, schemes);
+        additionalPatternsLayout.addSchemes(uri, schemes);
+
+        IvyResolver resolver = createResolver(schemes);
+
+        layout.apply(uri, resolver);
+        additionalPatternsLayout.apply(uri, resolver);
+
+        return resolver;
+    }
+
+    private IvyResolver createResolver(Set<String> schemes) {
+        if (schemes.isEmpty()) {
+            throw new InvalidUserDataException("You must specify a base url or at least one artifact pattern for an Ivy repository.");
+        }
+        return createResolver(transportFactory.createTransport(schemes, getName(), getConfiguredCredentials()));
+    }
+
+    private IvyResolver createResolver(RepositoryTransport transport) {
+        return new TeamCityResolver(
+            getName(), transport,
+            locallyAvailableResourceFinder,
+            ((IvyArtifactRepositoryMetaDataProvider) accessSuperField("metaDataProvider", this)).isDynamicMode(), resolverStrategy, artifactFileStore);
+    }
+
+    private static <T> T accessSuperField(String fieldName, Object obj) {
+        def field = obj.getClass().getSuperclass().getSuperclass().getDeclaredField(fieldName)
+        field.setAccessible(true)
+        return (T) field.get(obj);
+    }
 }

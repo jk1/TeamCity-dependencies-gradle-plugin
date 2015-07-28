@@ -33,14 +33,14 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
 
     @Inject
     public TeamCityDependenciesPlugin(FileResolver fileResolver,
-                             RepositoryTransportFactory transportFactory,
-                             LocallyAvailableResourceFinder<ModuleComponentArtifactMetaData> locallyAvailableResourceFinder,
-                             Instantiator instantiator,
-                             ResolverStrategy resolverStrategy,
-                             GradleInternal gradleInternal) {
-      def artifactFileStore = gradleInternal.getServices().get((Class<FileStore<ModuleComponentArtifactMetaData>>)(Class<?>)FileStore.class);
-      teamCityRepositoryFactory = new TeamCityRepositoryFactory(fileResolver, transportFactory,
-          locallyAvailableResourceFinder, instantiator, resolverStrategy, artifactFileStore);
+                                      RepositoryTransportFactory transportFactory,
+                                      LocallyAvailableResourceFinder<ModuleComponentArtifactMetaData> locallyAvailableResourceFinder,
+                                      Instantiator instantiator,
+                                      ResolverStrategy resolverStrategy,
+                                      GradleInternal gradleInternal) {
+        def artifactFileStore = gradleInternal.getServices().get((Class<FileStore<ModuleComponentArtifactMetaData>>) (Class<?>) FileStore.class);
+        teamCityRepositoryFactory = new TeamCityRepositoryFactory(fileResolver, transportFactory,
+            locallyAvailableResourceFinder, instantiator, resolverStrategy, artifactFileStore);
     }
 
 
