@@ -11,33 +11,33 @@ import spock.lang.Specification
  */
 class TeamCityRepoSpec extends Specification {
 
-  def "plugin should provide 'teamcity' repository notation"() {
-    Project project = ProjectBuilder.builder().build()
-    project.pluginManager.apply 'com.github.jk1.tcdeps'
+    def "plugin should provide 'teamcity' repository notation"() {
+        Project project = ProjectBuilder.builder().build()
+        project.pluginManager.apply 'com.github.jk1.tcdeps'
 
-    when:
-    project.repositories.teamcity()
+        when:
+        project.repositories.teamcity()
 
-    then:
-    project.repositories.findByName("TeamCity") instanceof TeamCityIvyRepository
-  }
-
-
-  def "teamcity repository should properly append path to configured url"() {
-    Project project = ProjectBuilder.builder().build()
-    project.pluginManager.apply 'com.github.jk1.tcdeps'
-
-    when:
-    project.repositories.teamcity {
-      url urlValue
+        then:
+        project.repositories.findByName("TeamCity") instanceof TeamCityIvyRepository
     }
 
-    then:
-    project.repositories.findByName("TeamCity").url == patchedValue
 
-    where:
-    urlValue                                        | patchedValue
-    "http://teamcity"                               | new URI("http://teamcity/httpAuth/repository/download")
-    "http://teamcity/guestAuth/repository/download" | new URI("http://teamcity/guestAuth/repository/download")
-  }
+    def "teamcity repository should properly append path to configured url"() {
+        Project project = ProjectBuilder.builder().build()
+        project.pluginManager.apply 'com.github.jk1.tcdeps'
+
+        when:
+        project.repositories.teamcity {
+            url urlValue
+        }
+
+        then:
+        project.repositories.findByName("TeamCity").url == patchedValue
+
+        where:
+        urlValue                                        | patchedValue
+        "http://teamcity"                               | new URI("http://teamcity/httpAuth/repository/download")
+        "http://teamcity/guestAuth/repository/download" | new URI("http://teamcity/guestAuth/repository/download")
+    }
 }
