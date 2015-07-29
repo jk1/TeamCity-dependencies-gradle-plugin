@@ -30,7 +30,7 @@ class DependenciesRegexProcessor {
     }
 
     void processDependencies(Configuration configuration) {
-        logger.lifecycle("processing $project, $configuration")
+        logger.debug("processing $project, $configuration")
 
         def ivyDescriptors = getIvyDescriptorsForConfiguration(configuration.copy())
 
@@ -40,11 +40,11 @@ class DependenciesRegexProcessor {
             // TODO or should it be multiple dependencies per component?
             def ModuleDependency targetDependency = findRelatedDependency(component, configuration)
 
-            logger.lifecycle("Dependency [$targetDependency] has ivy file [$ivyFile], parsing")
+            logger.debug("Dependency [$targetDependency] has ivy file [$ivyFile], parsing")
 
             def ivyDefinedArtifacts = readArtifactsSet(ivyFile, project)
 
-            logger.lifecycle("parsed, matching dependencies")
+            logger.debug("parsed, matching dependencies")
 
             def Set<DependencyArtifact> depArtifacts = targetDependency.getArtifacts();
             def Set<ComponentArtifactMetaData> toAdd = new HashSet<>()
@@ -53,7 +53,7 @@ class DependenciesRegexProcessor {
                 def DependencyArtifact da = i.next()
                 def daName = "${da.name}.${da.type}".toString()
                 def candidates = []
-                logger.lifecycle("processing dependency artifact [${daName}]")
+                logger.debug("processing dependency artifact [${daName}]")
 
                 def exactEqual = ivyDefinedArtifacts.find {
                     if (daName.equals(it.name.toString())) {
@@ -66,7 +66,7 @@ class DependenciesRegexProcessor {
                     }
                 }
 
-                logger.lifecycle("got exact equal [${exactEqual}] and candidates [${candidates}]")
+                logger.debug("got exact equal [${exactEqual}] and candidates [${candidates}]")
 
                 def hasMatches = candidates.size() > 0
                 if (exactEqual == null && hasMatches) {
@@ -76,7 +76,7 @@ class DependenciesRegexProcessor {
             }
 
             toAdd.each { ComponentArtifactMetaData artifactMD ->
-                logger.lifecycle("injecting new artifact [${artifactMD.name.name}.${artifactMD.name.extension}]")
+                logger.debug("injecting new artifact [${artifactMD.name.name}.${artifactMD.name.extension}]")
                 targetDependency.artifact {
                     name = artifactMD.name.name
                     type = artifactMD.name.extension
@@ -86,7 +86,7 @@ class DependenciesRegexProcessor {
     }
 
     private Set<ComponentArtifactMetaData> readArtifactsSet(File ivyFile, Project project) {
-        project.logger.lifecycle("Parsing ivy file [$ivyFile]")
+        project.logger.debug("Parsing ivy file [$ivyFile]")
         getParser()
             .parseMetaData(new DisconnectedDescriptorParseContext(), ivyFile)
             .getConfiguration("default")
@@ -107,7 +107,7 @@ class DependenciesRegexProcessor {
     private boolean hasIvyArtifact(ComponentArtifactsResult component) {
         def File ivyFile = getIvyArtifact(component)
         if (ivyFile == null) {
-            logger.lifecycle("No ivy descriptor for component [$component.id.displayName].")
+            logger.debug("No ivy descriptor for component [$component.id.displayName].")
             false
         }
         true
@@ -123,10 +123,10 @@ class DependenciesRegexProcessor {
             .collect { it.selected.id }
 
         if (componentIds.isEmpty()) {
-            logger.lifecycle("no components found")
+            logger.debug("no components found")
             return []
         } else {
-            logger.lifecycle("component ids $componentIds")
+            logger.debug("component ids $componentIds")
         }
 
         getIvyDescriptorsForComponents(componentIds)
@@ -141,7 +141,7 @@ class DependenciesRegexProcessor {
 
     def process() {
         project.configurations.all {
-            project.logger.lifecycle("Post-processing dependency configuration $it")
+            project.logger.debug("Post-processing dependency configuration $it")
             processDependencies(it)
         }
     }
