@@ -1,7 +1,7 @@
 package com.github.jk1.tcdeps.util
 
-import com.github.jk1.tcdeps.PluginConfiguration
 import com.github.jk1.tcdeps.client.RestClient
+import com.github.jk1.tcdeps.repository.PinConfiguration
 import org.gradle.api.Project
 
 /**
@@ -11,7 +11,7 @@ class ResourceLocator {
 
     static def ThreadLocal<Project> project = new ThreadLocal<>()
 
-    static def ThreadLocal<PluginConfiguration> config = new ThreadLocal<>()
+    static def ThreadLocal<PinConfiguration> config = new ThreadLocal<>()
 
     static def PropertyFileCache propertyCache = new PropertyFileCache()
 
@@ -21,7 +21,7 @@ class ResourceLocator {
 
     static void setContext(Project theProject) {
         project.set(theProject)
-        config.set(theProject.teamcityServer)
+        config.set(theProject.pinConfig)
     }
 
     static void closeResourceLocator() {

@@ -27,12 +27,11 @@ class ArtifactDescriptorSpec extends Specification {
         expect:
         descriptor.name.equals(name)
         descriptor.extension.equals(ext)
-        descriptor.path.equals(path)
 
         where:
-        raw                         | name   | ext   | path
-        "folder/file.ext"           | "file" | "ext" | "folder/"
-        "dir/archive!/dir/file.ext" | "file" | "ext" | "dir/archive!/dir/"
+        raw                         | name                    | ext
+        "folder/file.ext"           | "folder/file"           | "ext"
+        "dir/archive!/dir/file.ext" | "dir/archive!/dir/file" | "ext"
     }
 
 

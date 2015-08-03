@@ -29,6 +29,8 @@ dependencies {
     compile tc('bt132:sameChainOrLastFinished:index.html')
     // with feature branches supported*/
     compile tc(buildTypeId: 'bt390', version: 'lastSuccessful', artifactPath: 'updatePlugins.xml', branch: 'master')
+    // and basic pattern-matching for artifacts
+    compile tc('bt130:lastSuccessful:manual/apache-ant-.*.sha1')
 }
 
 defaultTasks 'listdeps'

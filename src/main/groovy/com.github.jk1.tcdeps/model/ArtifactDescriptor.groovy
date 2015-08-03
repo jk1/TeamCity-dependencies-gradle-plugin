@@ -15,14 +15,8 @@ class ArtifactDescriptor {
         }
         this.rawPath = rawPath
         def lastDotIndex = rawPath.lastIndexOf('.')
-        def lastSeparatorIndex = rawPath.lastIndexOf("/")
+        name = rawPath[0..lastDotIndex - 1]
         extension = rawPath[lastDotIndex + 1..rawPath.size() - 1]
-        if (lastSeparatorIndex == -1) {
-            name = rawPath[0..lastDotIndex - 1]
-        } else {
-            name = rawPath[lastSeparatorIndex + 1..lastDotIndex - 1]
-            path = rawPath[0..lastSeparatorIndex]
-        }
     }
 
     boolean hasPath() {

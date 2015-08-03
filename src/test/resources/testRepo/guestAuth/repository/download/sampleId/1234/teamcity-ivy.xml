@@ -1,0 +1,7 @@
+<ivy-module version="1.4">
+    <info organisation="org" module="sampleId" revision="1234"/>
+    <publications>
+        <artifact name="foobazbar" type="jar" ext="jar"/>
+        <artifact name="foolimbar" type="jar" ext="jar"/>
+    </publications>
+</ivy-module>

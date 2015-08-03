@@ -13,7 +13,7 @@ class PropertyFileCache {
     public PropertyFileCache() {
         file = new File(GradleUserHomeLookup.gradleUserHome(), "caches/tcdeps-resolution.cache")
         try {
-            if (!file.exists()){
+            if (!file.exists()) {
                 file.parentFile.mkdirs()
                 file.createNewFile()
             }
