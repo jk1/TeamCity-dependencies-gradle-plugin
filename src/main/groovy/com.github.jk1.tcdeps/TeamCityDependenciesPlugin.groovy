@@ -4,21 +4,13 @@ import com.github.jk1.tcdeps.model.DependencyDescriptor
 import com.github.jk1.tcdeps.processing.DepedencyPinner
 import com.github.jk1.tcdeps.processing.DependenciesRegexProcessor
 import com.github.jk1.tcdeps.processing.ModuleVersionResolver
-import com.github.jk1.tcdeps.processing.RepositoryBuilder
-import com.github.jk1.tcdeps.repository.TeamCityIvyRepository
 import com.github.jk1.tcdeps.repository.TeamCityRepositoryFactory
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.repositories.IvyArtifactRepository
 import org.gradle.api.internal.ClosureBackedAction
-import org.gradle.api.internal.GradleInternal
+import org.gradle.api.internal.artifacts.BaseRepositoryFactory
 import org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler
-import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.strategy.ResolverStrategy
-import org.gradle.api.internal.artifacts.repositories.transport.RepositoryTransportFactory
-import org.gradle.api.internal.file.FileResolver
-import org.gradle.internal.component.external.model.ModuleComponentArtifactMetaData
-import org.gradle.internal.reflect.Instantiator
-import org.gradle.internal.resource.local.FileStore
-import org.gradle.internal.resource.local.LocallyAvailableResourceFinder
 
 import javax.inject.Inject
 
@@ -30,15 +22,8 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
     private TeamCityRepositoryFactory teamCityRepositoryFactory
 
     @Inject
-    public TeamCityDependenciesPlugin(FileResolver fileResolver,
-                                      RepositoryTransportFactory transportFactory,
-                                      LocallyAvailableResourceFinder<ModuleComponentArtifactMetaData> locallyAvailableResourceFinder,
-                                      Instantiator instantiator,
-                                      ResolverStrategy resolverStrategy,
-                                      GradleInternal gradleInternal) {
-        def artifactFileStore = gradleInternal.getServices().get((Class<FileStore<ModuleComponentArtifactMetaData>>) (Class<?>) FileStore.class);
-        teamCityRepositoryFactory = new TeamCityRepositoryFactory(fileResolver, transportFactory,
-            locallyAvailableResourceFinder, instantiator, resolverStrategy, artifactFileStore);
+    public TeamCityDependenciesPlugin(BaseRepositoryFactory repositoryFactory) {
+        teamCityRepositoryFactory = new TeamCityRepositoryFactory(repositoryFactory)
     }
 
 
@@ -76,7 +61,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
             def tcRepository
             if (configureClosure) {
                 tcRepository = handler.addRepository(teamCityRepositoryFactory.createTeamCityRepo(), "TeamCity",
-                    new ClosureBackedAction<TeamCityIvyRepository>(configureClosure));
+                    new ClosureBackedAction<IvyArtifactRepository>(configureClosure));
             } else {
                 tcRepository = handler.addRepository(teamCityRepositoryFactory.createTeamCityRepo(), "TeamCity")
             }

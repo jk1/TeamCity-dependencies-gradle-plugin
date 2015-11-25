@@ -16,8 +16,8 @@ class DependenciesRegexProcessorSpec extends Specification {
         project.pluginManager.apply 'com.github.jk1.tcdeps'
         DependenciesRegexProcessor processor = new DependenciesRegexProcessor(project)
 
-        project.repositories.teamcityServer {
-            url "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
+        project.repositories.ivy {
+            url = "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
         }
 
         project.configurations {
@@ -48,7 +48,7 @@ class DependenciesRegexProcessorSpec extends Specification {
         DependenciesRegexProcessor processor = new DependenciesRegexProcessor(project)
 
         project.repositories.teamcityServer {
-            url "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
+            url = "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
         }
 
         project.configurations {
@@ -80,7 +80,7 @@ class DependenciesRegexProcessorSpec extends Specification {
         DependenciesRegexProcessor processor = new DependenciesRegexProcessor(project)
 
         project.repositories.teamcityServer {
-            url "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
+            url = "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
         }
 
         project.configurations {

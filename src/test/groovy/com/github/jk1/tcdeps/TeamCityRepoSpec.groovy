@@ -1,7 +1,8 @@
 package com.github.jk1.tcdeps
 
-import com.github.jk1.tcdeps.repository.TeamCityIvyRepository
+
 import org.gradle.api.Project
+import org.gradle.api.artifacts.repositories.IvyArtifactRepository
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
@@ -19,7 +20,7 @@ class TeamCityRepoSpec extends Specification {
         project.repositories.teamcityServer()
 
         then:
-        project.repositories.findByName("TeamCity") instanceof TeamCityIvyRepository
+        project.repositories.findByName("TeamCity") instanceof IvyArtifactRepository
         !project.repositories.findByName("TeamCity").pin.pinEnabled
     }
 
@@ -30,7 +31,7 @@ class TeamCityRepoSpec extends Specification {
 
         when:
         project.repositories.teamcityServer {
-            url "http://teamcity"
+            url = "http://teamcity"
         }
 
         then:
@@ -43,7 +44,7 @@ class TeamCityRepoSpec extends Specification {
 
         when:
         project.repositories.teamcityServer {
-            url "http://teamcity"
+            url = "http://teamcity"
             credentials {
                 username "name"
                 password "secret"
@@ -62,7 +63,7 @@ class TeamCityRepoSpec extends Specification {
 
         when:
         project.repositories.teamcityServer {
-            url "http://teamcity"
+            url = "http://teamcity"
             pin {
                 // pinning usually requires authentication
                 username = "name"
@@ -95,7 +96,7 @@ class TeamCityRepoSpec extends Specification {
         }
 
         then:
-        def repos = project.repositories.findAll { it instanceof TeamCityIvyRepository }
+        def repos = project.repositories.findAll { it instanceof IvyArtifactRepository }
         repos.size() == 1
         repos.get(0).url.toString().contains("teamcity2")
     }
