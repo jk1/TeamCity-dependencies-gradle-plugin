@@ -5,12 +5,14 @@ import com.github.jk1.tcdeps.processing.DepedencyPinner
 import com.github.jk1.tcdeps.processing.DependenciesRegexProcessor
 import com.github.jk1.tcdeps.processing.ModuleVersionResolver
 import com.github.jk1.tcdeps.repository.TeamCityRepositoryFactory
+import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository
 import org.gradle.api.internal.ClosureBackedAction
 import org.gradle.api.internal.artifacts.BaseRepositoryFactory
 import org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler
+import org.gradle.util.GradleVersion
 
 import javax.inject.Inject
 
@@ -29,6 +31,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project theProject) {
+        assertCompatibleGradleVersion()
         processors = [new ModuleVersionResolver(), new DepedencyPinner()]
         addTeamCityNotationTo theProject
         theProject.ext.tc = { Object notation ->
@@ -41,6 +44,13 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
             new DependenciesRegexProcessor(project).process();
         }
         theProject.gradle.buildFinished { closeResourceLocator() }
+    }
+
+    private void assertCompatibleGradleVersion() {
+        def current = GradleVersion.current().version.split("\\.")
+        if (current[0].toInteger() <= 2 && current[1].toInteger() < 7) {
+            throw new GradleException("TeamCity dependencies plugin requires at least Gradle 2.7. ${GradleVersion.current()} detected.")
+        }
     }
 
     private Object addDependency(DependencyDescriptor descriptor) {
@@ -61,7 +71,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
             def tcRepository
             if (configureClosure) {
                 tcRepository = handler.addRepository(teamCityRepositoryFactory.createTeamCityRepo(), "TeamCity",
-                    new ClosureBackedAction<IvyArtifactRepository>(configureClosure));
+                        new ClosureBackedAction<IvyArtifactRepository>(configureClosure));
             } else {
                 tcRepository = handler.addRepository(teamCityRepositoryFactory.createTeamCityRepo(), "TeamCity")
             }
