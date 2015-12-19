@@ -6,10 +6,6 @@ import org.gradle.api.artifacts.repositories.IvyArtifactRepository
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
-/**
- * Created by Nikita.Skvortsov
- * date: 24.07.2015.
- */
 class TeamCityRepoSpec extends Specification {
 
     def "plugin should provide 'teamcity' repository notation"() {

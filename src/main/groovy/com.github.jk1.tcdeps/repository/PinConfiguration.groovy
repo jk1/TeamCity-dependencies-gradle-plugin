@@ -1,26 +1,13 @@
 package com.github.jk1.tcdeps.repository
 
-import org.gradle.api.artifacts.repositories.IvyArtifactRepository
-
-/**
- * Created by Nikita.Skvortsov
- * date: 28.07.2015.
- */
 class PinConfiguration {
-    IvyArtifactRepository repo
+    String url
     String username
     String password
     boolean stopBuildOnFail
     boolean pinEnabled
     String message
-
-    PinConfiguration(IvyArtifactRepository repository) {
-        repo = repository
-    }
-
-    String getUrl() {
-        repo.baseTeamCityURL
-    }
+    String tag
 
     def setDefaultMessage(String message) {
         if (this.message == null) {

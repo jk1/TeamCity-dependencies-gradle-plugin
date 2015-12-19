@@ -15,10 +15,6 @@ import org.gradle.internal.component.model.ComponentArtifactMetaData
 import org.gradle.ivy.IvyDescriptorArtifact
 import org.gradle.ivy.IvyModule
 
-/**
- * Created by Nikita.Skvortsov
- * date: 24.07.2015.
- */
 class DependenciesRegexProcessor {
 
     def Project project

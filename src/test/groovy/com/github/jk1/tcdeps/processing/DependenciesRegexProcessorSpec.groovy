@@ -5,10 +5,6 @@ import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
-/**
- * Created by Nikita.Skvortsov
- * date: 24.07.2015.
- */
 class DependenciesRegexProcessorSpec extends Specification {
 
     def "Regex processor should not touch exactly matching artifacts"(){

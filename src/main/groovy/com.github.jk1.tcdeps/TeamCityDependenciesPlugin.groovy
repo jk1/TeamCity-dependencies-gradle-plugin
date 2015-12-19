@@ -1,7 +1,7 @@
 package com.github.jk1.tcdeps
 
 import com.github.jk1.tcdeps.model.DependencyDescriptor
-import com.github.jk1.tcdeps.processing.DepedencyPinner
+import com.github.jk1.tcdeps.processing.DependencyPinner
 import com.github.jk1.tcdeps.processing.DependenciesRegexProcessor
 import com.github.jk1.tcdeps.processing.ModuleVersionResolver
 import com.github.jk1.tcdeps.repository.TeamCityRepositoryFactory
@@ -32,7 +32,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
     @Override
     void apply(Project theProject) {
         assertCompatibleGradleVersion()
-        processors = [new ModuleVersionResolver(), new DepedencyPinner()]
+        processors = [new ModuleVersionResolver(), new DependencyPinner()]
         addTeamCityNotationTo theProject
         theProject.ext.tc = { Object notation ->
             setContext(theProject)

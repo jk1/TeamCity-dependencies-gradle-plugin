@@ -11,14 +11,19 @@ import static com.github.jk1.tcdeps.util.ResourceLocator.*
  * (the text in the request data is added as a comment for the action)
  *
  */
-class DepedencyPinner implements DependencyProcessor {
+class DependencyPinner implements DependencyProcessor {
 
     @Override
     def process() {
         config.setDefaultMessage("Pinned when building dependent build $project.name $project.version")
         if (config.pinEnabled) {
             // do not pin changing modules
-            dependencies.findAll { !it.version.changing }.unique().each { pinBuild(it) }
+            dependencies.findAll { !it.version.changing }.unique().each {
+                pinBuild(it)
+                if (config.tag){
+                   tagBuild(it)
+                }
+            }
         } else {
             logger.debug("Dependency pinning is disabled")
         }
@@ -50,6 +55,40 @@ class DepedencyPinner implements DependencyProcessor {
         }
         if (response && !response.isOk()) {
             String message = "Unable to pin build: $buildLocator. Server response: HTTP $response.code \n $response.body"
+            if (config.stopBuildOnFail) {
+                throw new GradleException(message)
+            } else {
+                logger.warn(message)
+            }
+        }
+    }
+
+    private def tagBuild(DependencyDescriptor dependency) {
+        def BuildLocator buildLocator = dependency.version.buildLocator
+        buildLocator.buildTypeId = dependency.buildTypeId
+        buildLocator.branch = dependency.branch
+        logger.debug("Tagging the build: $buildLocator")
+        // todo: rewrite this to avoid boilerplate
+        def response
+        try {
+            response = restClient.post {
+                baseUrl config.url
+                locator buildLocator
+                action TAG
+                body config.tag
+                login config.username
+                password config.password
+            }
+        } catch (Exception e) {
+            String message = "Unable to tag build: $buildLocator"
+            if (config.stopBuildOnFail) {
+                throw new GradleException(message, e)
+            } else {
+                logger.warn(message, e)
+            }
+        }
+        if (response && !response.isOk()) {
+            String message = "Unable to tag build: $buildLocator. Server response: HTTP $response.code \n $response.body"
             if (config.stopBuildOnFail) {
                 throw new GradleException(message)
             } else {

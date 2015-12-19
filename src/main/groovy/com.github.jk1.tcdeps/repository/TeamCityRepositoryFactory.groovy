@@ -6,11 +6,8 @@ import org.gradle.api.artifacts.repositories.PasswordCredentials
 import org.gradle.api.internal.artifacts.BaseRepositoryFactory
 import org.gradle.util.ConfigureUtil
 
-/**
- * Created by Nikita.Skvortsov
- * date: 24.07.2015.
- */
 class TeamCityRepositoryFactory {
+
     private final BaseRepositoryFactory repositoryFactory
 
     TeamCityRepositoryFactory(BaseRepositoryFactory repositoryFactory) {
@@ -18,19 +15,12 @@ class TeamCityRepositoryFactory {
     }
 
     def IvyArtifactRepository createTeamCityRepo() {
-        def IvyArtifactRepository repo = repositoryFactory.createIvyRepository()
-        repo.layout('pattern' , {
-            artifact '[module]/[revision]/[artifact](.[ext])'
-            ivy '[module]/[revision]/teamcity-ivy.xml'
-        })
 
-        repo.metaClass.pinConfig = new PinConfiguration(repo);
+        def IvyArtifactRepository repo = createDefaultRepo()
+
+        repo.metaClass.pinConfig = new PinConfiguration();
         repo.metaClass.baseTeamCityURL = ""
-
-        repo.metaClass.getPin = {->
-            return pinConfig
-        }
-
+        repo.metaClass.getPin = { -> return pinConfig }
         repo.metaClass.pin = { Closure pinConfigClosure ->
             pinConfig.pinEnabled = true;
             pinConfigClosure.setDelegate(pinConfig)
@@ -42,24 +32,42 @@ class TeamCityRepositoryFactory {
 
         repo.metaClass.setUrl = { Object url ->
             baseTeamCityURL = url as String;
+            repo.metaClass.pinConfig.url = normalizeUrl(baseTeamCityURL)
             if (getConfiguredCredentials() != null) {
-                oldSetUrl(url + (url.endsWith("/") ? "" : "/") + "httpAuth/repository/download")
+                oldSetUrl(normalizeUrl(url) + "httpAuth/repository/download")
             } else {
-                oldSetUrl(url + (url.endsWith("/") ? "" : "/") + "guestAuth/repository/download")
+                oldSetUrl(normalizeUrl(url) + "guestAuth/repository/download")
             }
         }
 
-
         repo.metaClass.credentials = { Closure action ->
-            oldCredentials(new Action<PasswordCredentials>(){
-                @Override
-                void execute(PasswordCredentials passwordCredentials) {
-                    ConfigureUtil.configure(action, passwordCredentials)
-                }
-            })
-            oldSetUrl(baseTeamCityURL + (baseTeamCityURL.endsWith("/") ? "" : "/") + "httpAuth/repository/download")
+            oldCredentials(new CredentialsConfigurationAction(actionClosure: action))
+            oldSetUrl(normalizeUrl(baseTeamCityURL) + "httpAuth/repository/download")
         }
 
         return repo
+    }
+
+    private def createDefaultRepo(){
+        def IvyArtifactRepository repo = repositoryFactory.createIvyRepository()
+        repo.layout('pattern', {
+            artifact '[module]/[revision]/[artifact](.[ext])'
+            ivy '[module]/[revision]/teamcity-ivy.xml'
+        })
+        return repo
+    }
+
+    private def normalizeUrl(String url) {
+        return url + (url.endsWith("/") ? "" : "/")
+    }
+
+    private class CredentialsConfigurationAction implements Action<PasswordCredentials> {
+
+        def Closure actionClosure
+
+        @Override
+        void execute(PasswordCredentials passwordCredentials) {
+            ConfigureUtil.configure(actionClosure, passwordCredentials)
+        }
     }
 }

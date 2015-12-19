@@ -20,9 +20,18 @@ class RestClient {
         return execute("PUT", resource)
     }
 
+    def Response post(Closure closure) {
+        return post(new RequestBuilder(closure).request)
+    }
+
+    def Response post(RestRequest resource) {
+        return execute("POST", resource)
+    }
+
     private Response execute(String method, RestRequest resource) {
         HttpURLConnection connection = resource.toString().toURL().openConnection()
         connection.setRequestMethod(method.toUpperCase())
+        connection.setRequestProperty("Content-Type", "text/plain");
         authenticate(connection, resource.authentication)
         writeRequest(connection, resource)
         return new Response(code: connection.getResponseCode(), body: readResponse(connection))
