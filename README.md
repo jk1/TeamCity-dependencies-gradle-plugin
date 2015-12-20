@@ -11,7 +11,7 @@ The plugin makes use of default artifact cache, downloading each dependency only
 ```groovy
 // for Gradle 2.7+
 plugins {
-  id 'com.github.jk1.tcdeps' version '0.8.1'
+  id 'com.github.jk1.tcdeps' version '0.8.2'
 }
 
 // for Gradle 2.1-2.6
@@ -81,12 +81,15 @@ repositories{
       // pinning usually requires authentication
       username = "name"
       password = "secret"
-      stopBuildOnFail = true  // not mandatory, default to 'false'
-      message = "Pinned for MyCoolProject"  // not mandatory
+      stopBuildOnFail = true            // not mandatory, default to 'false'
+      message = "Pinned for MyProject"  // optional pin message
+      tag = "Production"                // optional build tag     
     }
   }
 }
 ```
+"tag" property allows to assign a custom TC tag to a build your project depends on.
+
 ###Offline mode
 
 Gradle's offline mode is fully supported for TeamCity-originated dependencies. This feature allows you to run the build when teamcity server is unreacheable or down using artifacts from local Gradle's cache:

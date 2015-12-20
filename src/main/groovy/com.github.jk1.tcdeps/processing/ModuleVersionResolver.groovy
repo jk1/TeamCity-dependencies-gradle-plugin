@@ -54,7 +54,7 @@ class ModuleVersionResolver implements DependencyProcessor {
                 action GET_BUILD_NUMBER
             }
         } catch (Exception e) {
-            throw new GradleException("Failed to resolve $buildLocator.number", e)
+            throw new GradleException("Failed to resolve $buildLocator", e)
         }
     }
 }

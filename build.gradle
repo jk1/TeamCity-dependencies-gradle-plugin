@@ -6,7 +6,7 @@ plugins{
 
 group = 'com.github.jk1'
 description = 'TeamCity dependencies plugin resolves project dependencies via local TeamCity server'
-version = '0.8.1'
+version = '0.8.2'
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 

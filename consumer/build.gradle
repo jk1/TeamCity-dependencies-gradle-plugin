@@ -15,13 +15,13 @@ configurations.all {
 
 dependencies {
     // reference arbitrary files as artifacts
-    compile tc('bt345:0.10.1094:kotlin-compiler-0.10.1094.zip')
+    compile tc('bt345:1.0.0-beta-3594:kotlin-compiler-1.0.0-beta-3594.zip')
     // with self-explanatory map dependency notation
-    compile tc(buildTypeId: 'bt345', version: '0.10.1094', artifactPath: 'kotlin-compiler-for-maven.jar')
+    compile tc(buildTypeId: 'bt345', version: '1.0.0-beta-3594', artifactPath: 'kotlin-compiler-for-maven.jar')
     // subfolders are supported
-    compile tc('bt345:0.10.1094:KotlinJpsPlugin/kotlin-jps-plugin.jar')
+    compile tc('bt345:1.0.0-beta-3594:KotlinJpsPlugin/kotlin-jps-plugin.jar')
     // archive traversal is available with '!' symbol
-    compile tc('bt345:0.10.1094:kotlin-compiler-0.10.1094.zip!/kotlinc/build.txt')
+    compile tc('bt345:1.0.0-beta-3594:kotlin-compiler-1.0.0-beta-3594.zip!/kotlinc/build.txt')
     // Use TeamCity version aliases to declare snapshot-like dependencies
     compile tc('bt351:lastFinished:plugin-verifier.jar')
     compile tc('bt131:lastPinned:javadocs/index.html')
