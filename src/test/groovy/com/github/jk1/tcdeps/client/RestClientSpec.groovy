@@ -6,7 +6,7 @@ import spock.lang.Specification
 
 class RestClientSpec extends Specification {
 
-    private static final String kotlin_build_numbers = '^[0-9.\\-]*(beta)*[0-9.\\-]*$'
+    private static final String kotlin_build_numbers = '^[0-9.\\-]*(beta|dev|rc)*[0-9.\\-]*$'
 
     def "Rest client should be able to fetch get build numbers for various build locators"() {
         def client = new RestClient()
