@@ -17,8 +17,7 @@ class DependencyPinner implements DependencyProcessor {
     def process() {
         config.setDefaultMessage("Pinned when building dependent build $project.name $project.version")
         if (config.pinEnabled) {
-            // do not pin changing modules
-            dependencies.findAll { !it.version.changing }.unique().each {
+            dependencies.findAll { shouldPin(it) }.unique().each {
                 pinBuild(it)
                 if (config.tag){
                    tagBuild(it)
@@ -27,6 +26,13 @@ class DependencyPinner implements DependencyProcessor {
         } else {
             logger.debug("Dependency pinning is disabled")
         }
+    }
+
+    /**
+     * Dependencies with dynamic versions and explicit excludes should not be pinned or tagged
+     */
+    private def shouldPin(DependencyDescriptor dep){
+      return !dep.version.changing && !config.excludes.contains(dep.buildTypeId)
     }
 
     private def pinBuild(DependencyDescriptor dependency) {

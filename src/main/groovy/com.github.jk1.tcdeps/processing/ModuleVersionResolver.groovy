@@ -21,7 +21,7 @@ class ModuleVersionResolver implements DependencyProcessor {
             buildLocator.buildTypeId = dependency.buildTypeId
             buildLocator.branch = dependency.branch
             if (project.gradle.startParameter.offline) {
-                // offline mode - get the latest version from the cache
+                // offline mode - get the latest cached version
                 dependency.version.resolved(propertyCache.load(buildLocator.toString()))
                 logger.info("Unable to resolve $dependency in offline mode, falling back to last cached version")
             } else {

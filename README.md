@@ -11,7 +11,7 @@ The plugin makes use of default artifact cache, downloading each dependency only
 ```groovy
 // for Gradle 2.7+
 plugins {
-  id 'com.github.jk1.tcdeps' version '0.8.3'
+  id 'com.github.jk1.tcdeps' version '0.9'
 }
 
 // for Gradle 2.1-2.6
@@ -81,9 +81,10 @@ repositories{
       // pinning usually requires authentication
       username = "name"
       password = "secret"
-      stopBuildOnFail = true            // not mandatory, default to 'false'
+      stopBuildOnFail = true            // not mandatory, default to 'false' 
       message = "Pinned for MyProject"  // optional pin message
-      tag = "Production"                // optional build tag     
+      tag = "Production"                // optional build tag  
+      excludes = ["MyBuildTypeId"]      // exclude build type ids from pinning/tagging  
     }
   }
 }

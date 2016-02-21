@@ -8,6 +8,7 @@ class PinConfiguration {
     boolean pinEnabled
     String message
     String tag
+    String[] excludes = []
 
     def setDefaultMessage(String message) {
         if (this.message == null) {
