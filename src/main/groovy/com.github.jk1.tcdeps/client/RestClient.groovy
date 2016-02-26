@@ -28,6 +28,14 @@ class RestClient {
         return execute("POST", resource)
     }
 
+    def Response delete(Closure closure) {
+        return delete(new RequestBuilder(closure).request)
+    }
+
+    def Response delete(RestRequest resource) {
+        return execute("DELETE", resource)
+    }
+
     private Response execute(String method, RestRequest resource) {
         HttpURLConnection connection = resource.toString().toURL().openConnection()
         connection.setRequestMethod(method.toUpperCase())
