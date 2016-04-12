@@ -48,7 +48,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
 
     private void assertCompatibleGradleVersion() {
         def current = GradleVersion.current().version.split("\\.")
-        if (current[0].toInteger() <= 2 && current[1].toInteger() < 7) {
+        if (current[0].toInteger() <= 2 && current[1].split("-")[0].toInteger() < 7) {
             throw new GradleException("TeamCity dependencies plugin requires at least Gradle 2.7. ${GradleVersion.current()} detected.")
         }
     }
