@@ -26,11 +26,11 @@ dependencies {
     compile tc('bt351:lastFinished:plugin-verifier.jar')
     compile tc('bt131:lastPinned:javadocs/index.html')
     compile tc('bt337:lastSuccessful:odata4j.zip')
-    compile tc('bt132:sameChainOrLastFinished:index.html')
+    compile tc('IntelliJIdeaCe_OpenapiJar:sameChainOrLastFinished:idea_rt.jar')
     // with feature branches supported*/
     compile tc(buildTypeId: 'bt390', version: 'lastSuccessful', artifactPath: 'updatePlugins.xml', branch: 'master')
     // and basic pattern-matching for artifacts
-    compile tc('bt130:lastSuccessful:manual/apache-ant-.*.sha1')
+    compile tc('bt415:lastSuccessful:.*-scala.jar')
 }
 
 defaultTasks 'listdeps'
