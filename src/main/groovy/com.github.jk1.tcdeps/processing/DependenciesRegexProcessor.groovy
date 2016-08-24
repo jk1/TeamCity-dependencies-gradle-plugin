@@ -7,11 +7,9 @@ import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.artifacts.result.ComponentArtifactsResult
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.artifacts.result.ResolvedDependencyResult
-import org.gradle.api.internal.GradleInternal
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.DisconnectedDescriptorParseContext
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.DownloadedIvyModuleDescriptorParser
-import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.strategy.ResolverStrategy
-import org.gradle.internal.component.model.ComponentArtifactMetaData
+import org.gradle.internal.component.external.model.DefaultModuleComponentArtifactMetadata
 import org.gradle.ivy.IvyDescriptorArtifact
 import org.gradle.ivy.IvyModule
 
@@ -43,7 +41,7 @@ class DependenciesRegexProcessor {
             logger.debug("parsed, matching dependencies")
 
             def Set<DependencyArtifact> depArtifacts = targetDependency.getArtifacts();
-            def Set<ComponentArtifactMetaData> toAdd = new HashSet<>()
+            def Set<DefaultModuleComponentArtifactMetadata> toAdd = new HashSet<>()
             def i = depArtifacts.iterator()
             while (i.hasNext()) {
                 def DependencyArtifact da = i.next()
@@ -71,7 +69,7 @@ class DependenciesRegexProcessor {
                 }
             }
 
-            toAdd.each { ComponentArtifactMetaData artifactMD ->
+            toAdd.each { DefaultModuleComponentArtifactMetadata artifactMD ->
                 logger.debug("injecting new artifact [${artifactMD.name.name}.${artifactMD.name.extension}]")
                 targetDependency.artifact {
                     name = artifactMD.name.name
@@ -81,16 +79,12 @@ class DependenciesRegexProcessor {
         }
     }
 
-    private Set<ComponentArtifactMetaData> readArtifactsSet(File ivyFile, Project project) {
+    private Set<DefaultModuleComponentArtifactMetadata> readArtifactsSet(File ivyFile, Project project) {
         project.logger.debug("Parsing ivy file [$ivyFile]")
-        getParser()
+        new DownloadedIvyModuleDescriptorParser()
             .parseMetaData(new DisconnectedDescriptorParseContext(), ivyFile)
             .getConfiguration("default")
             .artifacts
-    }
-
-    private DownloadedIvyModuleDescriptorParser getParser() {
-        new DownloadedIvyModuleDescriptorParser(((GradleInternal) project.gradle).services.get(ResolverStrategy.class))
     }
 
     private ModuleDependency findRelatedDependency(component, configuration) {

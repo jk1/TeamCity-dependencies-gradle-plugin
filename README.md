@@ -9,17 +9,22 @@ The plugin makes use of default artifact cache, downloading each dependency only
 ###Simple example
 
 ```groovy
-// for Gradle 2.7+
+// Gradle 3.0+
+plugins {
+  id 'com.github.jk1.tcdeps' version '0.10'
+}
+
+// Gradle 2.7-2.14
 plugins {
   id 'com.github.jk1.tcdeps' version '0.9'
 }
 
-// for Gradle 2.1-2.6
+// Gradle 2.1-2.6
 plugins {
   id 'com.github.jk1.tcdeps' version '0.7.7'
 }
 
-// for Gradle 2.0 and below
+// Gradle 2.0 and below
 apply plugin: 'com.github.jk1.tcdeps'
 
 repositories{

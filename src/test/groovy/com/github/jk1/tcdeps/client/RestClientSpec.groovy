@@ -1,7 +1,7 @@
 package com.github.jk1.tcdeps.client
 
 import com.github.jk1.tcdeps.model.BuildLocator
-import org.apache.http.HttpStatus
+import org.gradle.internal.impldep.org.apache.http.HttpStatus
 import spock.lang.Specification
 
 class RestClientSpec extends Specification {
