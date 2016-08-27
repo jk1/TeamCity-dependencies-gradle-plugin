@@ -2,7 +2,7 @@ package com.github.jk1.tcdeps
 
 import com.github.jk1.tcdeps.model.DependencyDescriptor
 import com.github.jk1.tcdeps.processing.DependencyPinner
-import com.github.jk1.tcdeps.processing.DependenciesRegexProcessor
+import com.github.jk1.tcdeps.processing.ArtifactRegexResolver
 import com.github.jk1.tcdeps.processing.ModuleVersionResolver
 import com.github.jk1.tcdeps.repository.TeamCityRepositoryFactory
 import org.gradle.api.GradleException
@@ -28,7 +28,6 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
         teamCityRepositoryFactory = new TeamCityRepositoryFactory(repositoryFactory)
     }
 
-
     @Override
     void apply(Project theProject) {
         assertCompatibleGradleVersion()
@@ -41,7 +40,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
         theProject.afterEvaluate {
             setContext(theProject)
             processors.each { it.process() }
-            new DependenciesRegexProcessor(project).process();
+            new ArtifactRegexResolver().process();
         }
         theProject.gradle.buildFinished { closeResourceLocator() }
     }
@@ -49,7 +48,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
     private void assertCompatibleGradleVersion() {
         def current = GradleVersion.current().version.split("\\.")
         if (current[0].toInteger() < 3) {
-            throw new GradleException("TeamCity dependencies plugin requires at least Gradle 3.0. ${GradleVersion.current()} detected.")
+            throw new GradleException("TeamCity dependencies plugin requires Gradle 3.0+. ${GradleVersion.current()} detected.")
         }
     }
 
@@ -65,20 +64,18 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
         DefaultRepositoryHandler handler = repositories as DefaultRepositoryHandler;
         repositories.ext.teamcityServer = { Closure configureClosure ->
             def oldRepo = handler.findByName("TeamCity")
+            def repo = teamCityRepositoryFactory.createTeamCityRepo()
+            if (configureClosure) {
+                def closure = new ClosureBackedAction<IvyArtifactRepository>(configureClosure)
+                repo = handler.addRepository(repo, "TeamCity", closure)
+            } else {
+                repo = handler.addRepository(teamCityRepositoryFactory.createTeamCityRepo(), "TeamCity")
+            }
             if (oldRepo) {
+                project.logger.warn "Project $project already has TeamCity server [$oldRepo.url], overriding with [$repo.url]"
                 handler.remove(oldRepo)
             }
-            def tcRepository
-            if (configureClosure) {
-                tcRepository = handler.addRepository(teamCityRepositoryFactory.createTeamCityRepo(), "TeamCity",
-                        new ClosureBackedAction<IvyArtifactRepository>(configureClosure));
-            } else {
-                tcRepository = handler.addRepository(teamCityRepositoryFactory.createTeamCityRepo(), "TeamCity")
-            }
-            if (oldRepo) {
-                project.logger.warn "Project $project already has TeamCity server configured to [$oldRepo.url], overriding with [$tcRepository.url]"
-            }
-            project.ext.pinConfig = tcRepository.pin
+            project.ext.pinConfig = repo.pin
         }
     }
 }

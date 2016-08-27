@@ -13,17 +13,18 @@ import org.gradle.internal.component.external.model.DefaultModuleComponentArtifa
 import org.gradle.ivy.IvyDescriptorArtifact
 import org.gradle.ivy.IvyModule
 
-class DependenciesRegexProcessor {
+import static com.github.jk1.tcdeps.util.ResourceLocator.*
 
-    def Project project
-    def logger
+class ArtifactRegexResolver {
 
-    DependenciesRegexProcessor(Project project) {
-        this.project = project
-        this.logger = project.logger
+    def process() {
+        project.configurations.all {
+            project.logger.debug("Post-processing dependency configuration $it")
+            resolveArtifacts(it)
+        }
     }
 
-    void processDependencies(Configuration configuration) {
+    def resolveArtifacts(Configuration configuration) {
         logger.debug("processing $project, $configuration")
 
         def ivyDescriptors = getIvyDescriptorsForConfiguration(configuration.copy())
@@ -82,15 +83,15 @@ class DependenciesRegexProcessor {
     private Set<DefaultModuleComponentArtifactMetadata> readArtifactsSet(File ivyFile, Project project) {
         project.logger.debug("Parsing ivy file [$ivyFile]")
         new DownloadedIvyModuleDescriptorParser()
-            .parseMetaData(new DisconnectedDescriptorParseContext(), ivyFile)
-            .getConfiguration("default")
-            .artifacts
+                .parseMetaData(new DisconnectedDescriptorParseContext(), ivyFile)
+                .getConfiguration("default")
+                .artifacts
     }
 
     private ModuleDependency findRelatedDependency(component, configuration) {
         (ModuleDependency) configuration.dependencies.find { dep ->
             dep instanceof ModuleDependency &&
-                "${dep.group}:${dep.name}:${dep.version}".toString().equals(component.id.displayName)
+                    "${dep.group}:${dep.name}:${dep.version}".toString().equals(component.id.displayName)
         }
     }
 
@@ -109,8 +110,8 @@ class DependenciesRegexProcessor {
 
     private Set<ComponentArtifactsResult> getIvyDescriptorsForConfiguration(Configuration configuration) {
         def componentIds = configuration.incoming.resolutionResult.allDependencies
-            .findAll { it instanceof ResolvedDependencyResult }
-            .collect { it.selected.id }
+                .findAll { it instanceof ResolvedDependencyResult }
+                .collect { it.selected.id }
 
         if (componentIds.isEmpty()) {
             logger.debug("no components found")
@@ -124,15 +125,8 @@ class DependenciesRegexProcessor {
 
     private Set<ComponentArtifactsResult> getIvyDescriptorsForComponents(List componentIds) {
         project.dependencies.createArtifactResolutionQuery()
-            .forComponents(componentIds)
-            .withArtifacts(IvyModule, IvyDescriptorArtifact)
-            .execute().resolvedComponents
-    }
-
-    def process() {
-        project.configurations.all {
-            project.logger.debug("Post-processing dependency configuration $it")
-            processDependencies(it)
-        }
+                .forComponents(componentIds)
+                .withArtifacts(IvyModule, IvyDescriptorArtifact)
+                .execute().resolvedComponents
     }
 }

@@ -5,12 +5,14 @@ import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
+import static com.github.jk1.tcdeps.util.ResourceLocator.context
+
 class DependenciesRegexProcessorSpec extends Specification {
 
     def "Regex processor should not touch exactly matching artifacts"(){
         Project project = ProjectBuilder.builder().build()
         project.pluginManager.apply 'com.github.jk1.tcdeps'
-        DependenciesRegexProcessor processor = new DependenciesRegexProcessor(project)
+        ArtifactRegexResolver processor = new ArtifactRegexResolver()
 
         project.repositories.ivy {
             url = "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
@@ -29,6 +31,7 @@ class DependenciesRegexProcessorSpec extends Specification {
         }
 
         when:
+        setContext(project)
         processor.process()
         def dependency = project.configurations.testConfig.dependencies.iterator().next() as ModuleDependency
 
@@ -41,7 +44,7 @@ class DependenciesRegexProcessorSpec extends Specification {
     def "Regex processor should match simple pattern"(){
         Project project = ProjectBuilder.builder().build()
         project.pluginManager.apply 'com.github.jk1.tcdeps'
-        DependenciesRegexProcessor processor = new DependenciesRegexProcessor(project)
+        ArtifactRegexResolver processor = new ArtifactRegexResolver()
 
         project.repositories.teamcityServer {
             url = "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
@@ -61,6 +64,7 @@ class DependenciesRegexProcessorSpec extends Specification {
         }
 
         when:
+        setContext(project)
         processor.process()
         def dependency = project.configurations.testConfig.dependencies.iterator().next() as ModuleDependency
 
@@ -73,7 +77,7 @@ class DependenciesRegexProcessorSpec extends Specification {
     def "Regex processor should handle tc(...) notation"(){
         Project project = ProjectBuilder.builder().build()
         project.pluginManager.apply 'com.github.jk1.tcdeps'
-        DependenciesRegexProcessor processor = new DependenciesRegexProcessor(project)
+        ArtifactRegexResolver processor = new ArtifactRegexResolver()
 
         project.repositories.teamcityServer {
             url = "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
@@ -88,6 +92,7 @@ class DependenciesRegexProcessorSpec extends Specification {
         }
 
         when:
+        setContext(project)
         processor.process()
         def dependency = project.configurations.testConfig.dependencies.iterator().next() as ModuleDependency
 
