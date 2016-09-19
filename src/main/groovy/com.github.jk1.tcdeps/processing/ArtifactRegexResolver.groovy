@@ -9,7 +9,7 @@ import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.artifacts.result.ResolvedDependencyResult
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.DisconnectedDescriptorParseContext
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.DownloadedIvyModuleDescriptorParser
-import org.gradle.internal.component.external.model.DefaultModuleComponentArtifactMetadata
+import org.gradle.internal.component.external.descriptor.Artifact
 import org.gradle.ivy.IvyDescriptorArtifact
 import org.gradle.ivy.IvyModule
 
@@ -38,11 +38,8 @@ class ArtifactRegexResolver {
             logger.debug("Dependency [$targetDependency] has ivy file [$ivyFile], parsing")
 
             def ivyDefinedArtifacts = readArtifactsSet(ivyFile, project)
-
-            logger.debug("parsed, matching dependencies")
-
             def Set<DependencyArtifact> depArtifacts = targetDependency.getArtifacts();
-            def Set<DefaultModuleComponentArtifactMetadata> toAdd = new HashSet<>()
+            def Set<Artifact> toAdd = new HashSet<>()
             def i = depArtifacts.iterator()
             while (i.hasNext()) {
                 def DependencyArtifact da = i.next()
@@ -51,10 +48,10 @@ class ArtifactRegexResolver {
                 logger.debug("processing dependency artifact [${daName}]")
 
                 def exactEqual = ivyDefinedArtifacts.find {
-                    if (daName.equals(it.name.toString())) {
+                    if (daName.equals(it.artifactName.toString())) {
                         return true
                     } else {
-                        if (it.name.toString() ==~ $/${daName}/$) {
+                        if (it.artifactName.toString() ==~ $/${daName}/$) {
                             candidates.add(it)
                         }
                         return false
@@ -70,21 +67,21 @@ class ArtifactRegexResolver {
                 }
             }
 
-            toAdd.each { DefaultModuleComponentArtifactMetadata artifactMD ->
-                logger.debug("injecting new artifact [${artifactMD.name.name}.${artifactMD.name.extension}]")
+            toAdd.each { Artifact artifact ->
+                logger.debug("injecting new artifact [${artifact.toString()}]")
                 targetDependency.artifact {
-                    name = artifactMD.name.name
-                    type = artifactMD.name.extension
+                    name = artifact.artifactName.name
+                    type = artifact.artifactName.extension
                 }
             }
         }
     }
 
-    private Set<DefaultModuleComponentArtifactMetadata> readArtifactsSet(File ivyFile, Project project) {
+    private Set<Artifact> readArtifactsSet(File ivyFile, Project project) {
         project.logger.debug("Parsing ivy file [$ivyFile]")
         new DownloadedIvyModuleDescriptorParser()
                 .parseMetaData(new DisconnectedDescriptorParseContext(), ivyFile)
-                .getConfiguration("default")
+                .descriptor
                 .artifacts
     }
 

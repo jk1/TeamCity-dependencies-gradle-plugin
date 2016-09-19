@@ -9,7 +9,12 @@ The plugin makes use of default artifact cache, downloading each dependency only
 ###Simple example
 
 ```groovy
-// Gradle 3.0+
+// Gradle 3.1
+plugins {
+  id 'com.github.jk1.tcdeps' version '0.11'
+}
+
+// Gradle 3.0
 plugins {
   id 'com.github.jk1.tcdeps' version '0.10'
 }
@@ -35,16 +40,19 @@ repositories{
 
 dependencies {
     // reference arbitrary files as artifacts
-    compile tc('bt345:0.10.195:kotlin-compiler-0.10.195.zip')
+    compile tc('bt345:1.0.0-beta-3594:kotlin-compiler-1.0.0-beta-3594.zip')
 
     // with self-explanatory map dependency notation
-    compile tc(buildTypeId: 'bt345', version: '0.10.195', artifactPath: 'kotlin-compiler-for-maven.jar')
+    compile tc(buildTypeId: 'bt345', version: '1.0.0-beta-3594', artifactPath: 'kotlin-compiler-for-maven.jar')
 
     // subfolders are supported
-    compile tc('bt345:0.10.195:KotlinJpsPlugin/kotlin-jps-plugin.jar')
+    compile tc('bt345:1.0.0-beta-3594:KotlinJpsPlugin/kotlin-jps-plugin.jar')
 
     // archive traversal is available with '!' symbol
-    compile tc('bt345:0.10.195:kotlin-compiler-0.10.195.zip!/kotlinc/build.txt')
+    compile tc('bt345:1.0.0-beta-3594:kotlin-compiler-1.0.0-beta-3594.zip!/kotlinc/build.txt')
+    
+    // as well as basic pattern-matching for artifacts
+    compile tc('bt415:lastSuccessful:.*-scala.jar')
 }
 ```
 TeamCity dependency description consist of the following components: build type id, build number aka version, and artifact path. Artifact path should be relative to build artifacts root in TC build. 
@@ -58,7 +66,7 @@ dependencies {
     compile tc('bt351:lastFinished:plugin-verifier.jar')
     compile tc('bt131:lastPinned:javadocs/index.html')
     compile tc('bt337:lastSuccessful:odata4j.zip')
-    compile tc('bt132:sameChainOrLastFinished:index.html')
+    compile tc('IntelliJIdeaCe_OpenapiJar:sameChainOrLastFinished:idea_rt.jar')
 }
 ```
 these dependencies will be resolved every build.
@@ -67,7 +75,7 @@ Changing dependencies may be also resolved against particular [feature branches]
 
 ```groovy
 dependencies {
-    compile tc(buildTypeId: 'bt345', version: 'lastSuccessful', artifactPath: 'KotlinJpsPlugin/kotlin-jps-plugin.jar', branch: 'master')
+    compile tc(buildTypeId: 'bt390', version: 'lastSuccessful', artifactPath: 'updatePlugins.xml', branch: 'master')
 }
 ```
 
