@@ -7,12 +7,12 @@ import groovy.transform.Canonical
 @Canonical
 class RestRequest {
 
-    def String baseUrl
-    def Closure uriPath
-    def BuildLocator locator
+    String baseUrl
+    Closure uriPath
+    BuildLocator locator
 
-    def Authentication authentication = new Authentication()
-    def String body
+    Authentication authentication = new Authentication()
+    String body
 
     String toString(){
         if (!baseUrl || !uriPath || !locator){

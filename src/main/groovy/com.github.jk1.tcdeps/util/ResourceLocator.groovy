@@ -1,7 +1,7 @@
 package com.github.jk1.tcdeps.util
 
 import com.github.jk1.tcdeps.client.RestClient
-import com.github.jk1.tcdeps.repository.PinConfiguration
+
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 
@@ -10,13 +10,13 @@ import org.gradle.api.Project
  */
 class ResourceLocator {
 
-    static def ThreadLocal<Project> project = new ThreadLocal<>()
+    static ThreadLocal<Project> project = new ThreadLocal<>()
 
-    static def PropertyFileCache propertyCache = new PropertyFileCache()
+    static PropertyFileCache propertyCache = new PropertyFileCache()
 
-    static def RestClient restClient = new RestClient()
+    static RestClient restClient = new RestClient()
 
-    static def LogFacade logger = new LogFacade()
+    static LogFacade logger = new LogFacade()
 
     static void setContext(Project theProject) {
         project.set(theProject)

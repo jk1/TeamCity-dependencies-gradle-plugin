@@ -6,9 +6,9 @@ trait DependencyProcessor {
 
     def dependencies = new ArrayList<DependencyDescriptor>()
 
-    def addDependency(DependencyDescriptor dependency) {
+    void addDependency(DependencyDescriptor dependency) {
         dependencies.add(dependency)
     }
 
-    def process() {}
+    void process() {}
 }

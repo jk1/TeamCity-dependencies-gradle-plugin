@@ -4,14 +4,14 @@ import groovy.transform.Canonical
 
 @Canonical
 class Authentication {
-    def String login
-    def String password
+    String login
+    String password
 
-    def boolean isRequired() {
+    boolean isRequired() {
         login && password
     }
 
-   def String asHttpHeader(){
+   String asHttpHeader(){
        String encoded = "$login:$password".bytes.encodeBase64().toString()
        return "Basic $encoded"
    }

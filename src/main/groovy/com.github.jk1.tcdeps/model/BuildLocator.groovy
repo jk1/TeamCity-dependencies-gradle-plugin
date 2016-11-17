@@ -8,12 +8,12 @@ import groovy.transform.EqualsAndHashCode
  */
 @Canonical
 class BuildLocator {
-    def String buildTypeId
-    def Boolean pinned
-    def Boolean successful
-    def String branch
-    def String tag
-    def String number
+    String buildTypeId
+    Boolean pinned
+    Boolean successful
+    String branch
+    String tag
+    String number
 
     @Override
     String toString() {

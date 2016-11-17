@@ -14,7 +14,7 @@ import static com.github.jk1.tcdeps.util.ResourceLocator.*
 class DependencyPinner implements DependencyProcessor {
 
     @Override
-    def process() {
+    void process() {
         config.setDefaultMessage("Pinned when building dependent build $project.name $project.version")
         if (config.pinEnabled) {
             dependencies.findAll { shouldPin(it) }.unique().each {
@@ -36,7 +36,7 @@ class DependencyPinner implements DependencyProcessor {
     }
 
     private def pinBuild(DependencyDescriptor dependency) {
-        def BuildLocator buildLocator = dependency.version.buildLocator
+        BuildLocator buildLocator = dependency.version.buildLocator
         buildLocator.buildTypeId = dependency.buildTypeId
         buildLocator.branch = dependency.branch
         logger.debug("Pinning the build: $buildLocator")
@@ -70,7 +70,7 @@ class DependencyPinner implements DependencyProcessor {
     }
 
     private def tagBuild(DependencyDescriptor dependency) {
-        def BuildLocator buildLocator = dependency.version.buildLocator
+        BuildLocator buildLocator = dependency.version.buildLocator
         buildLocator.buildTypeId = dependency.buildTypeId
         buildLocator.branch = dependency.branch
         logger.debug("Tagging the build: $buildLocator")

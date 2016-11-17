@@ -4,35 +4,35 @@ import groovy.transform.Canonical
 
 class RestClient {
 
-    def Response get(Closure closure) {
+    Response get(Closure closure) {
         return get(new RequestBuilder(closure).request)
     }
 
-    def Response get(RestRequest resource) {
+    Response get(RestRequest resource) {
         return execute("GET", resource)
     }
 
-    def Response put(Closure closure) {
+    Response put(Closure closure) {
         return put(new RequestBuilder(closure).request)
     }
 
-    def Response put(RestRequest resource) {
+    Response put(RestRequest resource) {
         return execute("PUT", resource)
     }
 
-    def Response post(Closure closure) {
+    Response post(Closure closure) {
         return post(new RequestBuilder(closure).request)
     }
 
-    def Response post(RestRequest resource) {
+    Response post(RestRequest resource) {
         return execute("POST", resource)
     }
 
-    def Response delete(Closure closure) {
+    Response delete(Closure closure) {
         return delete(new RequestBuilder(closure).request)
     }
 
-    def Response delete(RestRequest resource) {
+    Response delete(RestRequest resource) {
         return execute("DELETE", resource)
     }
 
@@ -66,8 +66,8 @@ class RestClient {
 
     @Canonical
     static class Response {
-        def int code = -1  // non-http error, e.g. TLS
-        def String body = "No response recorded. Rerun with --stacktrace to see an exception."
+        int code = -1  // non-http error, e.g. TLS
+        String body = "No response recorded. Rerun with --stacktrace to see an exception."
 
         public isOk() {
             return (200..<300).contains(code)

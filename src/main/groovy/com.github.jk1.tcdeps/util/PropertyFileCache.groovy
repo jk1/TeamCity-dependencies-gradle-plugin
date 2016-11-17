@@ -25,15 +25,15 @@ class PropertyFileCache {
         }
     }
 
-    def void store(String key, String value) {
+    void store(String key, String value) {
         props.setProperty(key, value)
     }
 
-    def String load(String key) {
+    String load(String key) {
         props.getProperty(key)
     }
 
-    def String flush() {
+    String flush() {
         try {
             new FileOutputStream(file).withStream {
                 props.store(it, 'TeamCity dependencies Gradle plugin cache file. https://github.com/jk1/TeamCity-dependencies-gradle-plugin')

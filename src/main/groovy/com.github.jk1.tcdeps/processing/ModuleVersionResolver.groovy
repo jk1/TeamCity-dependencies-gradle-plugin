@@ -15,9 +15,9 @@ import static com.github.jk1.tcdeps.util.ResourceLocator.*
 class ModuleVersionResolver implements DependencyProcessor {
 
     @Override
-    def addDependency(DependencyDescriptor dependency) {
+    void addDependency(DependencyDescriptor dependency) {
         if (dependency.getVersion().needsResolution) {
-            def BuildLocator buildLocator = dependency.version.buildLocator
+            BuildLocator buildLocator = dependency.version.buildLocator
             buildLocator.buildTypeId = dependency.buildTypeId
             buildLocator.branch = dependency.branch
             if (project.gradle.startParameter.offline) {
@@ -33,7 +33,7 @@ class ModuleVersionResolver implements DependencyProcessor {
     }
 
     private String doResolve(DependencyDescriptor dependency) {
-        def BuildLocator buildLocator = dependency.version.buildLocator
+        BuildLocator buildLocator = dependency.version.buildLocator
         buildLocator.buildTypeId = dependency.buildTypeId
         buildLocator.branch = dependency.branch
         def response = getBuildNumberFromServer(buildLocator)

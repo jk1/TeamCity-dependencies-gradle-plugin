@@ -4,10 +4,10 @@ import org.gradle.api.InvalidUserDataException
 
 class ArtifactVersion {
 
-    def String version
-    def BuildLocator buildLocator
-    def boolean needsResolution = false
-    def boolean changing = false
+    String version
+    BuildLocator buildLocator
+    boolean needsResolution = false
+    boolean changing = false
 
     // todo: shouldn't it a be full featured parser instead?
     private def placeholders = ['lastFinished'           : { return new BuildLocator() },

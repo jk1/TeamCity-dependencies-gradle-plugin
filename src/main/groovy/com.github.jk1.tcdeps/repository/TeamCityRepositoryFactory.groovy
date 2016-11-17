@@ -14,16 +14,16 @@ class TeamCityRepositoryFactory {
         this.repositoryFactory = repositoryFactory
     }
 
-    def IvyArtifactRepository createTeamCityRepo() {
+    IvyArtifactRepository createTeamCityRepo() {
 
-        def IvyArtifactRepository repo = createDefaultRepo()
+        IvyArtifactRepository repo = createDefaultRepo()
 
         def config = new PinConfiguration()
         repo.metaClass.pinConfig = config
         repo.metaClass.baseTeamCityURL = ""
         repo.metaClass.getPin = { -> return pinConfig }
         repo.metaClass.pin = { Closure pinConfigClosure ->
-            pinConfig.pinEnabled = true;
+            pinConfig.pinEnabled = true
             pinConfigClosure.setDelegate(pinConfig)
             pinConfigClosure.call()
         }
@@ -32,7 +32,7 @@ class TeamCityRepositoryFactory {
         def oldCredentials = repo.&credentials
 
         repo.metaClass.setUrl = { Object url ->
-            baseTeamCityURL = url as String;
+            baseTeamCityURL = url as String
             config.url = normalizeUrl(url)
             if (getConfiguredCredentials() != null) {
                 oldSetUrl(normalizeUrl(url) + "httpAuth/repository/download")
@@ -50,7 +50,7 @@ class TeamCityRepositoryFactory {
     }
 
     private def createDefaultRepo() {
-        def IvyArtifactRepository repo = repositoryFactory.createIvyRepository()
+        IvyArtifactRepository repo = repositoryFactory.createIvyRepository()
         repo.layout('pattern', {
             artifact '[module]/[revision]/[artifact](.[ext])'
             ivy '[module]/[revision]/teamcity-ivy.xml'
@@ -64,7 +64,7 @@ class TeamCityRepositoryFactory {
 
     private class CredentialsConfigurationAction implements Action<PasswordCredentials> {
 
-        def Closure actionClosure
+        Closure actionClosure
 
         @Override
         void execute(PasswordCredentials passwordCredentials) {

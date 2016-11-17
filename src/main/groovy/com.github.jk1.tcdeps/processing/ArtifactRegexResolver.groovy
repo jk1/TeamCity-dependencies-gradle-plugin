@@ -31,24 +31,24 @@ class ArtifactRegexResolver {
 
         ivyDescriptors.findAll { hasIvyArtifact(it) }.each { component ->
 
-            def ivyFile = getIvyArtifact(component);
+            def ivyFile = getIvyArtifact(component)
             // TODO or should it be multiple dependencies per component?
-            def ModuleDependency targetDependency = findRelatedDependency(component, configuration)
+            ModuleDependency targetDependency = findRelatedDependency(component, configuration)
 
             logger.debug("Dependency [$targetDependency] has ivy file [$ivyFile], parsing")
 
             def ivyDefinedArtifacts = readArtifactsSet(ivyFile, project)
-            def Set<DependencyArtifact> depArtifacts = targetDependency.getArtifacts();
-            def Set<Artifact> toAdd = new HashSet<>()
+            Set<DependencyArtifact> depArtifacts = targetDependency.getArtifacts();
+            Set<Artifact> toAdd = new HashSet<>()
             def i = depArtifacts.iterator()
             while (i.hasNext()) {
-                def DependencyArtifact da = i.next()
-                def daName = "${da.name}.${da.type}".toString()
+                DependencyArtifact da = i.next()
+                String daName = "${da.name}.${da.type}".toString()
                 def candidates = []
                 logger.debug("processing dependency artifact [${daName}]")
 
                 def exactEqual = ivyDefinedArtifacts.find {
-                    if (daName.equals(it.artifactName.toString())) {
+                    if (daName == it.artifactName.toString()) {
                         return true
                     } else {
                         if (it.artifactName.toString() ==~ $/${daName}/$) {
@@ -88,12 +88,12 @@ class ArtifactRegexResolver {
     private ModuleDependency findRelatedDependency(component, configuration) {
         (ModuleDependency) configuration.dependencies.find { dep ->
             dep instanceof ModuleDependency &&
-                    "${dep.group}:${dep.name}:${dep.version}".toString().equals(component.id.displayName)
+                    "$dep.group:$dep.name:$dep.version" == component.id.displayName
         }
     }
 
     private boolean hasIvyArtifact(ComponentArtifactsResult component) {
-        def File ivyFile = getIvyArtifact(component)
+        File ivyFile = getIvyArtifact(component)
         if (ivyFile == null) {
             logger.debug("No ivy descriptor for component [$component.id.displayName].")
             false
@@ -116,7 +116,6 @@ class ArtifactRegexResolver {
         } else {
             logger.debug("component ids $componentIds")
         }
-
         getIvyDescriptorsForComponents(componentIds)
     }
 
