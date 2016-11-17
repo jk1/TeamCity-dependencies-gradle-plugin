@@ -9,23 +9,15 @@ import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository
-import org.gradle.api.internal.ClosureBackedAction
-import org.gradle.api.internal.artifacts.BaseRepositoryFactory
+import org.gradle.util.ConfigureUtil
 import org.gradle.util.GradleVersion
-
-import javax.inject.Inject
 
 import static com.github.jk1.tcdeps.util.ResourceLocator.*
 
 class TeamCityDependenciesPlugin implements Plugin<Project> {
 
     private processors
-    private TeamCityRepositoryFactory teamCityRepositoryFactory
-
-    @Inject
-    TeamCityDependenciesPlugin(BaseRepositoryFactory repositoryFactory) {
-        teamCityRepositoryFactory = new TeamCityRepositoryFactory(repositoryFactory)
-    }
+    private TeamCityRepositoryFactory teamCityRepositoryFactory = new TeamCityRepositoryFactory()
 
     @Override
     void apply(Project theProject) {
@@ -64,10 +56,9 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
         def repositories = project.repositories
         repositories.ext.teamcityServer = { Closure configureClosure ->
             IvyArtifactRepository oldRepo = repositories.findByName("TeamCity")
-            IvyArtifactRepository repo = teamCityRepositoryFactory.createTeamCityRepo()
+            IvyArtifactRepository repo = teamCityRepositoryFactory.createTeamCityRepo(project)
             if (configureClosure) {
-                def closure = new ClosureBackedAction<IvyArtifactRepository>(configureClosure)
-                closure.execute(repo)
+                ConfigureUtil.configure(configureClosure, repo)
             }
             if (oldRepo) {
                 project.logger.warn "Project $project already has TeamCity server [$oldRepo.url], overriding with [$repo.url]"

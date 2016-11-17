@@ -1,22 +1,16 @@
 package com.github.jk1.tcdeps.repository
 
 import org.gradle.api.Action
+import org.gradle.api.Project
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository
 import org.gradle.api.artifacts.repositories.PasswordCredentials
-import org.gradle.api.internal.artifacts.BaseRepositoryFactory
 import org.gradle.util.ConfigureUtil
 
 class TeamCityRepositoryFactory {
 
-    private final BaseRepositoryFactory repositoryFactory
+    IvyArtifactRepository createTeamCityRepo(Project project) {
 
-    TeamCityRepositoryFactory(BaseRepositoryFactory repositoryFactory) {
-        this.repositoryFactory = repositoryFactory
-    }
-
-    IvyArtifactRepository createTeamCityRepo() {
-
-        IvyArtifactRepository repo = createDefaultRepo()
+        IvyArtifactRepository repo = createDefaultRepo(project)
 
         def config = new PinConfiguration()
         repo.metaClass.pinConfig = config
@@ -49,8 +43,8 @@ class TeamCityRepositoryFactory {
         return repo
     }
 
-    private def createDefaultRepo() {
-        IvyArtifactRepository repo = repositoryFactory.createIvyRepository()
+    private IvyArtifactRepository createDefaultRepo(Project project) {
+        IvyArtifactRepository repo = project.repositories.ivy { name = 'TeamCity'}
         repo.layout('pattern', {
             artifact '[module]/[revision]/[artifact](.[ext])'
             ivy '[module]/[revision]/teamcity-ivy.xml'
@@ -58,7 +52,7 @@ class TeamCityRepositoryFactory {
         return repo
     }
 
-    private def normalizeUrl(String url) {
+    private String normalizeUrl(String url) {
         return url.endsWith("/") ? url : url + "/"
     }
 
