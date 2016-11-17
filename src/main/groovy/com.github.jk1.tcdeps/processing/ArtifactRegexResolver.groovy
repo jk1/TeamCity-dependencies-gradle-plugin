@@ -38,7 +38,7 @@ class ArtifactRegexResolver {
             logger.debug("Dependency [$targetDependency] has ivy file [$ivyFile], parsing")
 
             def ivyDefinedArtifacts = readArtifactsSet(ivyFile, project)
-            Set<DependencyArtifact> depArtifacts = targetDependency.getArtifacts();
+            Set<DependencyArtifact> depArtifacts = targetDependency.getArtifacts()
             Set<Artifact> toAdd = new HashSet<>()
             def i = depArtifacts.iterator()
             while (i.hasNext()) {

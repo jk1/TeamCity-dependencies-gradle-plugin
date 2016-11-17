@@ -5,7 +5,7 @@ import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
-import static com.github.jk1.tcdeps.util.ResourceLocator.context
+import static com.github.jk1.tcdeps.util.ResourceLocator.setContext
 
 class DependenciesRegexProcessorSpec extends Specification {
 

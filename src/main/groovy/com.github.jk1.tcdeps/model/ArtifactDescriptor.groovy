@@ -4,10 +4,10 @@ import org.gradle.api.InvalidUserDataException
 
 class ArtifactDescriptor {
 
-    final String rawPath;
-    final String path;
-    final String name;
-    final String extension;
+    final String rawPath
+    final String path
+    final String name
+    final String extension
 
     ArtifactDescriptor(String rawPath) {
         if (rawPath == null || rawPath.isEmpty()){

@@ -1,6 +1,5 @@
 package com.github.jk1.tcdeps.model
 
-import com.github.jk1.tcdeps.processing.ModuleVersionResolver
 import org.gradle.api.InvalidUserDataException
 import spock.lang.Specification
 

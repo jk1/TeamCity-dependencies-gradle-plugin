@@ -1,8 +1,8 @@
 package com.github.jk1.tcdeps
 
 import com.github.jk1.tcdeps.model.DependencyDescriptor
-import com.github.jk1.tcdeps.processing.DependencyPinner
 import com.github.jk1.tcdeps.processing.ArtifactRegexResolver
+import com.github.jk1.tcdeps.processing.DependencyPinner
 import com.github.jk1.tcdeps.processing.ModuleVersionResolver
 import com.github.jk1.tcdeps.repository.TeamCityRepositoryFactory
 import org.gradle.api.GradleException
@@ -11,7 +11,6 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository
 import org.gradle.api.internal.ClosureBackedAction
 import org.gradle.api.internal.artifacts.BaseRepositoryFactory
-import org.gradle.api.internal.artifacts.dsl.DefaultRepositoryHandler
 import org.gradle.util.GradleVersion
 
 import javax.inject.Inject
@@ -24,7 +23,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
     private TeamCityRepositoryFactory teamCityRepositoryFactory
 
     @Inject
-    public TeamCityDependenciesPlugin(BaseRepositoryFactory repositoryFactory) {
+    TeamCityDependenciesPlugin(BaseRepositoryFactory repositoryFactory) {
         teamCityRepositoryFactory = new TeamCityRepositoryFactory(repositoryFactory)
     }
 
@@ -40,7 +39,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
         theProject.afterEvaluate {
             setContext(theProject)
             processors.each { it.process() }
-            new ArtifactRegexResolver().process();
+            new ArtifactRegexResolver().process()
         }
         theProject.gradle.buildFinished { closeResourceLocator() }
     }
@@ -63,20 +62,18 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
 
     private void addTeamCityNotationTo(Project project) {
         def repositories = project.repositories
-        DefaultRepositoryHandler handler = repositories as DefaultRepositoryHandler;
         repositories.ext.teamcityServer = { Closure configureClosure ->
-            def oldRepo = handler.findByName("TeamCity")
-            def repo = teamCityRepositoryFactory.createTeamCityRepo()
+            IvyArtifactRepository oldRepo = repositories.findByName("TeamCity")
+            IvyArtifactRepository repo = teamCityRepositoryFactory.createTeamCityRepo()
             if (configureClosure) {
                 def closure = new ClosureBackedAction<IvyArtifactRepository>(configureClosure)
-                repo = handler.addRepository(repo, "TeamCity", closure)
-            } else {
-                repo = handler.addRepository(teamCityRepositoryFactory.createTeamCityRepo(), "TeamCity")
+                closure.execute(repo)
             }
             if (oldRepo) {
                 project.logger.warn "Project $project already has TeamCity server [$oldRepo.url], overriding with [$repo.url]"
-                handler.remove(oldRepo)
+                repositories.remove(oldRepo)
             }
+            repositories.add(repo)
             project.ext.pinConfig = repo.pin
         }
     }

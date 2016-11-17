@@ -1,8 +1,6 @@
 package com.github.jk1.tcdeps.util
 
-import org.gradle.api.invocation.Gradle
 import spock.lang.Specification
-
 
 class PropertyFileCacheSpec extends Specification {
 

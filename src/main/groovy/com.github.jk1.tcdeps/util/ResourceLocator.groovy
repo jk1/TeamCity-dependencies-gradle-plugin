@@ -1,7 +1,6 @@
 package com.github.jk1.tcdeps.util
 
 import com.github.jk1.tcdeps.client.RestClient
-
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 

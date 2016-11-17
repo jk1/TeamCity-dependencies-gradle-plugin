@@ -1,16 +1,14 @@
 package com.github.jk1.tcdeps.util
 
 import org.gradle.api.GradleException
-import org.gradle.api.invocation.Gradle
 import org.gradle.wrapper.GradleUserHomeLookup
-
 
 class PropertyFileCache {
 
     private File file
     private Properties props = new Properties()
 
-    public PropertyFileCache() {
+    PropertyFileCache() {
         file = new File(GradleUserHomeLookup.gradleUserHome(), "caches/tcdeps-resolution.cache")
         try {
             if (!file.exists()) {

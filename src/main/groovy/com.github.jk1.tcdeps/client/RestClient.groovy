@@ -39,7 +39,7 @@ class RestClient {
     private Response execute(String method, RestRequest resource) {
         HttpURLConnection connection = resource.toString().toURL().openConnection()
         connection.setRequestMethod(method.toUpperCase())
-        connection.setRequestProperty("Content-Type", "text/plain");
+        connection.setRequestProperty("Content-Type", "text/plain")
         authenticate(connection, resource.authentication)
         writeRequest(connection, resource)
         return new Response(code: connection.getResponseCode(), body: readResponse(connection))
@@ -47,7 +47,7 @@ class RestClient {
 
     private void authenticate(HttpURLConnection connection, Authentication auth) {
         if (auth.isRequired()) {
-            connection.setRequestProperty("Authorization", auth.asHttpHeader());
+            connection.setRequestProperty("Authorization", auth.asHttpHeader())
         }
     }
 
