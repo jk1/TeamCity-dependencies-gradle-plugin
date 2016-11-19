@@ -4,7 +4,7 @@ import com.github.jk1.tcdeps.model.DependencyDescriptor
 
 trait DependencyProcessor {
 
-    def dependencies = new ArrayList<DependencyDescriptor>()
+    List<DependencyDescriptor> dependencies = new ArrayList<DependencyDescriptor>()
 
     void addDependency(DependencyDescriptor dependency) {
         dependencies.add(dependency)

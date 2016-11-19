@@ -3,6 +3,7 @@ package com.github.jk1.tcdeps
 import com.github.jk1.tcdeps.model.DependencyDescriptor
 import com.github.jk1.tcdeps.processing.ArtifactRegexResolver
 import com.github.jk1.tcdeps.processing.DependencyPinner
+import com.github.jk1.tcdeps.processing.DependencyProcessor
 import com.github.jk1.tcdeps.processing.ModuleVersionResolver
 import com.github.jk1.tcdeps.repository.TeamCityRepositoryFactory
 import org.gradle.api.GradleException
@@ -16,7 +17,7 @@ import static com.github.jk1.tcdeps.util.ResourceLocator.*
 
 class TeamCityDependenciesPlugin implements Plugin<Project> {
 
-    private processors
+    private List<DependencyProcessor> processors
     private TeamCityRepositoryFactory teamCityRepositoryFactory = new TeamCityRepositoryFactory()
 
     @Override

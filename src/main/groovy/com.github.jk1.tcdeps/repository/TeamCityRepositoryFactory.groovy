@@ -12,7 +12,7 @@ class TeamCityRepositoryFactory {
 
         IvyArtifactRepository repo = createDefaultRepo(project)
 
-        def config = new PinConfiguration()
+        PinConfiguration config = new PinConfiguration()
         repo.metaClass.pinConfig = config
         repo.metaClass.baseTeamCityURL = ""
         repo.metaClass.getPin = { -> return pinConfig }
@@ -44,12 +44,13 @@ class TeamCityRepositoryFactory {
     }
 
     private IvyArtifactRepository createDefaultRepo(Project project) {
-        IvyArtifactRepository repo = project.repositories.ivy { name = 'TeamCity'}
-        repo.layout('pattern', {
-            artifact '[module]/[revision]/[artifact](.[ext])'
-            ivy '[module]/[revision]/teamcity-ivy.xml'
-        })
-        return repo
+        return project.repositories.ivy {
+            name = 'TeamCity'
+            layout 'pattern', {
+                artifact '[module]/[revision]/[artifact](.[ext])'
+                ivy '[module]/[revision]/teamcity-ivy.xml'
+            }
+        }
     }
 
     private String normalizeUrl(String url) {

@@ -15,16 +15,18 @@ class DependencyPinner implements DependencyProcessor {
 
     @Override
     void process() {
-        config.setDefaultMessage("Pinned when building dependent build $project.name $project.version")
-        if (config.pinEnabled) {
-            dependencies.findAll { shouldPin(it) }.unique().each {
-                pinBuild(it)
-                if (config.tag){
-                   tagBuild(it)
+        if (!dependencies.isEmpty()) {
+            config.setDefaultMessage("Pinned when building dependent build $project.name $project.version")
+            if (config.pinEnabled) {
+                dependencies.findAll { shouldPin(it) }.unique().each {
+                    pinBuild(it)
+                    if (config.tag){
+                       tagBuild(it)
+                    }
                 }
+            } else {
+                logger.debug("Dependency pinning is disabled")
             }
-        } else {
-            logger.debug("Dependency pinning is disabled")
         }
     }
 

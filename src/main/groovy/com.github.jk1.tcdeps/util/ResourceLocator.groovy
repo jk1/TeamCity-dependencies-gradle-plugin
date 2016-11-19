@@ -1,6 +1,7 @@
 package com.github.jk1.tcdeps.util
 
 import com.github.jk1.tcdeps.client.RestClient
+import com.github.jk1.tcdeps.repository.PinConfiguration
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 
@@ -27,7 +28,7 @@ class ResourceLocator {
         project.remove()
     }
 
-    static def getConfig() {
+    static PinConfiguration getConfig() {
         def repo = project.get().repositories.findByName("TeamCity")
         if (repo ==  null) {
             throw new GradleException("TeamCity repository is not defined for project ${project.get().name}")
@@ -36,7 +37,7 @@ class ResourceLocator {
         }
     }
 
-    static def getProject() {
+    static Project getProject() {
         return project.get()
     }
 }

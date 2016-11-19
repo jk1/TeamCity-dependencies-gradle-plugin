@@ -18,9 +18,19 @@ import static com.github.jk1.tcdeps.util.ResourceLocator.*
 class ArtifactRegexResolver {
 
     def process() {
-        project.configurations.all {
-            project.logger.debug("Post-processing dependency configuration $it")
-            resolveArtifacts(it)
+        try {
+            project.configurations.all {
+                logger.debug("Post-processing dependency configuration $it")
+                resolveArtifacts(it)
+            }
+        } catch (Throwable e) {
+            /*
+            * The code below depends on internal Gradle classes and is therefore quite fragile.
+            * Artifact wildcard are not used by most of plugin users so  we don't want the whole
+            * build to fail if something got changed in future Gradle versions.
+            * Just log the error and skip wildcard resolution step instead.
+             */
+            logger.warn('An error occurred during artifact notation pattern resolution', e)
         }
     }
 
