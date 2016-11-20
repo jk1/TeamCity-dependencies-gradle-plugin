@@ -2,6 +2,7 @@ plugins{
     id 'groovy'
     id 'maven-publish'
     id 'com.gradle.plugin-publish' version '0.9.1'
+    id 'com.zoltu.kotlin' version '1.0.5'
 }
 
 group = 'com.github.jk1'
@@ -18,6 +19,7 @@ repositories {
 dependencies {
     compile gradleApi()
     compile localGroovy()
+    compile 'org.jetbrains.kotlin:kotlin-runtime:1.0.5'
 
     testCompile("org.spockframework:spock-core:1.0-groovy-2.4") {
         exclude group: 'org.codehaus.groovy'
@@ -27,6 +29,12 @@ dependencies {
     testRuntime "cglib:cglib-nodep:3.1"          // allows mocking of classes (in addition to interfaces)
     testRuntime "org.objenesis:objenesis:2.1"    // allows mocking of classes without default constructor
 }
+
+// compilation ordering modified to allow joint compilation for both Kotlin and Groovy
+compileGroovy.dependsOn = compileGroovy.taskDependencies.values - 'compileJava'
+compileKotlin.dependsOn compileGroovy
+compileKotlin.classpath += files(compileGroovy.destinationDir)
+classes.dependsOn compileKotlin
 
 test {
     outputs.upToDateWhen { false }

@@ -3,6 +3,14 @@ apply plugin: 'java'
 
 version = '1.0'
 
+buildscript {
+    // use locally built plugin
+    // todo: replace with composite builds?
+    dependencies {
+        classpath fileTree(dir: '../build/libs', include: '*.jar')
+    }
+}
+
 repositories {
     teamcityServer {
         url = 'https://teamcity.jetbrains.com'
@@ -33,17 +41,11 @@ dependencies {
     compile tc('bt415:lastSuccessful:.*-scala.jar')
 }
 
-defaultTasks 'listdeps'
-
-buildscript {
-    dependencies {
-        classpath fileTree(dir: '../build/libs', include: '*.jar')
-    }
-}
-
-task listDeps << {
-    configurations.compile.each {
-        dep -> println(dep)
+task listDeps {
+    doLast {
+        configurations.compile.each {
+            dep -> println(dep)
+        }
     }
 }
 
