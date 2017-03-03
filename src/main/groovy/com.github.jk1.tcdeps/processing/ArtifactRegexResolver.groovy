@@ -13,15 +13,23 @@ import org.gradle.internal.component.external.descriptor.Artifact
 import org.gradle.ivy.IvyDescriptorArtifact
 import org.gradle.ivy.IvyModule
 
-import static com.github.jk1.tcdeps.util.ResourceLocator.*
+import static com.github.jk1.tcdeps.util.ResourceLocator.getLogger
+import static com.github.jk1.tcdeps.util.ResourceLocator.getProject
 
 class ArtifactRegexResolver {
 
     def process() {
         try {
-            project.configurations.all {
-                logger.debug("Post-processing dependency configuration $it")
-                resolveArtifacts(it)
+            // make configuration resolution as lazy, as possible
+            project.configurations.findAll { it.state != Configuration.State.UNRESOLVED }.each { configuration ->
+                project.logger.debug("Post-processing dependency configuration $configuration")
+                resolveArtifacts(configuration)
+            }
+            project.configurations.findAll { it.state == Configuration.State.UNRESOLVED }.each { configuration ->
+                configuration.incoming.beforeResolve {
+                    project.logger.debug("Post-processing dependency configuration $configuration")
+                    resolveArtifacts(configuration)
+                }
             }
         } catch (Throwable e) {
             /*

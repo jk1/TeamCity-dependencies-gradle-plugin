@@ -14,7 +14,7 @@ class DependenciesRegexProcessorSpec extends Specification {
         project.pluginManager.apply 'com.github.jk1.tcdeps'
         ArtifactRegexResolver processor = new ArtifactRegexResolver()
 
-        project.repositories.ivy {
+        project.repositories.teamcityServer {
             url = "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
         }
 
@@ -33,11 +33,44 @@ class DependenciesRegexProcessorSpec extends Specification {
         when:
         setContext(project)
         processor.process()
+        // configuration is resolved
+        def artifacts = project.configurations.testConfig.resolvedConfiguration.resolvedArtifacts
+
+        then:
+        artifacts.size() == 1
+        artifacts.iterator().next().name == "foobazbar"
+    }
+
+    def "Regex processor should not not do anything until configuration resolution"(){
+        Project project = ProjectBuilder.builder().build()
+        project.pluginManager.apply 'com.github.jk1.tcdeps'
+        ArtifactRegexResolver processor = new ArtifactRegexResolver()
+
+        project.repositories.ivy {
+            url = "file:///" + new File("does/not/exist").getAbsolutePath()
+        }
+
+        project.configurations {
+            testConfig
+        }
+        project.dependencies {
+            testConfig ("org:sampleId:1234") {
+                artifact {
+                    name = "missing-artifact"
+                    type = "jar"
+                }
+            }
+        }
+
+        when:
+        setContext(project)
+        processor.process()
+        // configuration is not resolved
         def dependency = project.configurations.testConfig.dependencies.iterator().next() as ModuleDependency
 
         then:
         dependency.artifacts.size() == 1
-        dependency.artifacts.iterator().next().name == "foobazbar"
+        dependency.artifacts.iterator().next().name == "missing-artifact"
     }
 
 
@@ -66,12 +99,13 @@ class DependenciesRegexProcessorSpec extends Specification {
         when:
         setContext(project)
         processor.process()
-        def dependency = project.configurations.testConfig.dependencies.iterator().next() as ModuleDependency
+        // configuration is resolved
+        def artifacts = project.configurations.testConfig.resolvedConfiguration.resolvedArtifacts
 
         then:
-        dependency.artifacts.size() == 2
-        dependency.artifacts.find { it.name == "foobazbar" }
-        dependency.artifacts.find { it.name == "foolimbar" }
+        artifacts.size() == 2
+        artifacts.find { it.name == "foobazbar" }
+        artifacts.find { it.name == "foolimbar" }
     }
 
     def "Regex processor should handle tc(...) notation"(){
@@ -94,11 +128,12 @@ class DependenciesRegexProcessorSpec extends Specification {
         when:
         setContext(project)
         processor.process()
-        def dependency = project.configurations.testConfig.dependencies.iterator().next() as ModuleDependency
+        // configuration is resolved
+        def artifacts = project.configurations.testConfig.resolvedConfiguration.resolvedArtifacts
 
         then:
-        dependency.artifacts.size() == 2
-        dependency.artifacts.find { it.name == "foobazbar" }
-        dependency.artifacts.find { it.name == "foolimbar" }
+        artifacts.size() == 2
+        artifacts.find { it.name == "foobazbar" }
+        artifacts.find { it.name == "foolimbar" }
     }
 }
