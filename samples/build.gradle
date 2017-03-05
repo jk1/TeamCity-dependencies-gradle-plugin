@@ -35,7 +35,9 @@ dependencies {
     compile tc('bt131:lastPinned:javadocs/index.html')
     compile tc('bt337:lastSuccessful:odata4j.zip')
     compile tc('IntelliJIdeaCe_OpenapiJar:sameChainOrLastFinished:idea_rt.jar')
-    // with feature branches supported*/
+    // or reference builds by tags with .tcbuildtag suffix
+    compile tc('Xodus_Build:hub-1.0.tcbuildtag:console/build/libs/xodus-console.jar')
+    // with feature branches supported
     compile tc(buildTypeId: 'bt390', version: 'lastSuccessful', artifactPath: 'updatePlugins.xml', branch: 'master')
     // and basic pattern-matching for artifacts
     compile tc('bt415:lastSuccessful:.*-scala.jar')

@@ -9,7 +9,7 @@ The plugin makes use of default artifact cache, downloading each dependency only
 ###Simple example
 
 ```groovy
-// Gradle 3.1
+// Gradle 3.1+
 plugins {
   id 'com.github.jk1.tcdeps' version '0.11'
 }
@@ -59,7 +59,7 @@ TeamCity dependency description consist of the following components: build type 
 
 ###Changing dependencies
 
-Plugin supports TeamCity's build version placeholders:
+Plugin supports TeamCity build version placeholders:
 
 ```groovy
 dependencies {
@@ -69,6 +69,16 @@ dependencies {
     compile tc('IntelliJIdeaCe_OpenapiJar:sameChainOrLastFinished:idea_rt.jar')
 }
 ```
+
+and tags with `.tcbuildtag` version suffix notation:
+
+```groovy
+dependencies {
+    // Latest build marked with tag 'hub-1.0'
+    compile tc('Xodus_Build:hub-1.0.tcbuildtag:console/build/libs/xodus-console.jar')
+}
+```
+
 these dependencies will be resolved every build.
 
 Changing dependencies may be also resolved against particular [feature branches](https://confluence.jetbrains.com/display/TCD8/Working+with+Feature+Branches):
