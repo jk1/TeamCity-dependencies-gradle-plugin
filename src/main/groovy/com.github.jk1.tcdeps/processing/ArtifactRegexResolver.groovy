@@ -1,5 +1,6 @@
 package com.github.jk1.tcdeps.processing
 
+import com.github.jk1.tcdeps.util.ResourceLocator
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.DependencyArtifact
@@ -13,8 +14,8 @@ import org.gradle.internal.component.external.descriptor.Artifact
 import org.gradle.ivy.IvyDescriptorArtifact
 import org.gradle.ivy.IvyModule
 
-import static com.github.jk1.tcdeps.util.ResourceLocator.getLogger
-import static com.github.jk1.tcdeps.util.ResourceLocator.getProject
+import static com.github.jk1.tcdeps.util.ResourceLocator.logger
+import static com.github.jk1.tcdeps.util.ResourceLocator.project
 
 class ArtifactRegexResolver {
 
@@ -22,12 +23,12 @@ class ArtifactRegexResolver {
         try {
             // make configuration resolution as lazy, as possible
             project.configurations.findAll { it.state != Configuration.State.UNRESOLVED }.each { configuration ->
-                project.logger.debug("Post-processing dependency configuration $configuration")
                 resolveArtifacts(configuration)
             }
+            def capturedProject = project
             project.configurations.findAll { it.state == Configuration.State.UNRESOLVED }.each { configuration ->
                 configuration.incoming.beforeResolve {
-                    project.logger.debug("Post-processing dependency configuration $configuration")
+                    ResourceLocator.setContext(capturedProject)
                     resolveArtifacts(configuration)
                 }
             }
@@ -43,7 +44,7 @@ class ArtifactRegexResolver {
     }
 
     def resolveArtifacts(Configuration configuration) {
-        logger.debug("processing $project, $configuration")
+        logger.debug("Processing $project, $configuration")
 
         def ivyDescriptors = getIvyDescriptorsForConfiguration(configuration.copy())
 

@@ -5,19 +5,19 @@ class LogFacade {
 
     private static final PREFIX = '[TCdeps]'
 
-    public debug(message) {
+    def debug(message) {
         ResourceLocator.project.logger.debug("$PREFIX $message")
     }
 
-    public info(message) {
+    def info(message) {
         ResourceLocator.project.logger.info("$PREFIX $message")
     }
 
-    public warn(message) {
+    def warn(message) {
         ResourceLocator.project.logger.warn("$PREFIX $message")
     }
 
-    public warn(message, exception) {
+    def warn(message, exception) {
         ResourceLocator.project.logger.warn("$PREFIX $message", exception)
     }
 }

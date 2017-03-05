@@ -69,7 +69,7 @@ class RestClient {
         int code = -1  // non-http error, e.g. TLS
         String body = "No response recorded. Rerun with --stacktrace to see an exception."
 
-        public isOk() {
+        boolean isOk() {
             return (200..<300).contains(code)
         }
     }
