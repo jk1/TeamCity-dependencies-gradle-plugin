@@ -38,7 +38,7 @@ class ModuleVersionResolver implements DependencyProcessor {
         buildLocator.branch = dependency.branch
         def response = getBuildNumberFromServer(buildLocator)
         if (response.isOk()) {
-            logger.info("$dependency.version ($BuildLocator) has been resolved to a build #${response.body}")
+            logger.debug("$dependency.version ($buildLocator) has been resolved to a build #${response.body}")
             dependency.version.resolved(response.body)
         } else {
             String message = "Unable to resolve $dependency.version. \nServer response: \n $response"
