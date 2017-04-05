@@ -32,6 +32,7 @@ class ResourceLocator {
         propertyCache.flush()
         // cleanup to avoid memory leaks in daemon mode
         project.remove()
+        pinConfiguration = new PinConfiguration()
     }
 
     static PinConfiguration getConfig() {
