@@ -23,6 +23,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
     @Override
     void apply(Project theProject) {
         assertCompatibleGradleVersion()
+        setContext(theProject)
         processors = [new ModuleVersionResolver(), new DependencyPinner()]
         addTeamCityNotationTo theProject
         theProject.ext.tc = { Object notation ->
@@ -67,6 +68,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
             }
             repositories.add(repo)
             project.ext.pinConfig = repo.pin
+            setPin(repo.pin)
         }
     }
 }
