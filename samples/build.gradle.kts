@@ -1,25 +1,26 @@
-import com.github.jk1.tcdeps.TeamCityDependenciesPlugin
 import com.github.jk1.tcdeps.KotlinScriptDslAdapter.teamcityServer
 import com.github.jk1.tcdeps.KotlinScriptDslAdapter.pin
+import com.github.jk1.tcdeps.KotlinScriptDslAdapter.tc
+import org.gradle.script.lang.kotlin.*
 
 // use locally built plugin
 // todo: replace with composite builds?
 buildscript {
-    repositories { mavenCentral() }
+    repositories {
+        jcenter()
+    }
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-runtime:1.0.5")
         classpath(files("../build/libs/tcdeps-0.12.jar"))
     }
 }
 
-//you could use plugins.apply("com.github.jk1.tcdeps")
-apply {
-    plugin<TeamCityDependenciesPlugin>()
-}
+plugins.apply("com.github.jk1.tcdeps")
+plugins.apply("java")
+
 
 repositories {
     teamcityServer {
-        url("https://teamcity.jetbrains.com")
+        setUrl("https://teamcity.jetbrains.com")
         credentials {
             username = "guest"
             password = "guest"
@@ -33,4 +34,8 @@ repositories {
             tag = "test"                // optional build tag
         }
     }
+}
+
+dependencies {
+    compile(tc("bt345:1.0.0-beta-3594:kotlin-compiler-1.0.0-beta-3594.zip"))
 }
