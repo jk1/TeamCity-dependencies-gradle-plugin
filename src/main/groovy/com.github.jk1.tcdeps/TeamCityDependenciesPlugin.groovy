@@ -41,8 +41,8 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
         def current = GradleVersion.current().version.split("\\.")
         def major = current[0].toInteger()
         def minor = current[1].split("-")[0].toInteger()
-        if (major < 3 || (major == 3 && minor < 1)) {
-            throw new GradleException("TeamCity dependencies plugin requires Gradle 3.1. ${GradleVersion.current()} detected.")
+        if (major < 3 || (major == 3 && minor < 5)) {
+            throw new GradleException("TeamCity dependencies plugin requires Gradle 3.5. ${GradleVersion.current()} detected.")
         }
     }
 
