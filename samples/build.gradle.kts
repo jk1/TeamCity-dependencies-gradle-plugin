@@ -3,14 +3,9 @@ import com.github.jk1.tcdeps.KotlinScriptDslAdapter.pin
 import com.github.jk1.tcdeps.KotlinScriptDslAdapter.tc
 import org.gradle.script.lang.kotlin.*
 
-// use locally built plugin
-// todo: replace with composite builds?
 buildscript {
-    repositories {
-        jcenter()
-    }
     dependencies {
-        classpath(files("../build/libs/tcdeps-0.12.jar"))
+        classpath(files("../build/libs/tcdeps-0.13.jar"))
     }
 }
 
@@ -31,7 +26,7 @@ repositories {
             password = "secret"
             stopBuildOnFail = true            // not mandatory, default to 'false'
             message = "Pinned for MyProject"  // optional pin message
-            tag = "test"                // optional build tag
+            tag = "test"                      // optional build tag
         }
     }
 }

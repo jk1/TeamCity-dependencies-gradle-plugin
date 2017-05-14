@@ -4,58 +4,58 @@ import com.github.jk1.tcdeps.model.DependencyDescriptor
 import com.github.jk1.tcdeps.repository.PinConfiguration
 import com.github.jk1.tcdeps.util.ResourceLocator
 import org.gradle.api.GradleException
+import org.gradle.api.Project
 import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository
 
 object KotlinScriptDslAdapter {
-    fun RepositoryHandler.teamcityServer(action: IvyArtifactRepository.() -> Unit) :IvyArtifactRepository {
+
+    fun RepositoryHandler.teamcityServer(action: IvyArtifactRepository.() -> Unit): IvyArtifactRepository {
         val project = ResourceLocator.getProject()
-        val plugin = project.plugins.getPlugin("com.github.jk1.tcdeps") as TeamCityDependenciesPlugin
-
+        val plugin = project.getOurPlugin()
         val repositories = project.repositories
-
         val oldRepo = repositories.findByName("TeamCity") as IvyArtifactRepository?
         val repo = plugin.createTeamCityRepository(project)
         action(repo)
-
-        if(repo.url == null) {
-            throw GradleException("Teamcity repository url shouldn't be null.")
+        if (repo.url == null) {
+            throw GradleException("TeamCity repository url shouldn't be null")
         }
-
         ResourceLocator.getConfig().url = repo.url.toString()
         if (oldRepo != null) {
             project.logger.warn("Project $project already has TeamCity server ${oldRepo.url}, overriding with ${repo.url}")
             repositories.remove(oldRepo)
         }
 
-        val tcUrl : String = repo.url!!.toString()
-        val normalizeTcUrl : String = if (tcUrl[tcUrl.length - 1] == '/') tcUrl else tcUrl + "/"
+        val tcUrl = repo.url.toString()
+        val normalizeTcUrl = if (tcUrl.endsWith('/')) tcUrl else "$tcUrl/"
 
-        if(repo.credentials != null && repo.credentials.username != "" && repo.credentials.password != "") {
+        if (repo.credentials != null) {
+            if (repo.credentials.username.isBlank() || repo.credentials.password.isBlank()) {
+                throw GradleException("Teamcity repository login and password cannot be empty")
+            }
             repo.setUrl("${normalizeTcUrl}httpAuth/repository/download")
         } else {
             repo.setUrl("${normalizeTcUrl}guestAuth/repository/download")
         }
-
         repositories.add(repo)
         return repo
 
     }
 
-    fun IvyArtifactRepository.pin(action: PinConfiguration.() -> Unit){
+    fun IvyArtifactRepository.pin(action: PinConfiguration.() -> Unit) {
         val pinConfig = ResourceLocator.getConfig()
         action(pinConfig)
         pinConfig.pinEnabled = true
         ResourceLocator.setPin(pinConfig)
     }
 
-    fun DependencyHandler.tc(notation: String) : Any {
-        val project = ResourceLocator.getProject()
-        val plugin = project.plugins.getPlugin("com.github.jk1.tcdeps") as TeamCityDependenciesPlugin
+    fun DependencyHandler.tc(notation: String): Any {
+        val plugin = ResourceLocator.getProject().getOurPlugin()
         val depDescription = DependencyDescriptor.create(notation) as DependencyDescriptor
         plugin.addDependency(depDescription)
+        // todo: remove duplication
         val dep = create(depDescription.toDefaultDependencyNotation()) as ModuleDependency
         dep.artifact {
             it.name = depDescription.artifactDescriptor.name
@@ -63,4 +63,6 @@ object KotlinScriptDslAdapter {
         }
         return dep
     }
+
+    private fun Project.getOurPlugin() = plugins.getPlugin("com.github.jk1.tcdeps") as TeamCityDependenciesPlugin
 }
