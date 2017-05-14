@@ -5,7 +5,7 @@ import org.gradle.script.lang.kotlin.*
 
 buildscript {
     dependencies {
-        classpath(files("../build/libs/tcdeps-0.13.jar"))
+        classpath(files("../build/libs/tcdeps-0.14.jar"))
     }
 }
 
