@@ -23,3 +23,9 @@ out/
 .idea_modules/
 
 pintest
+
+### Eclipse ###
+.project
+.classpath
+.settings/
+/bin/
