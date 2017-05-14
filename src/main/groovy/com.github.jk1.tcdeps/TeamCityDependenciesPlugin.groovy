@@ -23,6 +23,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
     @Override
     void apply(Project theProject) {
         assertCompatibleGradleVersion()
+        setContext(theProject)
         processors = [new ModuleVersionResolver(), new DependencyPinner()]
         addTeamCityNotationTo theProject
         theProject.ext.tc = { Object notation ->
@@ -37,6 +38,10 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
         theProject.gradle.buildFinished { closeResourceLocator() }
     }
 
+    public IvyArtifactRepository createTeamCityRepository(Project project) {
+        return teamCityRepositoryFactory.createTeamCityRepo(project)
+    }
+
     private void assertCompatibleGradleVersion() {
         def current = GradleVersion.current().version.split("\\.")
         def major = current[0].toInteger()
@@ -46,7 +51,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
         }
     }
 
-    private Object addDependency(DependencyDescriptor descriptor) {
+    public Object addDependency(DependencyDescriptor descriptor) {
         processors.each { it.addDependency(descriptor) }
         def notation = descriptor.toDependencyNotation()
         logger.debug("Dependency generated: $notation")
@@ -57,7 +62,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
         def repositories = project.repositories
         repositories.ext.teamcityServer = { Closure configureClosure ->
             IvyArtifactRepository oldRepo = repositories.findByName("TeamCity")
-            IvyArtifactRepository repo = teamCityRepositoryFactory.createTeamCityRepo(project)
+            IvyArtifactRepository repo = createTeamCityRepository(project)
             if (configureClosure) {
                 ConfigureUtil.configure(configureClosure, repo)
             }
@@ -67,6 +72,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
             }
             repositories.add(repo)
             project.ext.pinConfig = repo.pin
+            setPin(repo.pin)
         }
     }
 }

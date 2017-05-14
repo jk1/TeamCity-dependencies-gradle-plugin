@@ -69,6 +69,13 @@ class DependencyDescriptor {
                 }]
     }
 
+    def toDefaultDependencyNotation() {
+        return [group  : 'org',
+            name   : buildTypeId,
+            version: version.version
+        ]
+    }
+
     @Override
     String toString() {
         "Dependency:[buildTypeId=$buildTypeId, artifact=$artifactDescriptor, version=$version, branch=$branch]"

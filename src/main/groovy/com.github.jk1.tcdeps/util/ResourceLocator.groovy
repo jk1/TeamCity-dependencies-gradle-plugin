@@ -18,14 +18,21 @@ class ResourceLocator {
 
     static LogFacade logger = new LogFacade()
 
+    static PinConfiguration pinConfiguration = new PinConfiguration()
+
     static void setContext(Project theProject) {
         project.set(theProject)
+    }
+
+    static void setPin(PinConfiguration pin) {
+        pinConfiguration = pin
     }
 
     static void closeResourceLocator() {
         propertyCache.flush()
         // cleanup to avoid memory leaks in daemon mode
         project.remove()
+        pinConfiguration = new PinConfiguration()
     }
 
     static PinConfiguration getConfig() {
@@ -33,7 +40,7 @@ class ResourceLocator {
         if (repo ==  null) {
             throw new GradleException("TeamCity repository is not defined for project ${project.get().name}")
         } else {
-            return repo.pinConfig
+            return pinConfiguration
         }
     }
 
