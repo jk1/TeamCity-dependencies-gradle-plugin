@@ -6,12 +6,12 @@ Allows the use of [JetBrains TeamCity](http://www.jetbrains.com/teamcity/) serve
 
 The plugin makes use of default artifact cache, downloading each dependency only once.
 
-###Simple example
+### Simple example
 
 ```groovy
 // Gradle 3.5+
 plugins {
-  id 'com.github.jk1.tcdeps' version '0.13'
+  id 'com.github.jk1.tcdeps' version '0.14'
 }
 
 // Gradle 3.1-3.4
@@ -62,7 +62,7 @@ dependencies {
 ```
 TeamCity dependency description consist of the following components: build type id, build number aka version, and artifact path. Artifact path should be relative to build artifacts root in TC build. 
 
-###Changing dependencies
+### Changing dependencies
 
 Plugin supports TeamCity build version placeholders:
 
@@ -97,7 +97,7 @@ dependencies {
 Branch name should be specified exactly as it's known to TeamCity with no encoding applied.
 Default branch will be used if branch value is not specified explicitly.
 
-###Pinning the build
+### Pinning the build
 
 By default, TeamCity does not store artifacts indefinitely, deleting them after some time. To avoid dependency loss one may choose to [pin the build](https://confluence.jetbrains.com/display/TCD8/Pinned+Build) as follows:
 
@@ -119,11 +119,42 @@ repositories{
 ```
 "tag" property allows to assign a custom TC tag to a build your project depends on.
 
-###Offline mode
+### Offline mode
 
 Gradle's offline mode is fully supported for TeamCity-originated dependencies. This feature allows you to run the build when teamcity server is unreacheable or down using artifacts from local Gradle's cache:
 
 ```
 gradle jar --offline
+```
+
+### Kotlin script support (Experimental)
+
+The following example demonstrates how to use the plugin in [Kotlin scripted builds](https://github.com/gradle/gradle-script-kotlin):
+
+```
+import com.github.jk1.tcdeps.KotlinScriptDslAdapter.teamcityServer
+import com.github.jk1.tcdeps.KotlinScriptDslAdapter.pin
+import com.github.jk1.tcdeps.KotlinScriptDslAdapter.tc
+import org.gradle.script.lang.kotlin.*
+
+plugins {
+    java
+    id("com.github.jk1.tcdeps") version "0.14"
+}
+
+
+repositories {
+    teamcityServer {
+        setUrl("https://teamcity.jetbrains.com")
+        credentials {
+            username = "guest"
+            password = "guest"
+        }
+    }
+}
+
+dependencies {
+    compile(tc("bt345:1.0.0-beta-3594:kotlin-compiler-1.0.0-beta-3594.zip"))
+}
 ```
 

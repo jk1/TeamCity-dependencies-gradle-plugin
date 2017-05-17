@@ -31,7 +31,7 @@ dependencies {
     // archive traversal is available with '!' symbol
     compile tc('bt345:1.0.0-beta-3594:kotlin-compiler-1.0.0-beta-3594.zip!/kotlinc/build.txt')
     // Use TeamCity version aliases to declare snapshot-like dependencies
-    compile tc('bt351:lastFinished:plugin-verifier.jar')
+    compile tc('OpenSourceProjects_Peergos_Build:lastFinished:PeergosServer.jar')
     compile tc('bt131:lastPinned:javadocs/index.html')
     compile tc('bt337:lastSuccessful:odata4j.zip')
     compile tc('IntelliJIdeaCe_OpenapiJar:sameChainOrLastFinished:idea_rt.jar')
