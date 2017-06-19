@@ -29,9 +29,12 @@ class ArtifactRegexResolver {
             }
             def capturedProject = project
             project.configurations.findAll { it.state == Configuration.State.UNRESOLVED }.each { configuration ->
-                configuration.incoming.beforeResolve {
-                    ResourceLocator.setContext(capturedProject)
-                    resolveArtifacts(configuration)
+                configuration.incoming.beforeResolve { incoming ->
+                    // Make sure the closure won't run on configuration copy. See https://github.com/gradle/gradle/pull/1603
+                    if (incoming == configuration.incoming) {
+                        ResourceLocator.setContext(capturedProject)
+                        resolveArtifacts(configuration)
+                    }
                 }
             }
         } catch (Throwable e) {
