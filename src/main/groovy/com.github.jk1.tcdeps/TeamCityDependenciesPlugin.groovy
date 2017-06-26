@@ -45,9 +45,9 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
     private void assertCompatibleGradleVersion() {
         def current = GradleVersion.current().version.split("\\.")
         def major = current[0].toInteger()
-        def minor = current[1].split("-")[0].toInteger()
-        if (major < 3 || (major == 3 && minor < 5)) {
-            throw new GradleException("TeamCity dependencies plugin requires Gradle 3.5. ${GradleVersion.current()} detected.")
+        // def minor = current[1].split("-")[0].toInteger()
+        if (major < 4) {
+            throw new GradleException("TeamCity dependencies plugin requires Gradle 4.0. ${GradleVersion.current()} detected.")
         }
     }
 
@@ -67,7 +67,7 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
                 ConfigureUtil.configure(configureClosure, repo)
             }
             if (oldRepo) {
-                project.logger.warn "Project $project already has TeamCity server [$oldRepo.url], overriding with [$repo.url]"
+                project.logger.warn "Project $project already has TeamCity server [${oldRepo.getUrl()}], overriding with [${repo.getUrl()}]"
                 repositories.remove(oldRepo)
             }
             repositories.add(repo)
