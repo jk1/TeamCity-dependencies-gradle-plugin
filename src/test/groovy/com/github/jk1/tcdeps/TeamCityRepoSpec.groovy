@@ -31,7 +31,7 @@ class TeamCityRepoSpec extends Specification {
         }
 
         then:
-        project.repositories.findByName("TeamCity").url == new URI("http://teamcity/guestAuth/repository/download")
+        project.repositories.findByName("TeamCity").getUrl() == new URI("http://teamcity/guestAuth/repository/download")
     }
 
     def "teamcity repository should use http auth when credentials are provided"() {
@@ -48,7 +48,7 @@ class TeamCityRepoSpec extends Specification {
         }
 
         then:
-        project.repositories.findByName("TeamCity").url == new URI("http://teamcity/httpAuth/repository/download")
+        project.repositories.findByName("TeamCity").getUrl() == new URI("http://teamcity/httpAuth/repository/download")
     }
 
 
@@ -71,7 +71,7 @@ class TeamCityRepoSpec extends Specification {
         def repo = project.repositories.findByName("TeamCity")
 
         then:
-        repo.url.toString() == "http://teamcity/guestAuth/repository/download"
+        repo.getUrl().toString() == "http://teamcity/guestAuth/repository/download"
         repo.pin.pinEnabled
         repo.pin.username == "name"
         repo.pin.password == "secret"
@@ -94,6 +94,6 @@ class TeamCityRepoSpec extends Specification {
         then:
         def repos = project.repositories.findAll { it instanceof IvyArtifactRepository }
         repos.size() == 1
-        repos.get(0).url.toString().contains("teamcity2")
+        repos.get(0).getUrl().toString().contains("teamcity2")
     }
 }
