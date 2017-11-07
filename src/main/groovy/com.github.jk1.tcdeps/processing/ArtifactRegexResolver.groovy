@@ -11,8 +11,8 @@ import org.gradle.api.artifacts.result.ResolvedDependencyResult
 import org.gradle.api.internal.GradleInternal
 import org.gradle.api.internal.artifacts.DefaultImmutableModuleIdentifierFactory
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.DisconnectedDescriptorParseContext
-import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.DownloadedIvyModuleDescriptorParser
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.IvyModuleDescriptorConverter
+import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.IvyXmlModuleDescriptorParser
 import org.gradle.internal.component.external.descriptor.Artifact
 import org.gradle.internal.resource.local.FileResourceRepository
 import org.gradle.ivy.IvyDescriptorArtifact
@@ -107,10 +107,9 @@ class ArtifactRegexResolver {
         project.logger.debug("Parsing ivy file [$ivyFile]")
         def factory = new DefaultImmutableModuleIdentifierFactory()
         def fileRepository = ((GradleInternal) project.getGradle()).getServices().get(FileResourceRepository.class)
-        new DownloadedIvyModuleDescriptorParser(new IvyModuleDescriptorConverter(factory), factory, fileRepository)
+        new IvyXmlModuleDescriptorParser(new IvyModuleDescriptorConverter(factory), factory, fileRepository)
                 .parseMetaData(new DisconnectedDescriptorParseContext(), ivyFile)
-                .descriptor
-                .artifacts
+                .artifactDefinitions.toSet()
     }
 
     private ModuleDependency findRelatedDependency(component, configuration) {

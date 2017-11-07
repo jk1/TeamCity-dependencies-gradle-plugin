@@ -32,7 +32,7 @@ object KotlinScriptDslAdapter {
         val normalizeTcUrl = if (tcUrl.endsWith('/')) tcUrl else "$tcUrl/"
 
         if (repo.credentials != null) {
-            if (repo.credentials.username.isBlank() || repo.credentials.password.isBlank()) {
+            if (repo.credentials.username.orEmpty().isBlank() || repo.credentials.password.orEmpty().isBlank()) {
                 throw GradleException("Teamcity repository login and password cannot be empty")
             }
             repo.setUrl("${normalizeTcUrl}httpAuth/repository/download")
