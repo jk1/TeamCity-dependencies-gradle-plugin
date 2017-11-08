@@ -9,7 +9,12 @@ The plugin makes use of default artifact cache, downloading each dependency only
 ### Simple example
 
 ```groovy
-// Gradle 4.0+
+// Gradle 4.3+
+plugins {
+  id 'com.github.jk1.tcdeps' version '0.16'
+}
+
+// Gradle 4.0-4.2
 plugins {
   id 'com.github.jk1.tcdeps' version '0.15'
 }
