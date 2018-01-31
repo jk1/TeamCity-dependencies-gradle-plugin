@@ -6,7 +6,7 @@ plugins{
 
 group = 'com.github.jk1'
 description = 'TeamCity dependencies plugin resolves project dependencies via local TeamCity server'
-version = '0.16'
+version = '0.17'
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
@@ -31,7 +31,7 @@ dependencies {
 }
 
 // compilation ordering modified to allow joint compilation for both Kotlin and Groovy
-compileGroovy.dependsOn = compileGroovy.taskDependencies.values - 'compileJava'
+compileGroovy.dependsOn = compileGroovy.taskDependencies.getMutableValues() - 'compileJava'
 compileKotlin.dependsOn compileGroovy
 compileKotlin.classpath += files(compileGroovy.destinationDir)
 classes.dependsOn compileKotlin
