@@ -37,12 +37,23 @@ class RestClient {
     }
 
     private Response execute(String method, RestRequest resource) {
-        HttpURLConnection connection = resource.toString().toURL().openConnection()
+        HttpURLConnection connection = prepareConnection(method, resource.toString(), resource.authentication)
+        connection.setInstanceFollowRedirects(true)
+        writeRequest(connection, resource)
+        def location = connection.getHeaderField("Location")
+        if (location != null) { // follow the redirect once
+            connection = prepareConnection(method, location, resource.authentication)
+            writeRequest(connection, resource)
+        }
+        return new Response(code: connection.getResponseCode(), body: readResponse(connection))
+    }
+
+    private HttpURLConnection prepareConnection(String method, String url, Authentication auth) {
+        HttpURLConnection connection = url.toURL().openConnection()
         connection.setRequestMethod(method.toUpperCase())
         connection.setRequestProperty("Content-Type", "text/plain")
-        authenticate(connection, resource.authentication)
-        writeRequest(connection, resource)
-        return new Response(code: connection.getResponseCode(), body: readResponse(connection))
+        authenticate(connection, auth)
+        return connection
     }
 
     private void authenticate(HttpURLConnection connection, Authentication auth) {
