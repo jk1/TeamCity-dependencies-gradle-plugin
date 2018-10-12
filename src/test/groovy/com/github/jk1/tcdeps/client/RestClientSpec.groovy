@@ -69,4 +69,22 @@ class RestClientSpec extends Specification {
         response.code == HttpStatus.SC_OK
         response.body.matches(kotlin_build_numbers) // we expect a build number
     }
+
+    def "client should follow http redirects"() {
+        def client = new RestClient()
+        def response
+
+        when:
+        response = client.get(new RequestBuilder({
+            baseUrl 'http://teamcity.jetbrains.com/'    // http -> https redirect
+            locator new BuildLocator(buildTypeId: 'bt345')
+            action GET_BUILD_NUMBER
+            login 'guest'
+            password 'guest'
+        }).request)
+
+        then:
+        response.code == HttpStatus.SC_OK
+        response.body.matches(kotlin_build_numbers) // we expect a build number
+    }
 }
