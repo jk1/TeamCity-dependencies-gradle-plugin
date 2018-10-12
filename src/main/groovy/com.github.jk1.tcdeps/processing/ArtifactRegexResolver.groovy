@@ -62,43 +62,45 @@ class ArtifactRegexResolver {
             // TODO or should it be multiple dependencies per component?
             ModuleDependency targetDependency = findRelatedDependency(component, configuration)
 
-            logger.debug("Dependency [$targetDependency] has ivy file [$ivyFile], parsing")
+            if (targetDependency != null) {
+                logger.debug("Dependency [$targetDependency] has ivy file [$ivyFile], parsing")
 
-            def ivyDefinedArtifacts = readArtifactsSet(ivyFile, project)
-            Set<DependencyArtifact> depArtifacts = targetDependency.getArtifacts()
-            Set<Artifact> toAdd = new HashSet<>()
-            def i = depArtifacts.iterator()
-            while (i.hasNext()) {
-                DependencyArtifact da = i.next()
-                String daName = "${da.name}.${da.type}".toString()
-                def candidates = []
-                logger.debug("processing dependency artifact [${daName}]")
+                def ivyDefinedArtifacts = readArtifactsSet(ivyFile, project)
+                Set<DependencyArtifact> depArtifacts = targetDependency.getArtifacts()
+                Set<Artifact> toAdd = new HashSet<>()
+                def i = depArtifacts.iterator()
+                while (i.hasNext()) {
+                    DependencyArtifact da = i.next()
+                    String daName = "${da.name}.${da.type}".toString()
+                    def candidates = []
+                    logger.debug("processing dependency artifact [${daName}]")
 
-                def exactEqual = ivyDefinedArtifacts.find {
-                    if (daName == it.artifactName.toString()) {
-                        return true
-                    } else {
-                        if (it.artifactName.toString() ==~ $/${daName}/$) {
-                            candidates.add(it)
+                    def exactEqual = ivyDefinedArtifacts.find {
+                        if (daName == it.artifactName.toString()) {
+                            return true
+                        } else {
+                            if (it.artifactName.toString() ==~ $/${daName}/$) {
+                                candidates.add(it)
+                            }
+                            return false
                         }
-                        return false
+                    }
+
+                    logger.debug("got exact equal [${exactEqual}] and candidates [${candidates}]")
+
+                    def hasMatches = candidates.size() > 0
+                    if (exactEqual == null && hasMatches) {
+                        i.remove()
+                        toAdd.addAll(candidates)
                     }
                 }
 
-                logger.debug("got exact equal [${exactEqual}] and candidates [${candidates}]")
-
-                def hasMatches = candidates.size() > 0
-                if (exactEqual == null && hasMatches) {
-                    i.remove()
-                    toAdd.addAll(candidates)
-                }
-            }
-
-            toAdd.each { Artifact artifact ->
-                logger.debug("injecting new artifact [${artifact.toString()}]")
-                targetDependency.artifact {
-                    name = artifact.artifactName.name
-                    type = artifact.artifactName.extension
+                toAdd.each { Artifact artifact ->
+                    logger.debug("injecting new artifact [${artifact.toString()}]")
+                    targetDependency.artifact {
+                        name = artifact.artifactName.name
+                        type = artifact.artifactName.extension
+                    }
                 }
             }
         }
