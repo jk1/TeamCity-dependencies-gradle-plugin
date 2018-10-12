@@ -4,7 +4,7 @@ import com.github.jk1.tcdeps.KotlinScriptDslAdapter.tc
 
 plugins {
     java
-    id("com.github.jk1.tcdeps") version "0.17"
+    id("com.github.jk1.tcdeps") version "0.18"
 }
 
 repositories {
