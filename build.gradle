@@ -19,7 +19,6 @@ dependencies {
     compile gradleApi()
     compile localGroovy()
     compile 'org.jetbrains.kotlin:kotlin-stdlib:1.2.70'
-    compile 'org.jetbrains.kotlin:kotlin-runtime:1.2.70'
 
     testCompile("org.spockframework:spock-core:1.0-groovy-2.4") {
         exclude group: 'org.codehaus.groovy'
