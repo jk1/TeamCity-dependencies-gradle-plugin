@@ -9,7 +9,12 @@ The plugin makes use of default artifact cache, downloading each dependency only
 ### Simple example
 
 ```groovy
-// Gradle 4.5+
+// Gradle 5.3+
+plugins {
+  id 'com.github.jk1.tcdeps' version '0.19'
+}
+
+// Gradle 4.5-5.2
 plugins {
   id 'com.github.jk1.tcdeps' version '0.18'
 }
@@ -153,7 +158,7 @@ import com.github.jk1.tcdeps.KotlinScriptDslAdapter.tc
 
 plugins {
     java
-    id("com.github.jk1.tcdeps") version "0.18"
+    id("com.github.jk1.tcdeps") version "0.19"
 }
 
 
