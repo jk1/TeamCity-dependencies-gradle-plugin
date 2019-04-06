@@ -113,7 +113,7 @@ class ArtifactRegexResolver {
         def metadataFactory = ((GradleInternal) project.getGradle()).getServices().get(IvyMutableModuleMetadataFactory.class)
         new IvyXmlModuleDescriptorParser(new IvyModuleDescriptorConverter(factory), factory, fileRepository, metadataFactory)
                 .parseMetaData(new DisconnectedDescriptorParseContext(), ivyFile)
-                .artifactDefinitions.toSet()
+                .result.artifactDefinitions.toSet()
     }
 
     private ModuleDependency findRelatedDependency(component, configuration) {
