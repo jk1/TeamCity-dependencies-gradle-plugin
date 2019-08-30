@@ -46,7 +46,7 @@ class TeamCityRepositoryFactory {
     private IvyArtifactRepository createDefaultRepo(Project project) {
         return project.repositories.ivy {
             name = 'TeamCity'
-            layout 'pattern', {
+            patternLayout {
                 artifact '[module]/[revision]/[artifact](.[ext])'
                 ivy '[module]/[revision]/teamcity-ivy.xml'
             }
