@@ -34,7 +34,6 @@ dependencies {
     compile tc('OpenSourceProjects_Peergos_Build:lastFinished:PeergosServer.jar')
     compile tc('bt131:lastPinned:javadocs/index.html')
     compile tc('bt337:lastSuccessful:odata4j.zip')
-    compile tc('IntelliJIdeaCe_OpenapiJar:sameChainOrLastFinished:idea_rt.jar')
     // or reference builds by tags with .tcbuildtag suffix
     compile tc('Xodus_Build:hub-1.0.tcbuildtag:console/build/libs/xodus-console.jar')
     // with feature branches supported

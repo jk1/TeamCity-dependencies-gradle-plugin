@@ -3,8 +3,8 @@ import com.github.jk1.tcdeps.KotlinScriptDslAdapter.pin
 import com.github.jk1.tcdeps.KotlinScriptDslAdapter.tc
 
 plugins {
-    java
-    id("com.github.jk1.tcdeps") version "0.18"
+    id("java")
+    id("com.github.jk1.tcdeps") version "0.19"
 }
 
 repositories {
@@ -18,13 +18,13 @@ repositories {
 }
 
 dependencies {
-    compile(tc("bt345:1.1.50-dev-1182:kotlin-compiler1.1.50-dev-1182.zip"))
+    compile(tc("bt345:1.0.0-beta-3594:kotlin-compiler-1.0.0-beta-3594.zip"))
 }
 
 tasks {
     register("listDeps", Task::class) {
         doLast {
-            configurations.compile.forEach {
+            configurations["compile"].forEach { it ->
                 println(it.toString())
             }
         }
