@@ -7,6 +7,7 @@ import groovy.transform.Canonical
  */
 @Canonical
 class BuildLocator {
+
     String buildTypeId
     Boolean pinned
     Boolean successful

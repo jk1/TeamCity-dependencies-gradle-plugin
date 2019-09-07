@@ -1,21 +1,13 @@
 package com.github.jk1.tcdeps.processing
 
 import com.github.jk1.tcdeps.util.ResourceLocator
-import org.gradle.api.Project
+import groovy.transform.Canonical
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.DependencyArtifact
 import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.artifacts.result.ComponentArtifactsResult
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.artifacts.result.ResolvedDependencyResult
-import org.gradle.api.internal.GradleInternal
-import org.gradle.api.internal.artifacts.DefaultImmutableModuleIdentifierFactory
-import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.DisconnectedDescriptorParseContext
-import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.IvyModuleDescriptorConverter
-import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.IvyXmlModuleDescriptorParser
-import org.gradle.api.internal.artifacts.repositories.metadata.IvyMutableModuleMetadataFactory
-import org.gradle.internal.component.external.descriptor.Artifact
-import org.gradle.internal.resource.local.FileResourceRepository
 import org.gradle.ivy.IvyDescriptorArtifact
 import org.gradle.ivy.IvyModule
 
@@ -65,29 +57,25 @@ class ArtifactRegexResolver {
             if (targetDependency != null) {
                 logger.debug("Dependency [$targetDependency] has ivy file [$ivyFile], parsing")
 
-                def ivyDefinedArtifacts = readArtifactsSet(ivyFile, project)
-                Set<DependencyArtifact> depArtifacts = targetDependency.getArtifacts()
-                Set<Artifact> toAdd = new HashSet<>()
-                def i = depArtifacts.iterator()
+                def ivyDefinedArtifacts = readArtifactsSet(ivyFile)
+                Set<IvyArtifactName> toAdd = new HashSet<>()
+                def i = targetDependency.getArtifacts().iterator()
                 while (i.hasNext()) {
                     DependencyArtifact da = i.next()
                     String daName = "${da.name}.${da.type}".toString()
                     def candidates = []
                     logger.debug("processing dependency artifact [${daName}]")
-
                     def exactEqual = ivyDefinedArtifacts.find {
-                        if (daName == it.artifactName.toString()) {
+                        if (daName == it.toString()) {
                             return true
                         } else {
-                            if (it.artifactName.toString() ==~ $/${daName}/$) {
+                            if (it.toString() ==~ $/${daName}/$) {
                                 candidates.add(it)
                             }
                             return false
                         }
                     }
-
                     logger.debug("got exact equal [${exactEqual}] and candidates [${candidates}]")
-
                     def hasMatches = candidates.size() > 0
                     if (exactEqual == null && hasMatches) {
                         i.remove()
@@ -95,25 +83,23 @@ class ArtifactRegexResolver {
                     }
                 }
 
-                toAdd.each { Artifact artifact ->
+                toAdd.each { IvyArtifactName artifact ->
                     logger.debug("injecting new artifact [${artifact.toString()}]")
                     targetDependency.artifact {
-                        name = artifact.artifactName.name
-                        type = artifact.artifactName.extension
+                        name = artifact.name
+                        type = artifact.extension
                     }
                 }
             }
         }
     }
 
-    private Set<Artifact> readArtifactsSet(File ivyFile, Project project) {
+    private Set<IvyArtifactName> readArtifactsSet(File ivyFile) {
         project.logger.debug("Parsing ivy file [$ivyFile]")
-        def factory = new DefaultImmutableModuleIdentifierFactory()
-        def fileRepository = ((GradleInternal) project.getGradle()).getServices().get(FileResourceRepository.class)
-        def metadataFactory = ((GradleInternal) project.getGradle()).getServices().get(IvyMutableModuleMetadataFactory.class)
-        new IvyXmlModuleDescriptorParser(new IvyModuleDescriptorConverter(factory), factory, fileRepository, metadataFactory)
-                .parseMetaData(new DisconnectedDescriptorParseContext(), ivyFile)
-                .result.artifactDefinitions.toSet()
+        def ivyModule = new XmlSlurper().parseText(ivyFile.text)
+        return ivyModule.publications.childNodes().collect {
+            new IvyArtifactName(name: it.attributes().get("name"), extension: it.attributes().get("ext"))
+        }
     }
 
     private ModuleDependency findRelatedDependency(component, configuration) {
@@ -155,5 +141,17 @@ class ArtifactRegexResolver {
                 .forComponents(componentIds)
                 .withArtifacts(IvyModule, IvyDescriptorArtifact)
                 .execute().resolvedComponents
+    }
+
+    @Canonical
+    private class IvyArtifactName {
+
+        String name
+        String extension
+
+        @Override
+        String toString() {
+            return extension == null ? name : "$name.$extension"
+        }
     }
 }
