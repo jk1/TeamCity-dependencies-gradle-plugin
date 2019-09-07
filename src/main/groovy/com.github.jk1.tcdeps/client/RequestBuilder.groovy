@@ -32,19 +32,31 @@ class RequestBuilder {
         request.body = body
     }
 
-    void action(Closure closure){
+    void action(Closure closure) {
         request.uriPath = closure
     }
 
-    static def PIN = { BuildLocator locator ->
-        "/httpAuth/app/rest/builds/$locator/pin"
+    static def PIN = { BuildLocator locator, Boolean authenticate ->
+        if (authenticate) {
+            "/httpAuth/app/rest/builds/$locator/pin"
+        } else {
+            "/guestAuth/app/rest/builds/$locator/pin"
+        }
     }
 
-    static def TAG = { BuildLocator locator ->
-        "/httpAuth/app/rest/builds/$locator/tags"
+    static def TAG = { BuildLocator locator, Boolean authenticate ->
+        if (authenticate) {
+            "/httpAuth/app/rest/builds/$locator/tags"
+        } else {
+            "/guestAuth/app/rest/builds/$locator/tags"
+        }
     }
 
-    static def GET_BUILD_NUMBER = { BuildLocator locator ->
-        "/guestAuth/app/rest/builds/$locator/number"
+    static def GET_BUILD_NUMBER = { BuildLocator locator, Boolean authenticate ->
+        if (authenticate) {
+            "/httpAuth/app/rest/builds/$locator/number"
+        } else {
+            "/guestAuth/app/rest/builds/$locator/number"
+        }
     }
 }

@@ -5,11 +5,24 @@ import spock.lang.Specification
 
 class RequestBuilderSpec extends Specification {
 
-    def "request builder should produce valid pin url"() {
+    def "request builder should produce anonymous pin url by default"() {
         def builder = new RequestBuilder({
             baseUrl 'http://server.org'
             locator new BuildLocator(buildTypeId: 'bt1', number: '1')
             action PIN
+        })
+
+        expect:
+        builder.request.toString().equals("http://server.org/guestAuth/app/rest/builds/buildType:bt1,number:1/pin")
+    }
+
+    def "request builder should produce authneticated pin url if login and password are set"() {
+        def builder = new RequestBuilder({
+            baseUrl 'http://server.org'
+            locator new BuildLocator(buildTypeId: 'bt1', number: '1')
+            action PIN
+            login "login"
+            password "password"
         })
 
         expect:

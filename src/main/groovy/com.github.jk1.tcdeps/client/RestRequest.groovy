@@ -18,7 +18,7 @@ class RestRequest {
         if (!baseUrl || !uriPath || !locator){
             throw new IllegalArgumentException("Base url, path and locator should be specified")
         }
-        "$baseUrl${uriPath.call(locator)}"
+        "$baseUrl${uriPath.call(locator, authentication.isRequired())}"
     }
 }
 
