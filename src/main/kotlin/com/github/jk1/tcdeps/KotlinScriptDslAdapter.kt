@@ -9,6 +9,7 @@ import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository
+import org.gradle.internal.artifacts.repositories.AuthenticationSupportedInternal
 
 object KotlinScriptDslAdapter {
 
@@ -31,13 +32,11 @@ object KotlinScriptDslAdapter {
         val tcUrl = repo.url.toString()
         val normalizeTcUrl = if (tcUrl.endsWith('/')) tcUrl else "$tcUrl/"
 
-        if (repo.credentials != null) {
-            if (repo.credentials.username.orEmpty().isBlank() || repo.credentials.password.orEmpty().isBlank()) {
-                throw GradleException("Teamcity repository login and password cannot be empty")
-            }
-            repo.setUrl("${normalizeTcUrl}httpAuth/repository/download")
-        } else {
+        if (repo.credentials.username.orEmpty().isBlank() && repo.credentials.password.orEmpty().isBlank()) {
+            (repo as AuthenticationSupportedInternal).configuredCredentials = null
             repo.setUrl("${normalizeTcUrl}guestAuth/repository/download")
+        } else {
+            repo.setUrl("${normalizeTcUrl}httpAuth/repository/download")
         }
         repositories.add(repo)
         return repo
