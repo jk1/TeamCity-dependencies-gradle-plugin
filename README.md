@@ -11,7 +11,7 @@ The plugin makes use of default artifact cache, downloading each dependency only
 ```groovy
 // Gradle 5.3+
 plugins {
-  id 'com.github.jk1.tcdeps' version '1.0'
+  id 'com.github.jk1.tcdeps' version '1.1'
 }
 
 // Gradle 4.5-5.2
@@ -158,16 +158,17 @@ import com.github.jk1.tcdeps.KotlinScriptDslAdapter.tc
 
 plugins {
     java
-    id("com.github.jk1.tcdeps") version "1.0"
+    id("com.github.jk1.tcdeps") version "1.1"
 }
 
 
 repositories {
     teamcityServer {
         setUrl("https://teamcity.jetbrains.com")
+        // credential section is optional
         credentials {
-            username = "guest"
-            password = "guest"
+            username = "login"
+            password = "password"
         }
     }
 }
