@@ -31,11 +31,11 @@ dependencies {
     // archive traversal is available with '!' symbol
     compile tc('bt345:1.0.0-beta-3594:kotlin-compiler-1.0.0-beta-3594.zip!/kotlinc/build.txt')
     // Use TeamCity version aliases to declare snapshot-like dependencies
-    compile tc('OpenSourceProjects_Peergos_Build:lastFinished:PeergosServer.jar')
+    compile tc('Xodus_Build:lastFinished:crypto/build/libs/xodus-crypto.jar')
     compile tc('bt131:lastPinned:javadocs/index.html')
     compile tc('bt337:lastSuccessful:odata4j.zip')
     // or reference builds by tags with .tcbuildtag suffix
-    compile tc('Xodus_Build:hub-1.0.tcbuildtag:console/build/libs/xodus-console.jar')
+    compile tc('Xodus_Build:tcdeps-jk.tcbuildtag:sshd/build/libs/xodus-sshd.jar')
     // with feature branches supported
     compile tc(buildTypeId: 'bt390', version: 'lastSuccessful', artifactPath: 'updatePlugins.xml', branch: 'master')
     // and basic pattern-matching for artifacts
