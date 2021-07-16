@@ -3,11 +3,10 @@ plugins {
 }
 
 allprojects {
+
     group = 'com.github.jk1'
     description = 'TeamCity dependencies plugin resolves project dependencies via local TeamCity server'
     version = '1.2'
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
 
     repositories {
         mavenCentral()
