@@ -24,7 +24,7 @@ dependencies {
 tasks {
     register("listDeps", Task::class) {
         doLast {
-            configurations["compile"].forEach { it ->
+            configurations["compileClasspath"].forEach { it ->
                 println(it.toString())
             }
         }

@@ -23,13 +23,13 @@ configurations.all {
 
 dependencies {
     // reference arbitrary files as artifacts
-    implementation tc('Kotlin_KotlinPublic_Aggregate:1.0.0-beta-3594:internal ')
+    implementation tc('OpenSourceProjects_Peergos_Build:2660:peergoslib.nocache.js')
     // with self-explanatory map dependency notation
-    implementation tc(buildTypeId: 'bt345', version: '1.0.0-beta-3594', artifactPath: 'kotlin-implementationr-for-maven.jar')
+    implementation tc(buildTypeId: 'bt345', version: '1.1.50-dev-1577', artifactPath: 'kotlin-compiler-for-maven.jar')
     // subfolders are supported
     implementation tc('bt345:1.0.0-beta-3594:KotlinJpsPlugin/kotlin-jps-plugin.jar')
     // archive traversal is available with '!' symbol
-    implementation tc('bt345:1.0.0-beta-3594:kotlin-implementationr-1.0.0-beta-3594.zip!/kotlinc/build.txt')
+    implementation tc('bt345:1.1.50-dev-1577:kotlin-plugin-1.1.50-dev-1577.zip!/Kotlin/kotlinc/build.txt')
     // Use TeamCity version aliases to declare snapshot-like dependencies
     implementation tc('Xodus_Build:lastFinished:crypto/build/libs/xodus-crypto.jar')
     implementation tc('bt131:lastPinned:javadocs/index.html')
@@ -39,7 +39,7 @@ dependencies {
     // with feature branches supported
     implementation tc(buildTypeId: 'bt390', version: 'lastSuccessful', artifactPath: 'updatePlugins.xml', branch: 'master')
     // and basic pattern-matching for artifacts
-    implementation tc('bt415:lastSuccessful:.*-scala.jar')
+    implementation tc('bt415:lastFinished:.*-sources.zip')
 }
 
 task listDeps {
