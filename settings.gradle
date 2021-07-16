@@ -1,1 +1,3 @@
 rootProject.name = 'tcdeps'
+
+include 'tcdeps-groovy', 'tcdeps-kt'

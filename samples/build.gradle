@@ -23,28 +23,28 @@ configurations.all {
 
 dependencies {
     // reference arbitrary files as artifacts
-    compile tc('bt345:1.0.0-beta-3594:kotlin-compiler-1.0.0-beta-3594.zip')
+    implementation tc('Kotlin_KotlinPublic_Aggregate:1.0.0-beta-3594:internal ')
     // with self-explanatory map dependency notation
-    compile tc(buildTypeId: 'bt345', version: '1.0.0-beta-3594', artifactPath: 'kotlin-compiler-for-maven.jar')
+    implementation tc(buildTypeId: 'bt345', version: '1.0.0-beta-3594', artifactPath: 'kotlin-implementationr-for-maven.jar')
     // subfolders are supported
-    compile tc('bt345:1.0.0-beta-3594:KotlinJpsPlugin/kotlin-jps-plugin.jar')
+    implementation tc('bt345:1.0.0-beta-3594:KotlinJpsPlugin/kotlin-jps-plugin.jar')
     // archive traversal is available with '!' symbol
-    compile tc('bt345:1.0.0-beta-3594:kotlin-compiler-1.0.0-beta-3594.zip!/kotlinc/build.txt')
+    implementation tc('bt345:1.0.0-beta-3594:kotlin-implementationr-1.0.0-beta-3594.zip!/kotlinc/build.txt')
     // Use TeamCity version aliases to declare snapshot-like dependencies
-    compile tc('Xodus_Build:lastFinished:crypto/build/libs/xodus-crypto.jar')
-    compile tc('bt131:lastPinned:javadocs/index.html')
-    compile tc('bt337:lastSuccessful:odata4j.zip')
+    implementation tc('Xodus_Build:lastFinished:crypto/build/libs/xodus-crypto.jar')
+    implementation tc('bt131:lastPinned:javadocs/index.html')
+    implementation tc('bt337:lastSuccessful:odata4j.zip')
     // or reference builds by tags with .tcbuildtag suffix
-    compile tc('Xodus_Build:tcdeps-jk.tcbuildtag:sshd/build/libs/xodus-sshd.jar')
+    implementation tc('Xodus_Build:tcdeps-jk.tcbuildtag:sshd/build/libs/xodus-sshd.jar')
     // with feature branches supported
-    compile tc(buildTypeId: 'bt390', version: 'lastSuccessful', artifactPath: 'updatePlugins.xml', branch: 'master')
+    implementation tc(buildTypeId: 'bt390', version: 'lastSuccessful', artifactPath: 'updatePlugins.xml', branch: 'master')
     // and basic pattern-matching for artifacts
-    compile tc('bt415:lastSuccessful:.*-scala.jar')
+    implementation tc('bt415:lastSuccessful:.*-scala.jar')
 }
 
 task listDeps {
     doLast {
-        configurations.compile.each {
+        configurations.compileClasspath.each {
             dep -> println(dep)
         }
     }

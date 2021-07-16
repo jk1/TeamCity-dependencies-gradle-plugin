@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    compile(tc("bt345:1.0.0-beta-3594:kotlin-compiler-1.0.0-beta-3594.zip"))
+    implementation(tc("bt345:1.0.0-beta-3594:kotlin-compiler-1.0.0-beta-3594.zip"))
 }
 
 tasks {

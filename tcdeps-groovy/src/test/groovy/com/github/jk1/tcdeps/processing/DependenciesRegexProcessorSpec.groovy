@@ -15,7 +15,7 @@ class DependenciesRegexProcessorSpec extends Specification {
         ArtifactRegexResolver processor = new ArtifactRegexResolver()
 
         project.repositories.teamcityServer {
-            url = "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
+            url = "file:///" + new File("tcdeps-groovy/src/test/resources/testRepo").getAbsolutePath()
         }
 
         project.configurations {
@@ -80,7 +80,7 @@ class DependenciesRegexProcessorSpec extends Specification {
         ArtifactRegexResolver processor = new ArtifactRegexResolver()
 
         project.repositories.teamcityServer {
-            url = "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
+            url = "file:///" + new File("tcdeps-groovy/src/test/resources/testRepo").getAbsolutePath()
         }
 
         project.configurations {
@@ -114,7 +114,7 @@ class DependenciesRegexProcessorSpec extends Specification {
         ArtifactRegexResolver processor = new ArtifactRegexResolver()
 
         project.repositories.teamcityServer {
-            url = "file:///" + new File("src/test/resources/testRepo").getAbsolutePath()
+            url = "file:///" + new File("tcdeps-groovy/src/test/resources/testRepo").getAbsolutePath()
         }
 
         project.configurations {

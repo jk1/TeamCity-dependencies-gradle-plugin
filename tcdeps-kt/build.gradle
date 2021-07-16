@@ -1,0 +1,12 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.4.31'
+}
+
+dependencies {
+    implementation project(":tcdeps-groovy")
+
+    implementation gradleApi()
+    implementation localGroovy()
+
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.4.31'
+}

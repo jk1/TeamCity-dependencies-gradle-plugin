@@ -33,7 +33,7 @@ object KotlinScriptDslAdapter {
         val normalizeTcUrl = if (tcUrl.endsWith('/')) tcUrl else "$tcUrl/"
 
         if (repo.credentials.username.orEmpty().isBlank() && repo.credentials.password.orEmpty().isBlank()) {
-            (repo as AuthenticationSupportedInternal).configuredCredentials = null
+            (repo as AuthenticationSupportedInternal).setConfiguredCredentials(null)
             repo.setUrl("${normalizeTcUrl}guestAuth/repository/download")
         } else {
             repo.setUrl("${normalizeTcUrl}httpAuth/repository/download")
