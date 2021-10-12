@@ -4,6 +4,7 @@ import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository
 import org.gradle.api.artifacts.repositories.PasswordCredentials
+import org.gradle.api.provider.Property
 import org.gradle.util.ConfigureUtil
 
 class TeamCityRepositoryFactory {
@@ -28,10 +29,18 @@ class TeamCityRepositoryFactory {
         repo.metaClass.setUrl = { Object url ->
             baseTeamCityURL = url as String
             config.url = normalizeUrl(url)
-            if (getConfiguredCredentials() != null) {
-                oldSetUrl(normalizeUrl(url) + "httpAuth/repository/download")
+            if (getConfiguredCredentials() instanceof Property) {
+                if (getConfiguredCredentials().isPresent()) {
+                    oldSetUrl(normalizeUrl(url) + "httpAuth/repository/download")
+                } else {
+                    oldSetUrl(normalizeUrl(url) + "guestAuth/repository/download")
+                }
             } else {
-                oldSetUrl(normalizeUrl(url) + "guestAuth/repository/download")
+                if (getConfiguredCredentials() != null) {
+                    oldSetUrl(normalizeUrl(url) + "httpAuth/repository/download")
+                } else {
+                    oldSetUrl(normalizeUrl(url) + "guestAuth/repository/download")
+                }
             }
         }
 
