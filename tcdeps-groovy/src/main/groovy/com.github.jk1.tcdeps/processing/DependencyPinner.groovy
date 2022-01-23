@@ -84,8 +84,8 @@ class DependencyPinner implements DependencyProcessor {
                 locator buildLocator
                 action TAG
                 body config.tag
-                login config.username
-                password config.password
+                login credentials?.username
+                password credentials?.password
             }
         } catch (Exception e) {
             String message = "Unable to tag build: $buildLocator"
