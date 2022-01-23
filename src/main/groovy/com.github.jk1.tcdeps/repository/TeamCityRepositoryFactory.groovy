@@ -42,6 +42,7 @@ class TeamCityRepositoryFactory {
                 }
             }
         }
+        repo.metaClass.getUrl = { -> return repo.getUrl() }
 
         repo.metaClass.credentials = { Closure action ->
             oldCredentials(new CredentialsConfigurationAction(actionClosure: action, project: project))
