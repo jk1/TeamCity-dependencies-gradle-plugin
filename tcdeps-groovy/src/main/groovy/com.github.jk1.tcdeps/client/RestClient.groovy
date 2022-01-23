@@ -1,6 +1,7 @@
 package com.github.jk1.tcdeps.client
 
 import groovy.transform.Canonical
+import static com.github.jk1.tcdeps.util.ResourceLocator.*
 
 class RestClient {
 
@@ -45,6 +46,7 @@ class RestClient {
             connection = prepareConnection(method, location, resource.authentication)
             writeRequest(connection, resource)
         }
+        logger.debug("Request: " + method + " " + resource.toString() +", Response: " + connection.getResponseCode())
         return new Response(code: connection.getResponseCode(), body: readResponse(connection))
     }
 

@@ -39,7 +39,7 @@ dependencies {
     // with feature branches supported
     implementation tc(buildTypeId: 'bt390', version: 'lastSuccessful', artifactPath: 'updatePlugins.xml', branch: 'master')
     // and basic pattern-matching for artifacts
-    implementation tc('bt415:lastFinished:.*-sources.zip')
+    implementation tc('bt131:lastPinned:javadocs/.*.html')
 }
 
 task listDeps {

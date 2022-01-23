@@ -4,6 +4,8 @@ import com.github.jk1.tcdeps.client.RestClient
 import com.github.jk1.tcdeps.repository.PinConfiguration
 import org.gradle.api.GradleException
 import org.gradle.api.Project
+import org.gradle.api.artifacts.repositories.ArtifactRepository
+import org.gradle.api.credentials.Credentials
 
 /**
  * Tiny IoC implementation for testability's sake
@@ -35,12 +37,27 @@ class ResourceLocator {
         pinConfiguration = new PinConfiguration()
     }
 
-    static PinConfiguration getConfig() {
+    static ArtifactRepository getTeamcityRepository(){
         def repo = project.get().repositories.findByName("TeamCity")
-        if (repo ==  null) {
+        if (repo == null) {
             throw new GradleException("TeamCity repository is not defined for project ${project.get().name}")
         } else {
-            return pinConfiguration
+            return repo
+        }
+    }
+
+    static PinConfiguration getConfig() {
+        getTeamcityRepository() // sanity check
+        return pinConfiguration
+    }
+
+    static Credentials getCredentials() {
+        def authentication = getTeamcityRepository().configuredAuthentication
+        if (authentication.isEmpty()) {
+            return null
+        } else {
+            def credentials = authentication.credentials
+            return credentials.isEmpty() ? null : credentials[0]
         }
     }
 
