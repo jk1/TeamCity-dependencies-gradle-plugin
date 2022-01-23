@@ -52,6 +52,8 @@ class ModuleVersionResolver implements DependencyProcessor {
                 baseUrl config.url
                 locator buildLocator
                 action GET_BUILD_NUMBER
+                login credentials?.username
+                password credentials?.password
             }
         } catch (Exception e) {
             throw new GradleException("Failed to resolve $buildLocator", e)

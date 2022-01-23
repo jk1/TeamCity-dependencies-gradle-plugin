@@ -1,10 +1,11 @@
 package com.github.jk1.tcdeps.client
 
+import com.github.jk1.tcdeps.MockProject
 import com.github.jk1.tcdeps.model.BuildLocator
 import org.gradle.internal.impldep.org.apache.http.HttpStatus
 import spock.lang.Specification
 
-class RestClientSpec extends Specification {
+class RestClientSpec extends Specification implements MockProject {
 
     private static final String kotlin_build_numbers = '^[0-9.\\-]*(beta|dev|rc)*[0-9.\\-]*$'
 

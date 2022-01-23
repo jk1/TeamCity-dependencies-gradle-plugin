@@ -9,57 +9,19 @@ The plugin makes use of default artifact cache, downloading each dependency only
 ### Simple example
 
 ```groovy
-// Gradle 5.3+
 plugins {
-  id 'com.github.jk1.tcdeps' version '1.3'
+  // works with Gradle 5.3+
+  id 'com.github.jk1.tcdeps' version '1.4'
 }
-
-// Gradle 4.5-5.2
-plugins {
-  id 'com.github.jk1.tcdeps' version '0.18'
-}
-
-// Gradle 4.3-4.4
-plugins {
-  id 'com.github.jk1.tcdeps' version '0.16'
-}
-
-// Gradle 4.0-4.2
-plugins {
-  id 'com.github.jk1.tcdeps' version '0.15'
-}
-
-// Gradle 3.5+
-plugins {
-  id 'com.github.jk1.tcdeps' version '0.14'
-}
-
-// Gradle 3.1-3.4
-plugins {
-  id 'com.github.jk1.tcdeps' version '0.12'
-}
-
-// Gradle 3.0
-plugins {
-  id 'com.github.jk1.tcdeps' version '0.10'
-}
-
-// Gradle 2.7-2.14
-plugins {
-  id 'com.github.jk1.tcdeps' version '0.9'
-}
-
-// Gradle 2.1-2.6
-plugins {
-  id 'com.github.jk1.tcdeps' version '0.7.7'
-}
-
-// Gradle 2.0 and below
-apply plugin: 'com.github.jk1.tcdeps'
 
 repositories{
   teamcityServer{
-    url = 'http://teamcity.jetbrains.com'
+    url = 'https://teamcity.jetbrains.com'
+    // credentials section is optional
+    credentials {
+      username = "login"
+      password = "password"
+    }
   }
 }
 
@@ -81,6 +43,37 @@ dependencies {
 }
 ```
 TeamCity dependency description consist of the following components: build type id, build number aka version, and artifact path. Artifact path should be relative to build artifacts root in TC build. 
+
+### Kotlin script support
+
+The following example demonstrates how to use the plugin in [Kotlin scripted builds](https://github.com/gradle/gradle-script-kotlin):
+
+```
+import com.github.jk1.tcdeps.KotlinScriptDslAdapter.teamcityServer
+import com.github.jk1.tcdeps.KotlinScriptDslAdapter.pin
+import com.github.jk1.tcdeps.KotlinScriptDslAdapter.tc
+
+plugins {
+    java
+    id("com.github.jk1.tcdeps") version "1.3"
+}
+
+
+repositories {
+    teamcityServer {
+        setUrl("https://teamcity.jetbrains.com")
+        // credentials section is optional
+        credentials {
+            username = "login"
+            password = "password"
+        }
+    }
+}
+
+dependencies {
+    compile(tc("bt345:1.1.50-dev-1182:kotlin-compiler1.1.50-dev-1182.zip"))
+}
+```
 
 ### Changing dependencies
 
@@ -125,10 +118,11 @@ By default, TeamCity does not store artifacts indefinitely, deleting them after 
 repositories{
   teamcityServer{
     url = 'http://teamcity.jetbrains.com'
+    credentials {
+      username = "login"
+      password = "password"
+    }
     pin {
-      // pinning usually requires authentication
-      username = "name"
-      password = "secret"
       stopBuildOnFail = true            // not mandatory, default to 'false' 
       message = "Pinned for MyProject"  // optional pin message
       tag = "Production"                // optional build tag  
@@ -145,36 +139,5 @@ Gradle's offline mode is fully supported for TeamCity-originated dependencies. T
 
 ```
 gradle jar --offline
-```
-
-### Kotlin script support (Experimental)
-
-The following example demonstrates how to use the plugin in [Kotlin scripted builds](https://github.com/gradle/gradle-script-kotlin):
-
-```
-import com.github.jk1.tcdeps.KotlinScriptDslAdapter.teamcityServer
-import com.github.jk1.tcdeps.KotlinScriptDslAdapter.pin
-import com.github.jk1.tcdeps.KotlinScriptDslAdapter.tc
-
-plugins {
-    java
-    id("com.github.jk1.tcdeps") version "1.3"
-}
-
-
-repositories {
-    teamcityServer {
-        setUrl("https://teamcity.jetbrains.com")
-        // credential section is optional
-        credentials {
-            username = "login"
-            password = "password"
-        }
-    }
-}
-
-dependencies {
-    compile(tc("bt345:1.1.50-dev-1182:kotlin-compiler1.1.50-dev-1182.zip"))
-}
 ```
 

@@ -50,8 +50,8 @@ class DependencyPinner implements DependencyProcessor {
                 locator buildLocator
                 action PIN
                 body config.message
-                login config.username
-                password config.password
+                login credentials?.username
+                password credentials?.password
             }
         } catch (Exception e) {
             String message = "Unable to pin build: $buildLocator"
