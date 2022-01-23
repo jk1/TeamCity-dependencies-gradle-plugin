@@ -5,7 +5,6 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository
 import org.gradle.api.artifacts.repositories.PasswordCredentials
 import org.gradle.api.provider.Property
-import org.gradle.util.ConfigureUtil
 
 class TeamCityRepositoryFactory {
 
@@ -45,7 +44,7 @@ class TeamCityRepositoryFactory {
         }
 
         repo.metaClass.credentials = { Closure action ->
-            oldCredentials(new CredentialsConfigurationAction(actionClosure: action))
+            oldCredentials(new CredentialsConfigurationAction(actionClosure: action, project: project))
             oldSetUrl(normalizeUrl(baseTeamCityURL) + "httpAuth/repository/download")
         }
 
@@ -59,6 +58,9 @@ class TeamCityRepositoryFactory {
                 artifact '[module]/[revision]/[artifact](.[ext])'
                 ivy '[module]/[revision]/teamcity-ivy.xml'
             }
+            content {
+                includeGroup "org"
+            }
         }
     }
 
@@ -68,11 +70,12 @@ class TeamCityRepositoryFactory {
 
     private class CredentialsConfigurationAction implements Action<PasswordCredentials> {
 
+        Project project
         Closure actionClosure
 
         @Override
         void execute(PasswordCredentials passwordCredentials) {
-            ConfigureUtil.configure(actionClosure, passwordCredentials)
+            project.configure(passwordCredentials, actionClosure)
         }
     }
 }
