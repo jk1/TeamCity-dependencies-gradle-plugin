@@ -10,8 +10,8 @@ The plugin makes use of default artifact cache, downloading each dependency only
 
 ```groovy
 plugins {
-  // works with Gradle 5.3+
-  id 'com.github.jk1.tcdeps' version '1.4'
+  // Gradle 7+
+  id 'com.github.jk1.tcdeps' version '1.7'
 }
 
 repositories{
@@ -117,7 +117,7 @@ By default, TeamCity does not store artifacts indefinitely, deleting them after 
 ```groovy
 repositories{
   teamcityServer{
-    url = 'http://teamcity.jetbrains.com'
+    url = 'https://teamcity.jetbrains.com'
     credentials {
       username = "login"
       password = "password"
