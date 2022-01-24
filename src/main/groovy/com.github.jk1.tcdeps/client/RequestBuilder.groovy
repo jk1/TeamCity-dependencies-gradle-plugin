@@ -59,4 +59,12 @@ class RequestBuilder {
             "/guestAuth/app/rest/builds/$locator/number"
         }
     }
+
+    static def GET_BUILD_ID = { BuildLocator locator, Boolean authenticate ->
+        if (authenticate) {
+            "/httpAuth/app/rest/builds/$locator/id"
+        } else {
+            "/guestAuth/app/rest/builds/$locator/id"
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.github.jk1.tcdeps.processing
 
+import com.github.jk1.tcdeps.client.RestClient
 import com.github.jk1.tcdeps.model.BuildLocator
 import com.github.jk1.tcdeps.model.DependencyDescriptor
 import org.gradle.api.GradleException
@@ -19,9 +20,12 @@ class DependencyPinner implements DependencyProcessor {
             config.setDefaultMessage("Pinned when building dependent build $project.name $project.version")
             if (config.pinEnabled) {
                 dependencies.findAll { shouldPin(it) }.unique().each {
-                    pinBuild(it)
-                    if (config.tag){
-                       tagBuild(it)
+                    def buildId = resolveBuildId(it)
+                    if (buildId) {
+                        pinBuild(buildId, it)
+                        if (config.tag){
+                            tagBuild(buildId, it)
+                        }
                     }
                 }
             } else {
@@ -37,15 +41,13 @@ class DependencyPinner implements DependencyProcessor {
       return !dep.version.changing && !config.excludes.contains(dep.buildTypeId)
     }
 
-    private def pinBuild(DependencyDescriptor dependency) {
+    private def pinBuild(String buildId, DependencyDescriptor dependency) {
         BuildLocator buildLocator = dependency.version.buildLocator
         buildLocator.buildTypeId = dependency.buildTypeId
-        buildLocator.branch = dependency.branch
+        buildLocator.id = buildId
         logger.debug("Pinning the build: $buildLocator")
-        // todo: rewrite this to avoid boilerplate
-        def response
         try {
-            response = restClient.put {
+            def response = restClient.put {
                 baseUrl config.url
                 locator buildLocator
                 action PIN
@@ -53,33 +55,19 @@ class DependencyPinner implements DependencyProcessor {
                 login credentials?.username
                 password credentials?.password
             }
+            assertResponse(response, buildLocator)
         } catch (Exception e) {
-            String message = "Unable to pin build: $buildLocator"
-            if (config.stopBuildOnFail) {
-                throw new GradleException(message, e)
-            } else {
-                logger.warn(message, e)
-            }
-        }
-        if (response && !response.isOk()) {
-            String message = "Unable to pin build: $buildLocator. Server response: HTTP $response.code \n $response.body"
-            if (config.stopBuildOnFail) {
-                throw new GradleException(message)
-            } else {
-                logger.warn(message)
-            }
+            handleException(e, buildLocator)
         }
     }
 
-    private def tagBuild(DependencyDescriptor dependency) {
+    private def tagBuild(String buildId, DependencyDescriptor dependency) {
         BuildLocator buildLocator = dependency.version.buildLocator
         buildLocator.buildTypeId = dependency.buildTypeId
-        buildLocator.branch = dependency.branch
+        buildLocator.id = buildId
         logger.debug("Tagging the build: $buildLocator")
-        // todo: rewrite this to avoid boilerplate
-        def response
         try {
-            response = restClient.post {
+            def response = restClient.post {
                 baseUrl config.url
                 locator buildLocator
                 action TAG
@@ -87,16 +75,48 @@ class DependencyPinner implements DependencyProcessor {
                 login credentials?.username
                 password credentials?.password
             }
+            assertResponse(response, buildLocator)
         } catch (Exception e) {
-            String message = "Unable to tag build: $buildLocator"
-            if (config.stopBuildOnFail) {
-                throw new GradleException(message, e)
-            } else {
-                logger.warn(message, e)
-            }
+            handleException(e, buildLocator)
         }
+    }
+
+    private def resolveBuildId(DependencyDescriptor dependency) {
+        BuildLocator buildLocator = dependency.version.buildLocator
+        buildLocator.buildTypeId = dependency.buildTypeId
+        buildLocator.noFilter = true
+        try {
+            def response = restClient.get {
+                baseUrl config.url
+                locator buildLocator
+                action GET_BUILD_ID
+                body config.tag
+                login credentials?.username
+                password credentials?.password
+            }
+            assertResponse(response, buildLocator)
+            return response.body
+        } catch (Exception e) {
+            handleException(e, buildLocator)
+            return null
+        }
+    }
+
+    private def handleException(Exception e, BuildLocator buildLocator) {
+        if (e instanceof GradleException) {
+            throw e
+        }
+        String message = "Unable to pin/tag build: $buildLocator"
+        if (config.stopBuildOnFail) {
+            throw new GradleException(message, e)
+        } else {
+            logger.warn(message, e)
+        }
+    }
+
+    private def assertResponse(RestClient.Response response, BuildLocator buildLocator) {
         if (response && !response.isOk()) {
-            String message = "Unable to tag build: $buildLocator. Server response: HTTP $response.code \n $response.body"
+            String message = "Unable to pin/tag build: $buildLocator. Server response: HTTP $response.code \n $response.body"
             if (config.stopBuildOnFail) {
                 throw new GradleException(message)
             } else {
