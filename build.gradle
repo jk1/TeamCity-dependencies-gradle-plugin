@@ -37,6 +37,7 @@ dependencies {
 }
 
 jar {
+    dependsOn configurations.subproject
     from { configurations.subproject.collect { zipTree(it)  }}
 }
 

@@ -60,21 +60,22 @@ class TeamCityRepoSpec extends Specification {
         when:
         project.repositories.teamcityServer {
             url = "http://teamcity"
-            pin {
-                // pinning usually requires authentication
+            credentials {
                 username = "name"
                 password = "secret"
-                stopBuildOnFail = true  // not mandatory, default to 'false'
-                message = "Pinned for MyCoolProject"  // not mandatory
+            }
+            pin {
+                stopBuildOnFail = true
+                message = "Pinned for MyCoolProject"
             }
         }
         def repo = project.repositories.findByName("TeamCity")
 
         then:
-        repo.getUrl().toString() == "http://teamcity/guestAuth/repository/download"
+        repo.getUrl().toString() == "http://teamcity/httpAuth/repository/download"
+        repo.credentials.username == "name"
+        repo.credentials.password == "secret"
         repo.pin.pinEnabled
-        repo.pin.username == "name"
-        repo.pin.password == "secret"
         repo.pin.message == "Pinned for MyCoolProject"
         repo.pin.stopBuildOnFail
     }

@@ -14,6 +14,8 @@ class BuildLocator {
     String branch
     String tag
     String number
+    String id
+    Boolean noFilter
 
     @Override
     String toString() {
@@ -35,6 +37,12 @@ class BuildLocator {
         }
         if (number) {
             builder.append(",number:${encode(number)}")
+        }
+        if (id) {
+            builder.append(",id:${encode(id)}")
+        }
+        if (noFilter){
+            builder.append(",defaultFilter:false")
         }
         return builder.toString()
     }
