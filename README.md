@@ -10,8 +10,13 @@ The plugin makes use of default artifact cache, downloading each dependency only
 
 ```groovy
 plugins {
+    // Gradle 6
+    id 'com.github.jk1.tcdeps' version '1.3.1'
+}
+
+plugins {
   // Gradle 7+
-  id 'com.github.jk1.tcdeps' version '1.7'
+  id 'com.github.jk1.tcdeps' version '1.5'
 }
 
 repositories{
