@@ -90,7 +90,6 @@ class DependencyPinner implements DependencyProcessor {
                 baseUrl config.url
                 locator buildLocator
                 action GET_BUILD_ID
-                body config.tag
                 login credentials?.username
                 password credentials?.password
             }
