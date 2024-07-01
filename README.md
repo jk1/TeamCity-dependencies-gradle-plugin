@@ -16,7 +16,7 @@ plugins {
 
 plugins {
   // Gradle 7+
-  id 'com.github.jk1.tcdeps' version '1.6.0'
+  id 'com.github.jk1.tcdeps' version '1.6.2'
 }
 
 repositories{
@@ -60,7 +60,7 @@ import com.github.jk1.tcdeps.KotlinScriptDslAdapter.tc
 
 plugins {
     java
-    id("com.github.jk1.tcdeps") version "1.3"
+    id("com.github.jk1.tcdeps") version "1.6.2"
 }
 
 
