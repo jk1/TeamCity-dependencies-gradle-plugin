@@ -6,11 +6,11 @@ import com.github.jk1.tcdeps.processing.DependencyPinner
 import com.github.jk1.tcdeps.processing.DependencyProcessor
 import com.github.jk1.tcdeps.processing.ModuleVersionResolver
 import com.github.jk1.tcdeps.repository.TeamCityRepositoryFactory
+import org.gradle.api.Action
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository
-import org.gradle.util.ConfigureUtil
 import org.gradle.util.GradleVersion
 
 import static com.github.jk1.tcdeps.util.ResourceLocator.*
@@ -60,11 +60,11 @@ class TeamCityDependenciesPlugin implements Plugin<Project> {
 
     private void addTeamCityNotationTo(Project project) {
         def repositories = project.repositories
-        repositories.ext.teamcityServer = { Closure configureClosure ->
+        repositories.ext.teamcityServer = { Action<IvyArtifactRepository> configureClosure ->
             IvyArtifactRepository oldRepo = repositories.findByName("TeamCity")
             IvyArtifactRepository repo = createTeamCityRepository(project)
             if (configureClosure) {
-                ConfigureUtil.configure(configureClosure, repo)
+                configureClosure.execute(repo)
             }
             if (oldRepo) {
                 project.logger.warn "Project $project already has TeamCity server [${oldRepo.getUrl()}], overriding with [${repo.getUrl()}]"

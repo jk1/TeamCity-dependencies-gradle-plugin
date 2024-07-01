@@ -16,7 +16,7 @@ plugins {
 
 plugins {
   // Gradle 7+
-  id 'com.github.jk1.tcdeps' version '1.5.1'
+  id 'com.github.jk1.tcdeps' version '1.6.0'
 }
 
 repositories{
