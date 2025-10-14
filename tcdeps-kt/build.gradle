@@ -1,9 +1,9 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.9.24'
+    id 'org.jetbrains.kotlin.jvm' version '2.2.20'
 }
 
-sourceCompatibility = 11
-targetCompatibility = 11
+java.sourceCompatibility = 11
+java.targetCompatibility = 11
 
 dependencies {
     implementation project(":tcdeps-groovy")
@@ -11,13 +11,11 @@ dependencies {
     implementation gradleApi()
     implementation localGroovy()
 
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.24'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.20'
 }
 
 compileKotlin {
     kotlinOptions {
         jvmTarget = '11'
-        apiVersion = '1.9'
-        languageVersion = '1.9'
     }
 }

@@ -31,11 +31,11 @@ dependencies {
     // archive traversal is available with '!' symbol
     implementation tc('bt345:1.1.50-dev-1577:kotlin-plugin-1.1.50-dev-1577.zip!/Kotlin/kotlinc/build.txt')
     // Use TeamCity version aliases to declare snapshot-like dependencies
-    implementation tc('Xodus_Build:lastFinished:crypto/build/libs/xodus-crypto.jar')
+    implementation tc('ttorrent_Main:lastFinished:ttorrent-1.2.jar')
     implementation tc('bt131:lastPinned:javadocs/index.html')
     implementation tc('bt337:lastSuccessful:odata4j.zip')
     // or reference builds by tags with .tcbuildtag suffix
-    implementation tc('Xodus_Build:tcdeps-jk.tcbuildtag:sshd/build/libs/xodus-sshd.jar')
+    implementation tc('Kotlin_Protobuf:2.6.1.tcbuildtag:internal/repo/org/jetbrains/kotlin/protobuf-lite/2.6.1/protobuf-lite-2.6.1.jar')
     // with feature branches supported
     implementation tc(buildTypeId: 'bt390', version: 'lastSuccessful', artifactPath: 'updatePlugins.xml', branch: 'master')
     // and basic pattern-matching for artifacts

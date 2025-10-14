@@ -2,15 +2,22 @@ plugins{
     id 'groovy'
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+java.sourceCompatibility = 11
+java.targetCompatibility = 11
 
 dependencies {
     implementation gradleApi()
     implementation localGroovy()
 
-    testImplementation("org.spockframework:spock-core:2.0-groovy-3.0") {
+    testImplementation("org.spockframework:spock-core:2.2-groovy-4.0") {
         exclude group: 'org.codehaus.groovy'
     }
     testImplementation gradleTestKit()
+    testImplementation("org.junit.vintage:junit-vintage-engine:5.14.0")
+    testImplementation("org.junit.platform:junit-platform-launcher:1.14.0")
+}
+
+test {
+    useJUnitPlatform()
+    jvmArgs = ["--add-opens=java.base/java.lang=ALL-UNNAMED"]
 }

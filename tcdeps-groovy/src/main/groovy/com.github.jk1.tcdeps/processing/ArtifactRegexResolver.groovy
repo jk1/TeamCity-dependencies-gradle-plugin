@@ -10,6 +10,7 @@ import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.artifacts.result.ResolvedDependencyResult
 import org.gradle.ivy.IvyDescriptorArtifact
 import org.gradle.ivy.IvyModule
+import groovy.xml.XmlSlurper
 
 import static com.github.jk1.tcdeps.util.ResourceLocator.logger
 import static com.github.jk1.tcdeps.util.ResourceLocator.project

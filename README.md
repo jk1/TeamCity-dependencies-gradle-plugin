@@ -15,8 +15,13 @@ plugins {
 }
 
 plugins {
-  // Gradle 7+
+  // Gradle 7-8
   id 'com.github.jk1.tcdeps' version '1.6.2'
+}
+
+plugins {
+    // Gradle 9
+    id 'com.github.jk1.tcdeps' version '1.7.0'
 }
 
 repositories{
