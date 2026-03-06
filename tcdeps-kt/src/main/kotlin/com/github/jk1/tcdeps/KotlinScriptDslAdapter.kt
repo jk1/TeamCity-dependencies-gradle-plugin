@@ -9,7 +9,8 @@ import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository
-import org.gradle.internal.artifacts.repositories.AuthenticationSupportedInternal
+import org.gradle.api.credentials.PasswordCredentials
+import org.gradle.api.internal.artifacts.repositories.DefaultIvyArtifactRepository
 
 object KotlinScriptDslAdapter {
 
@@ -18,7 +19,7 @@ object KotlinScriptDslAdapter {
         val plugin = project.getOurPlugin()
         val repositories = project.repositories
         val oldRepo = repositories.findByName("TeamCity") as IvyArtifactRepository?
-        val repo = plugin.createTeamCityRepository(project)
+        val repo = plugin.createTeamCityRepository(project) as DefaultIvyArtifactRepository
         action(repo)
         if (repo.url == null) {
             throw GradleException("TeamCity repository url shouldn't be null")
@@ -32,8 +33,8 @@ object KotlinScriptDslAdapter {
         val tcUrl = repo.url.toString()
         val normalizeTcUrl = if (tcUrl.endsWith('/')) tcUrl else "$tcUrl/"
 
-        if (repo.credentials.username.orEmpty().isBlank() && repo.credentials.password.orEmpty().isBlank()) {
-            (repo as AuthenticationSupportedInternal).setConfiguredCredentials(null)
+        val configuredCredentials = repo.configuredCredentials.map { it as? PasswordCredentials }.orNull
+        if (configuredCredentials?.username.isNullOrBlank() && configuredCredentials?.password.isNullOrBlank()) {
             repo.setUrl("${normalizeTcUrl}guestAuth/repository/download")
         } else {
             repo.setUrl("${normalizeTcUrl}httpAuth/repository/download")
