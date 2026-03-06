@@ -1,6 +1,6 @@
 package com.github.jk1.tcdeps
 
-
+import com.github.jk1.tcdeps.util.ResourceLocator
 import org.gradle.api.Project
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository
 import org.gradle.testfixtures.ProjectBuilder
@@ -32,6 +32,7 @@ class TeamCityRepoSpec extends Specification {
 
         then:
         project.repositories.findByName("TeamCity").getUrl() == new URI("http://teamcity/guestAuth/repository/download")
+        ResourceLocator.credentials == null
     }
 
     def "teamcity repository should use http auth when credentials are provided"() {
@@ -49,6 +50,7 @@ class TeamCityRepoSpec extends Specification {
 
         then:
         project.repositories.findByName("TeamCity").getUrl() == new URI("http://teamcity/httpAuth/repository/download")
+        ResourceLocator.credentials != null
     }
 
 
