@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '2.2.20'
 }
@@ -12,10 +15,20 @@ dependencies {
     implementation localGroovy()
 
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.20'
+
+    testImplementation gradleTestKit()
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.14.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.14.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.14.0'
 }
 
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = '11'
+test {
+    useJUnitPlatform()
+    jvmArgs = ["--add-opens=java.base/java.lang=ALL-UNNAMED"]
+}
+
+tasks.withType(KotlinCompile).configureEach {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_11
     }
 }
