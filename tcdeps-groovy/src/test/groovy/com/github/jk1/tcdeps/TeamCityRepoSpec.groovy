@@ -95,7 +95,7 @@ class TeamCityRepoSpec extends Specification {
         }
 
         then:
-        def repos = project.repositories.findAll { it instanceof IvyArtifactRepository }
+        def repos = project.repositories.matching { it instanceof IvyArtifactRepository }
         repos.size() == 1
         repos.get(0).getUrl().toString().contains("teamcity2")
     }

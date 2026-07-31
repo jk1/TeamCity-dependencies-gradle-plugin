@@ -20,11 +20,11 @@ class ArtifactRegexResolver {
     def process() {
         try {
             // make configuration resolution as lazy, as possible
-            project.configurations.findAll { it.state != Configuration.State.UNRESOLVED }.each { configuration ->
+            project.configurations.matching { it.state != Configuration.State.UNRESOLVED }.each { configuration ->
                 resolveArtifacts(configuration)
             }
             def capturedProject = project
-            project.configurations.findAll { it.state == Configuration.State.UNRESOLVED }.each { configuration ->
+            project.configurations.matching { it.state == Configuration.State.UNRESOLVED }.each { configuration ->
                 configuration.incoming.beforeResolve { incoming ->
                     // Make sure the closure won't run on configuration copy. See https://github.com/gradle/gradle/pull/1603
                     if (incoming == configuration.incoming) {
