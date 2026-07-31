@@ -8,12 +8,13 @@ class DependencyDescriptorSpec extends Specification {
     def "legal data should result in valid Gradle dependency notation"() {
         expect:
         DependencyDescriptor descriptor = DependencyDescriptor.create(raw)
+        descriptor.toDependencyNotation()[0] instanceof String
         descriptor.toDependencyNotation()[0] == notation
 
         where:
         raw                                                             | notation
-        "btid:1.0:file.jar"                                             | [group:'org', name:'btid', version:'1.0']
-        [buildTypeId: "btid", version: "1.0", artifactPath: "file.jar"] | [group:'org', name:'btid', version:'1.0']
+        "btid:1.0:file.jar"                                             | 'org:btid:1.0'
+        [buildTypeId: "btid", version: "1.0", artifactPath: "file.jar"] | 'org:btid:1.0'
     }
 
     def "illegal values should fail the build"() {
@@ -40,7 +41,7 @@ class DependencyDescriptorSpec extends Specification {
 
         where:
         changing | notation
-        "btid:lastFinished:file.jar" | [ group: 'org', name: 'btid', version: 'lastFinished']
-        "btid:TagName.tcbuildtag:file.jar" | [ group: 'org', name: 'btid', version: 'TagName.tcbuildtag']
+        "btid:lastFinished:file.jar" | 'org:btid:lastFinished'
+        "btid:TagName.tcbuildtag:file.jar" | 'org:btid:TagName.tcbuildtag'
     }
 }

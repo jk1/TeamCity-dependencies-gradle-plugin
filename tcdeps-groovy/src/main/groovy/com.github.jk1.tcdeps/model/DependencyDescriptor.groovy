@@ -57,10 +57,7 @@ class DependencyDescriptor {
     }
 
     def toDependencyNotation() {
-        return [[group  : 'org',
-                 name   : buildTypeId,
-                 version: version.version
-                ],
+        return [toDefaultDependencyNotation(),
                 { ->
                     artifact {
                         name = artifactDescriptor.name
@@ -70,10 +67,7 @@ class DependencyDescriptor {
     }
 
     def toDefaultDependencyNotation() {
-        return [group  : 'org',
-            name   : buildTypeId,
-            version: version.version
-        ]
+        return "org:${buildTypeId}:${version.version}".toString()
     }
 
     @Override
